@@ -8,7 +8,8 @@ Memo Notes is a lightweight and intuitive note-taking app built for iOS devices,
 - Organized View: Display notes in a simple list view with titles and descriptions for easy navigation.
 - Persistent Storage: Save and access your notes even after closing the app.
 - Maps: Save and access your locations.
-- Search: Search Notes
+- Search: Search Notes.
+- Larger Devices Support.
 
 # Furture Planning:
 - Add Todo Task.
