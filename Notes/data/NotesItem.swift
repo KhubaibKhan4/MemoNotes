@@ -10,7 +10,7 @@ import SwiftData
 import CoreLocation
 
 @Model
-class NotesItem: Identifiable{
+class NotesItem: Identifiable {
     var id: String
     var title: String
     var desc: String
@@ -32,13 +32,17 @@ class NotesItem: Identifiable{
         }
     }
     
-    init(title: String, desc: String, isPinned: Bool, location: CLLocationCoordinate2D?) {
+    var images: [Data]?
+    var videoURL: URL?
+    
+    init(title: String, desc: String, isPinned: Bool, location: CLLocationCoordinate2D? = nil, images: [Data]? = nil, videoURL: URL? = nil) {
         self.id = UUID().uuidString
         self.title = title
         self.desc = desc
         self.isPinned = isPinned
-        self.location = location
         self.latitude = location?.latitude
         self.longitude = location?.longitude
+        self.images = images
+        self.videoURL = videoURL
     }
 }
