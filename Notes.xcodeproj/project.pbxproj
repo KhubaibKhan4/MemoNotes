@@ -23,6 +23,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		49B7C3BC2D00D8E900FE8DE5 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
@@ -47,12 +49,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3622B93368E04F3CCE63554D /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		49BA1F7D2CBD8E700099CDCB = {
 			isa = PBXGroup;
 			children = (
 				49B7C3BC2D00D8E900FE8DE5 /* Resources */,
 				49BA1F882CBD8E700099CDCB /* Notes */,
 				49BA1F872CBD8E700099CDCB /* Products */,
+				3622B93368E04F3CCE63554D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,8 +94,6 @@
 				49BA1F882CBD8E700099CDCB /* Notes */,
 			);
 			name = Notes;
-			packageProductDependencies = (
-			);
 			productName = Notes;
 			productReference = 49BA1F862CBD8E700099CDCB /* Notes.app */;
 			productType = "com.apple.product-type.application";

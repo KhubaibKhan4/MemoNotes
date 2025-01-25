@@ -63,7 +63,7 @@ struct AddNotes: View {
                     )
                 }
                 
-                Section("Photos") {
+                Section("Media") {
                     Button("Add Media", systemImage: "photo.on.rectangle.angled.fill") {
                         locationManager.checkLocationAuthorization()
                     }
