@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreLocation
 import MapKit
+import AVKit
 
 struct NotesDetail: View {
     @State var notesItem: NotesItem
@@ -23,78 +24,74 @@ struct NotesDetail: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Spacer(minLength: 10)
-                VStack(alignment: .leading, spacing: 8) {
+        List {
+            Section {
+                HStack {
                     Text(notesItem.title)
-                        .font(.title2)
+                        .font(.title)
                         .fontWeight(.bold)
-                        .lineLimit(3)
                     
-                    Text(notesItem.desc)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.leading)
-                }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(UIColor.secondarySystemBackground))
-                )
-                .padding(.horizontal)
-                
-                if let location = notesItem.location {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Location")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        Map(position: $position) {
-                            Marker(selectedLocationName, coordinate: location)
-                        }
-                        .frame(height: 250)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            Text(selectedLocationName)
-                                .padding(8)
-                                .background(Color.white.opacity(0.8))
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .shadow(radius: 4),
-                            alignment: .topLeading
-                        ).onTapGesture {
-                            isMapClicked = !isMapClicked
-                        }.sheet(isPresented: $isMapClicked, content: {
-                            NavigationStack {
-                                VStack {
-                                    Map(position: $position) {
-                                        Marker(selectedLocationName, coordinate: location)
-                                    }.frame(width: .infinity, height: .infinity)
-                                }.toolbar {
-                                    Button("Close", role: .cancel) {
-                                        isMapClicked = !isMapClicked
-                                    }
-                                
-                                }
-                            }
-                            
-                        }
-                        )
+                    if notesItem.isPinned {
+                        Image(systemName: "pin.fill")
+                            .foregroundColor(.red)
                     }
-                    .padding()
                 }
             }
-            .onAppear {
-                if let location = notesItem.location {
-                    position = .region(
-                        MKCoordinateRegion(
-                            center: location,
-                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                        )
-                    )
-                    fetchLocationName(for: location) { name in
-                        selectedLocationName = name ?? "Unknown"
+            
+            Section(header: Text("Description")) {
+                Text(notesItem.desc)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
+            
+            if let imagesData = notesItem.images, !imagesData.isEmpty {
+                Section(header: Text("Images")) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(imagesData, id: \.self) { imageData in
+                                if let uiImage = UIImage(data: imageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 150, height: 150)
+                                        .clipped()
+                                        .cornerRadius(10)
+                                }
+                            }
+                        }
                     }
+                    .frame(height: 160)
+                }
+                .onAppear {
+                    if let location = notesItem.location {
+                        position = .region(
+                            MKCoordinateRegion(
+                                center: location,
+                                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            )
+                        )
+                        fetchLocationName(for: location) { name in
+                            selectedLocationName = name ?? "Unknown"
+                        }
+                    }
+                }
+            }
+            
+            if let location = notesItem.location {
+                Section(header: Text("Location")) {
+                    Map(position: $position) {
+                        Marker(selectedLocationName, coordinate: location)
+                    }
+                    .frame(height: 200)
+                    .cornerRadius(10)
+                }
+            }
+            
+            if let videoURL = notesItem.videoURL {
+                Section(header: Text("Video")) {
+                    VideoPlayer(player: AVPlayer(url: videoURL))
+                        .frame(height: 250)
+                        .cornerRadius(10)
                 }
             }
         }

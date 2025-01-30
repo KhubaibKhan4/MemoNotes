@@ -14,6 +14,8 @@ struct HomeScreen: View{
     
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
+    
     
     @Query private var notestList : [NotesItem]
     
@@ -55,6 +57,14 @@ struct HomeScreen: View{
                                 Section("Pinned") {
                                     ForEach(searchResults.filter { $0.isPinned } ) { item in
                                         pinnedNotesView(for: item)
+                                            .swipeActions(edge: .leading) {
+                                                Button {
+                                                    togglePin(for: item)
+                                                } label: {
+                                                    Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash.fill" : "pin.fill")
+                                                }
+                                                .tint(.yellow)
+                                            }
                                     }.onDelete { indexSet in
                                         deleteItem(at: indexSet)
                                     }
@@ -64,6 +74,14 @@ struct HomeScreen: View{
                         }
                         ForEach(searchResults.filter {!$0.isPinned}) { item in
                             notesView(for: item)
+                                .swipeActions(edge: .leading) {
+                                    Button {
+                                        togglePin(for: item)
+                                    } label: {
+                                        Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash.fill" : "pin.fill")
+                                    }
+                                    .tint(.yellow)
+                                }
                         }.onDelete { indexSet in
                             deleteItem(at: indexSet)
                         }
@@ -150,97 +168,140 @@ struct HomeScreen: View{
             print("Error While Deleting...")
         }
     }
-    
     func pinnedNotesView(for item: NotesItem) -> some View {
         NavigationLink(destination: NotesDetail(notesItem: item)) {
-            VStack(alignment: .leading){
-                Text(LocalizedStringKey(item.title))
-                    .font(.headline)
-                Text(LocalizedStringKey(item.desc))
-                    .font(.subheadline)
+            VStack(alignment: .leading, spacing: 12) {
+                
+                Text(item.title)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                
+                Text(item.desc)
+                    .font(.body)
+                    .foregroundColor(colorScheme == .dark ? .white.opacity(0.9) : .black.opacity(0.9))
                     .lineLimit(2)
-            }
-        }.contextMenu {
-            Button(role:.destructive) {
-                context.delete(item)
-                try? context.save()
-            } label: {
-                Label("Delete", systemImage: "trash.circle.fill")
-            }
-            
-        }.swipeActions(edge:.leading ,content: {
-            Button("UnPin", systemImage: "pin.slash.fill") {
-                selectedItem = item
-                item.isPinned = false
-                try? context.save()
-            }.tint(.yellow)
-        })
-        .swipeActions{
-            Button("Edit", systemImage: "pencil") {
-                selectedItem = item
-                notesTitle = item.title
-                notesDesc = item.desc
-                selectedLocation = item.location
-                navTitle = "Update Note"
-                showMenu = true
-                isSheetExpanded = true
-                try? context.save()
-            }.tint(.blue)
-            
-            Button("Delete", systemImage: "trash", role: .destructive) {
-                if let index = notestList.firstIndex(where: {$0.id==item.id}){
-                    context.delete(notestList[index])
-                    try? context.save()
+                    .truncationMode(.tail)
+                
+                if let _ = item.location {
+                    HStack {
+                        Image(systemName: "location.fill")
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                        Text("Location Added")
+                            .font(.footnote)
+                            .foregroundColor(colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8))
+                    }
+                }
+                
+                if let images = item.images, !images.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(images.prefix(3), id: \.self) { imageData in
+                                if let uiImage = UIImage(data: imageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 60, height: 60)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                }
+                            }
+                            if images.count > 3 {
+                                Text("+\(images.count - 3)")
+                                    .font(.footnote)
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .padding(6)
+                                    .background(colorScheme == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.2))
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
+                        }
+                    }
+                }
+                
+                if let _ = item.videoURL {
+                    HStack {
+                        Image(systemName: "video.fill")
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                        Text("Video Attached")
+                            .font(.footnote)
+                            .foregroundColor(colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8))
+                    }
                 }
             }
+            .padding(16)
+            .background(item.isPinned ? Color.orange : (colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.8)))
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         }
     }
+    
     
     
     func notesView(for item: NotesItem) -> some View {
         NavigationLink(destination: NotesDetail(notesItem: item)) {
-            VStack(alignment: .leading){
+            VStack(alignment: .leading, spacing: 12) {
+                
                 Text(item.title)
-                    .font(.headline)
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                
                 Text(item.desc)
-                    .font(.subheadline)
+                    .font(.body)
+                    .foregroundColor(colorScheme == .dark ? .white.opacity(0.9) : .black.opacity(0.9))
                     .lineLimit(2)
-            }
-        }.contextMenu {
-            Button(role:.destructive) {
-                context.delete(item)
-                try? context.save()
-            } label: {
-                Label("Delete", systemImage: "trash.circle.fill")
-            }
-            
-        }.swipeActions(edge:.leading ,content: {
-            Button("Pin", systemImage: "pin") {
-                selectedItem = item
-                item.isPinned = true
-                try? context.save()
-            }.tint(.yellow)
-        })
-        .swipeActions{
-            Button("Edit", systemImage: "pencil") {
-                selectedItem = item
-                notesTitle = selectedItem?.title ?? ""
-                notesDesc = selectedItem?.desc ?? ""
-                selectedLocation = selectedItem?.location
-                navTitle = "Update Note"
-                showMenu = true
-                isSheetExpanded = true
-                try? context.save()
-            }.tint(.blue)
-            
-            Button("Delete", systemImage: "trash", role: .destructive) {
-                if let index = notestList.firstIndex(where: {$0.id==item.id}){
-                    context.delete(notestList[index])
-                    try? context.save()
+                    .truncationMode(.tail)
+                
+                if let _ = item.location {
+                    HStack {
+                        Image(systemName: "location.fill")
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                        Text("Location Added")
+                            .font(.footnote)
+                            .foregroundColor(colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8))
+                    }
+                }
+                
+                if let images = item.images, !images.isEmpty {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(images.prefix(3), id: \.self) { imageData in
+                                if let uiImage = UIImage(data: imageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 60, height: 60)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                }
+                            }
+                            if images.count > 3 {
+                                Text("+\(images.count - 3)")
+                                    .font(.footnote)
+                                    .padding(6)
+                                    .background(colorScheme == .dark ? Color.white.opacity(0.2) : Color.black.opacity(0.2))
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
+                        }
+                    }
+                }
+                
+                if let _ = item.videoURL {
+                    HStack {
+                        Image(systemName: "video.fill")
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                        Text("Video Attached")
+                            .font(.footnote)
+                            .foregroundColor(colorScheme == .dark ? .white.opacity(0.8) : .black.opacity(0.8))
+                    }
                 }
             }
+            .padding(16)
+            .background(item.isPinned ? Color.orange : (colorScheme == .dark ? Color.black.opacity(0.8) : Color.white.opacity(0.8)))
+            .cornerRadius(16)
+            .shadow(color: Color.black.opacity(0.1), radius: 6, x: 0, y: 3)
         }
     }
+    
+    
     private func fetchLocationName(for coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -260,6 +321,96 @@ struct HomeScreen: View{
             }
         }
     }
+    private func togglePin(for note: NotesItem) {
+        if let index = notestList.firstIndex(where: { $0.id == note.id }) {
+            notestList[index].isPinned.toggle()
+            try? context.save()
+        }
+    }
+    
+    // Image View for Notes
+    @ViewBuilder
+    func noteImageView(for item: NotesItem) -> some View {
+        if let images = item.images, !images.isEmpty {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(images, id: \.self) { imageData in
+                        if let uiImage = UIImage(data: imageData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 60, height: 60)
+                                .cornerRadius(12)
+                                .shadow(radius: 3)
+                        } else {
+                            placeholderImage()
+                        }
+                    }
+                }
+            }
+            .frame(height: 70)
+        } else {
+            placeholderImage()
+        }
+    }
+    
+    // Placeholder Image
+    @ViewBuilder
+    func placeholderImage() -> some View {
+        Image(systemName: "photo.fill")
+            .resizable()
+            .scaledToFill()
+            .frame(width: 60, height: 60)
+            .cornerRadius(12)
+            .shadow(radius: 3)
+    }
+    
+    // Location View
+    @ViewBuilder
+    func locationView(for location: CLLocationCoordinate2D) -> some View {
+        HStack(spacing: 4) {
+            Image(systemName: "location.fill")
+                .foregroundColor(.blue)
+                .font(.footnote)
+            Text(String(format: "Lat: %.4f, Lon: %.4f", location.latitude, location.longitude))
+                .font(.footnote)
+                .foregroundColor(.gray)
+        }
+    }
+    
+    @ViewBuilder
+    func editButtonPin(for item: NotesItem) -> some View {
+        Button("Edit", systemImage: "pin") {
+            selectedItem = item
+            notesTitle = item.title
+            notesDesc = item.desc
+            selectedLocation = item.location
+            try? context.save()
+        }.tint(.white)
+    }
+    // Edit Button
+    @ViewBuilder
+    func editButton(for item: NotesItem) -> some View {
+        Button("Edit", systemImage: "pencil") {
+            selectedItem = item
+            notesTitle = item.title
+            notesDesc = item.desc
+            selectedLocation = item.location
+            try? context.save()
+        }.tint(.blue)
+    }
+    
+    // Delete Button
+    @ViewBuilder
+    func deleteButton(for item: NotesItem) -> some View {
+        Button("Delete", systemImage: "trash", role: .destructive) {
+            if let index = notestList.firstIndex(where: { $0.id == item.id }) {
+                context.delete(notestList[index])
+                try? context.save()
+            }
+        }
+    }
+    
 }
 
 #Preview {

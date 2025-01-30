@@ -17,7 +17,6 @@ class NotesItem: Identifiable {
     var isPinned: Bool
     var latitude: Double?
     var longitude: Double?
-    
     var location: CLLocationCoordinate2D? {
         get {
             if let latitude = latitude, let longitude = longitude {
@@ -25,7 +24,6 @@ class NotesItem: Identifiable {
             }
             return nil
         }
-        
         set {
             latitude = newValue?.latitude
             longitude = newValue?.longitude

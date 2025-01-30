@@ -12,32 +12,33 @@ import PhotosUI
 import CoreLocation
 
 struct AddNotes: View {
-
+    
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-
+    
     @State private var selectedItems = [PhotosPickerItem]()
     @State private var selectedImages = [Image]()
+    @State private var selectedImagesData = [Data]()
     @State private var selectedVideo: URL?
-
+    
     @Binding var title: String
     @Binding var desc: String
     @Binding var navTitle: String
-
+    
     @State private var isMapSheet: Bool = false
     @State private var locationList = [CLLocationCoordinate2D]()
-
+    
     @State private var position: MapCameraPosition = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522), span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)))
-
+    
     @Environment(\.presentationMode) private var presentationMode: Binding<PresentationMode>
     @State private var selectedLocation: CLLocationCoordinate2D?
     @State private var selectedLocationName: String = "No Location Selected"
-
+    
     @StateObject private var locationManager = LocationManager()
     @State private var permissionDenied = false
-
+    
     var onSave: () -> Void
-
+    
     var body: some View {
         VStack {
             Form {
@@ -58,7 +59,7 @@ struct AddNotes: View {
                     }
                     .foregroundColor(.white)
                     .buttonStyle(.borderedProminent)
-
+                    
                     Map(position: $position) {
                         if let location = selectedLocation {
                             Marker(selectedLocationName, coordinate: location)
@@ -76,7 +77,7 @@ struct AddNotes: View {
                         : nil
                     )
                 }
-
+                
                 Section("Photos") {
                     PhotosPicker(
                         selection: $selectedItems,
@@ -91,8 +92,8 @@ struct AddNotes: View {
                     .foregroundColor(.white)
                     .buttonStyle(.borderedProminent)
                 }
-
-                if !selectedImages.isEmpty {
+                
+                if !selectedImagesData.isEmpty {
                     withAnimation {
                         Section("Selected Content") {
                             if selectedImages.isEmpty {
@@ -116,7 +117,7 @@ struct AddNotes: View {
                     }
                 }
             }
-            .onChange(of: selectedItems) {
+            .onChange(of: selectedItems) { newItems in
                 Task {
                     selectedImages.removeAll()
 
@@ -125,6 +126,15 @@ struct AddNotes: View {
                             selectedImages.append(image)
                         }
                     }
+                    
+                    var imageDataArray = [Data]()
+                    for item in newItems {
+                        if let data = try? await item.loadTransferable(type: Data.self) {
+                            imageDataArray.append(data)
+                        }
+                    }
+                    selectedImagesData = imageDataArray
+                    
                 }
             }
             .onAppear {
@@ -158,7 +168,7 @@ struct AddNotes: View {
                                 if let mapLocation = proxy.convert(position, from: .local) {
                                     selectedLocation = mapLocation
                                     locationList.append(mapLocation)
-
+                                    
                                     self.position = .region(
                                         MKCoordinateRegion(
                                             center: mapLocation,
@@ -196,6 +206,16 @@ struct AddNotes: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
+                        let noteItem = NotesItem(
+                            title: title,
+                            desc: desc,
+                            isPinned: false,
+                            location: selectedLocation,
+                            images: selectedImagesData,
+                            videoURL: selectedVideo
+                        )
+                        
+                        context.insert(noteItem)
                         onSave()
                         presentationMode.wrappedValue.dismiss()
                     } label: {
@@ -204,7 +224,7 @@ struct AddNotes: View {
                 }
             }
     }
-
+    
     private func fetchLocationName(for coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -224,7 +244,7 @@ struct AddNotes: View {
             }
         }
     }
-
+    
     private func zoomToUserLocation(_ userLocation: CLLocation) {
         let coordinate = userLocation.coordinate
         self.position = .region(
@@ -236,3 +256,25 @@ struct AddNotes: View {
     }
 }
 
+extension Image {
+    func asData() -> Data? {
+        guard let uiImage = self.asUIImage() else { return nil }
+        return uiImage.jpegData(compressionQuality: 1.0)
+    }
+    
+    func asUIImage() -> UIImage? {
+        let hostingController = UIHostingController(rootView: self)
+        let view = hostingController.view
+        let size = hostingController.sizeThatFits(in: CGSize(width: 1000, height: 1000))
+        view?.bounds = CGRect(origin: .zero, size: size)
+        view?.setNeedsLayout()
+        view?.layoutIfNeeded()
+        
+        UIGraphicsBeginImageContextWithOptions(view?.bounds.size ?? .zero, false, 0)
+        view?.drawHierarchy(in: view?.bounds ?? .zero, afterScreenUpdates: true)
+        let uiImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return uiImage
+    }
+}
