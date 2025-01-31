@@ -15,6 +15,8 @@ Memo Notes is a lightweight and intuitive note-taking app built for iOS devices,
 - Add Todo Task.
 - Add Image and Videos to Notes.
 - Add Embeded URL.
+- Add Rich Text Editor.
+- Add Rich Text Viewer.
 
 # Screenshots
 

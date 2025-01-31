@@ -16,6 +16,9 @@ struct PermissionScreen: View {
     @State var locationPermissionText: String = "Allow Location"
     
     @AppStorage("isPermissionGranted") private var isPermissionGranted = false
+    @State var isCroppingEnabled: Bool = false
+    
+    @State var capturedImage: UIImage? = nil
     
     var body: some View {
         VStack(alignment: .center, spacing: CGFloat(6)) {
@@ -32,9 +35,13 @@ struct PermissionScreen: View {
         
             Button {
                 requestCameraPermission()
-               if cameraPermission == .authorized {
+                if cameraPermission == .authorized {
                     //isPermissionGranted = true
-                    cameraPermissionText = "Camera Permission Granted"
+                    
+                    ImagePicker(sourceType: .camera, completion: { image in
+                        capturedImage = image
+                    }, isCropping: $isCroppingEnabled)
+                    
                 } else {
                     cameraPermissionText = "Allow Camera"
                 }
@@ -53,7 +60,8 @@ struct PermissionScreen: View {
             } label: {
                 Label("Allow Location", systemImage: "location")
             }
-        }.onAppear {
+        }
+        .onAppear {
             cameraPermission = AVCaptureDevice.authorizationStatus(for: .video)
         }
     }
@@ -65,4 +73,46 @@ struct PermissionScreen: View {
             }
         }
     }
+    
 }
+
+struct ImagePicker: UIViewControllerRepresentable {
+    var sourceType: UIImagePickerController.SourceType
+    var completion: (UIImage) -> Void
+    @Binding var isCropping: Bool
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = sourceType
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        let parent: ImagePicker
+
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+            if let image = info[.originalImage] as? UIImage {
+                parent.completion(image)
+                parent.isCropping = true
+            }
+            picker.dismiss(animated: true)
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+    }
+}
+
+
