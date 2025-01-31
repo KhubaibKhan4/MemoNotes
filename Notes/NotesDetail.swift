@@ -12,6 +12,7 @@ import AVKit
 
 struct NotesDetail: View {
     @State var notesItem: NotesItem
+    @State private var imageSheetExpanded: Bool = false
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522),
@@ -22,6 +23,7 @@ struct NotesDetail: View {
     @State var selectedLocationName: String = ""
     @State var isMapClicked: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedImageIndex: Int = 0
     
     var body: some View {
         List {
@@ -56,11 +58,54 @@ struct NotesDetail: View {
                                         .frame(width: 150, height: 150)
                                         .clipped()
                                         .cornerRadius(10)
+                                        .onTapGesture {
+                                            imageSheetExpanded = !imageSheetExpanded
+                                        }
                                 }
                             }
                         }
                     }
                     .frame(height: 160)
+                }
+                .sheet(isPresented: $imageSheetExpanded) {
+                    ZStack(alignment: .topTrailing) {
+                        VStack(spacing: 0) {
+                            if let imagesData = notesItem.images, imagesData.indices.contains(selectedImageIndex) {
+                                Image(uiImage: UIImage(data: imagesData[selectedImageIndex])!)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .transition(.opacity)
+                                    .id(selectedImageIndex)
+                            }
+                            
+                            thumbnailScrollView(imagesData: imagesData)
+                                .background(.ultraThinMaterial)
+                        }
+                        
+                        Button {
+                            imageSheetExpanded = false
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .padding(8)
+                                .background(Circle().fill(Color.black.opacity(0.5)))
+                        }
+                        .padding()
+                    }
+                    .background(.black)
+                    .toolbar(content: {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button {
+                                imageSheetExpanded = false
+                            } label: {
+                                Image(systemName: "xmark")
+                            }
+                        }
+                    })
+                    .frame(width: .infinity, height: .infinity)
+                    .ignoresSafeArea(.keyboard)
                 }
                 .onAppear {
                     if let location = notesItem.location {
@@ -112,5 +157,33 @@ struct NotesDetail: View {
                 completion(nil)
             }
         }
+    }
+    
+    private func thumbnailScrollView(imagesData: [Data]) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 10) {
+                ForEach(Array(imagesData.enumerated()), id: \.element) { index, imageData in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedImageIndex = index
+                        }
+                    } label: {
+                        Image(uiImage: UIImage(data: imageData)!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(index == selectedImageIndex ? Color.white : Color.clear, lineWidth: 2)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 20)
+        }
+        .frame(height: 80)
     }
 }
