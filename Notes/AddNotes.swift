@@ -88,7 +88,6 @@ struct AddNotes: View {
                             .foregroundColor(.white)
                             .background(.blue)
                             .cornerRadius(8)
-
                     }
                     .foregroundColor(.white)
                     .buttonStyle(.borderedProminent)
