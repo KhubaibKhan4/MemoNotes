@@ -194,6 +194,20 @@ struct NotesDetail: View {
         }
         .frame(height: 80)
     }
+    
+    func getVideoURL(from data: Data?) -> URL? {
+        guard let data = data else { return nil }
+        
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("tempVideo.mp4")
+        
+        do {
+            try data.write(to: tempURL, options: .atomic)
+            return tempURL
+        } catch {
+            print("Error writing video data to file: \(error)")
+            return nil
+        }
+    }
 }
 
 

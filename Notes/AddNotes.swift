@@ -10,6 +10,7 @@ import SwiftData
 import MapKit
 import PhotosUI
 import CoreLocation
+import AVKit
 
 struct AddNotes: View {
     
@@ -20,6 +21,7 @@ struct AddNotes: View {
     @State private var selectedImages = [Image]()
     @State private var selectedImagesData = [Data]()
     @State private var selectedVideo: URL?
+    @State private var selectedVideoItem: PhotosPickerItem?
     
     @Binding var title: String
     @Binding var desc: String
@@ -93,6 +95,36 @@ struct AddNotes: View {
                     .buttonStyle(.borderedProminent)
                 }
                 
+                Section("Videos") {
+                    PhotosPicker(
+                        selection: $selectedVideoItem,
+                        matching: .videos
+                    ) {
+                        Label("Select Video", systemImage: "video.fill")
+                            .padding(8)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    
+                    if let videoURL = selectedVideo {
+                        VideoPlayer(player: AVPlayer(url: videoURL))
+                            .frame(height: 200)
+                            .cornerRadius(8)
+                            .overlay(alignment: .topTrailing) {
+                                Button {
+                                    selectedVideo = nil
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .padding(4)
+                                        .background(Color.black.opacity(0.6))
+                                        .clipShape(Circle())
+                                }
+                                .padding(6)
+                            }
+                    }
+                }
+                
                 if !selectedImagesData.isEmpty {
                     withAnimation {
                         Section("Selected Content") {
@@ -120,7 +152,7 @@ struct AddNotes: View {
             .onChange(of: selectedItems) { newItems in
                 Task {
                     selectedImages.removeAll()
-
+                    
                     for item in selectedItems {
                         if let image = try? await item.loadTransferable(type: Image.self) {
                             selectedImages.append(image)
@@ -135,6 +167,15 @@ struct AddNotes: View {
                     }
                     selectedImagesData = imageDataArray
                     
+                }
+            }
+            .onChange(of: selectedVideoItem) { _, newItem in
+                Task {
+                    if let item = newItem {
+                        if let url = try? await item.loadTransferable(type: URL.self) {
+                            selectedVideo = await saveVideoToDocuments(url: url)
+                        }
+                    }
                 }
             }
             .onAppear {
@@ -253,6 +294,19 @@ struct AddNotes: View {
                 span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
             )
         )
+    }
+    private func saveVideoToDocuments(url: URL) async -> URL? {
+        do {
+            let data = try Data(contentsOf: url)
+            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            let fileName = "video-\(UUID().uuidString).\(url.pathExtension)"
+            let fileURL = documentsDirectory.appendingPathComponent(fileName)
+            try data.write(to: fileURL)
+            return fileURL
+        } catch {
+            print("Error saving video: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
 
