@@ -67,46 +67,6 @@ struct NotesDetail: View {
                     }
                     .frame(height: 160)
                 }
-                .sheet(isPresented: $imageSheetExpanded) {
-                    ZStack(alignment: .topTrailing) {
-                        VStack(spacing: 0) {
-                            if let imagesData = notesItem.images, imagesData.indices.contains(selectedImageIndex) {
-                                Image(uiImage: UIImage(data: imagesData[selectedImageIndex])!)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .transition(.opacity)
-                                    .id(selectedImageIndex)
-                            }
-                            
-                            thumbnailScrollView(imagesData: imagesData)
-                                .background(.ultraThinMaterial)
-                        }
-                        
-                        Button {
-                            imageSheetExpanded = false
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.title)
-                                .foregroundColor(.white)
-                                .padding(8)
-                                .background(Circle().fill(Color.black.opacity(0.5)))
-                        }
-                        .padding()
-                    }
-                    .background(.black)
-                    .toolbar(content: {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button {
-                                imageSheetExpanded = false
-                            } label: {
-                                Image(systemName: "xmark")
-                            }
-                        }
-                    })
-                    .frame(width: .infinity, height: .infinity)
-                    .ignoresSafeArea(.keyboard)
-                }
                 .onAppear {
                     if let location = notesItem.location {
                         position = .region(
@@ -129,6 +89,9 @@ struct NotesDetail: View {
                     }
                     .frame(height: 200)
                     .cornerRadius(10)
+                    .onTapGesture {
+                        isMapClicked = true
+                    }
                 }
             }
             
@@ -139,6 +102,51 @@ struct NotesDetail: View {
                         .cornerRadius(10)
                 }
             }
+        }
+        .sheet(isPresented: $imageSheetExpanded) {
+            if let imagesData = notesItem.images, !imagesData.isEmpty {
+                ZStack(alignment: .topTrailing) {
+                    VStack(spacing: 0) {
+                        if let imagesData = notesItem.images, imagesData.indices.contains(selectedImageIndex) {
+                            Image(uiImage: UIImage(data: imagesData[selectedImageIndex])!)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .transition(.opacity)
+                                .id(selectedImageIndex)
+                        }
+                        
+                        thumbnailScrollView(imagesData: imagesData)
+                            .background(.ultraThinMaterial)
+                    }
+                    
+                    Button {
+                        imageSheetExpanded = false
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding(8)
+                            .background(Circle().fill(Color.black.opacity(0.5)))
+                    }
+                    .padding()
+                }
+                .background(.black)
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            imageSheetExpanded = false
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
+                    }
+                })
+                .frame(width: .infinity, height: .infinity)
+                .ignoresSafeArea(.keyboard)
+            }
+        }
+        .sheet(isPresented: $isMapClicked) {
+                    FullScreenMapView(location: notesItem.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), locationName: selectedLocationName)
         }
         .navigationTitle("Note Details")
         .navigationBarTitleDisplayMode(.inline)
@@ -185,5 +193,75 @@ struct NotesDetail: View {
             .padding(.horizontal, 20)
         }
         .frame(height: 80)
+    }
+}
+
+
+struct FullScreenMapView: View {
+    let location: CLLocationCoordinate2D
+    let locationName: String
+    @State private var position: MapCameraPosition
+    @Environment(\.dismiss) var dismiss
+    
+    init(location: CLLocationCoordinate2D, locationName: String) {
+        self.location = location
+        self.locationName = locationName
+        _position = State(initialValue: .region(MKCoordinateRegion(
+            center: location,
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )))
+    }
+    
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Map(position: $position) {
+                Marker(locationName, coordinate: location)
+            }
+            .mapStyle(.standard(elevation: .realistic))
+            .mapControls {
+                MapCompass()
+                MapPitchToggle()
+                MapUserLocationButton()
+            }
+            .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .padding(8)
+                        .background(Circle().fill(Color.black.opacity(0.5)))
+                }
+                .padding()
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    Button {
+                        openMapsForDirections()
+                    } label: {
+                        Image(systemName: "arrow.triangle.turn.up.right.diamond.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Circle().fill(Color.blue.opacity(0.8)))
+                    }
+                    .padding()
+                }
+            }
+        }
+    }
+    
+    private func openMapsForDirections() {
+        let placemark = MKPlacemark(coordinate: location)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = locationName
+        mapItem.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+        ])
     }
 }
