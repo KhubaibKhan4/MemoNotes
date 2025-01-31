@@ -8,9 +8,11 @@
 import SwiftUI
 import CoreLocation
 import MapKit
+import AVKit
 
 struct NotesDetail: View {
     @State var notesItem: NotesItem
+    @State private var imageSheetExpanded: Bool = false
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522),
@@ -21,82 +23,130 @@ struct NotesDetail: View {
     @State var selectedLocationName: String = ""
     @State var isMapClicked: Bool = false
     @Environment(\.dismiss) private var dismiss
+    @State private var selectedImageIndex: Int = 0
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                Spacer(minLength: 10)
-                VStack(alignment: .leading, spacing: 8) {
+        List {
+            Section {
+                HStack {
                     Text(notesItem.title)
-                        .font(.title2)
+                        .font(.title)
                         .fontWeight(.bold)
-                        .lineLimit(3)
                     
-                    Text(notesItem.desc)
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.leading)
+                    if notesItem.isPinned {
+                        Image(systemName: "pin.fill")
+                            .foregroundColor(.red)
+                    }
                 }
-                .padding()
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color(UIColor.secondarySystemBackground))
-                )
-                .padding(.horizontal)
-                
-                if let location = notesItem.location {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Location")
-                            .font(.headline)
-                            .foregroundColor(.primary)
-                        
-                        Map(position: $position) {
-                            Marker(selectedLocationName, coordinate: location)
-                        }
-                        .frame(height: 250)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(
-                            Text(selectedLocationName)
-                                .padding(8)
-                                .background(Color.white.opacity(0.8))
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                .shadow(radius: 4),
-                            alignment: .topLeading
-                        ).onTapGesture {
-                            isMapClicked = !isMapClicked
-                        }.sheet(isPresented: $isMapClicked, content: {
-                            NavigationStack {
-                                VStack {
-                                    Map(position: $position) {
-                                        Marker(selectedLocationName, coordinate: location)
-                                    }.frame(width: .infinity, height: .infinity)
-                                }.toolbar {
-                                    Button("Close", role: .cancel) {
-                                        isMapClicked = !isMapClicked
-                                    }
-                                
+            }
+            
+            Section(header: Text("Description")) {
+                Text(notesItem.desc)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+            }
+            
+            if let imagesData = notesItem.images, !imagesData.isEmpty {
+                Section(header: Text("Images")) {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(imagesData, id: \.self) { imageData in
+                                if let uiImage = UIImage(data: imageData) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(width: 150, height: 150)
+                                        .clipped()
+                                        .cornerRadius(10)
+                                        .onTapGesture {
+                                            imageSheetExpanded = !imageSheetExpanded
+                                        }
                                 }
                             }
-                            
                         }
+                    }
+                    .frame(height: 160)
+                }
+                .onAppear {
+                    if let location = notesItem.location {
+                        position = .region(
+                            MKCoordinateRegion(
+                                center: location,
+                                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            )
                         )
+                        fetchLocationName(for: location) { name in
+                            selectedLocationName = name ?? "Unknown"
+                        }
+                    }
+                }
+            }
+            
+            if let location = notesItem.location {
+                Section(header: Text("Location")) {
+                    Map(position: $position) {
+                        Marker(selectedLocationName, coordinate: location)
+                    }
+                    .frame(height: 200)
+                    .cornerRadius(10)
+                    .onTapGesture {
+                        isMapClicked = true
+                    }
+                }
+            }
+            
+            if let videoURL = notesItem.videoURL {
+                Section(header: Text("Video")) {
+                    VideoPlayer(player: AVPlayer(url: videoURL))
+                        .frame(height: 250)
+                        .cornerRadius(10)
+                }
+            }
+        }
+        .sheet(isPresented: $imageSheetExpanded) {
+            if let imagesData = notesItem.images, !imagesData.isEmpty {
+                ZStack(alignment: .topTrailing) {
+                    VStack(spacing: 0) {
+                        if let imagesData = notesItem.images, imagesData.indices.contains(selectedImageIndex) {
+                            Image(uiImage: UIImage(data: imagesData[selectedImageIndex])!)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .transition(.opacity)
+                                .id(selectedImageIndex)
+                        }
+                        
+                        thumbnailScrollView(imagesData: imagesData)
+                            .background(.ultraThinMaterial)
+                    }
+                    
+                    Button {
+                        imageSheetExpanded = false
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding(8)
+                            .background(Circle().fill(Color.black.opacity(0.5)))
                     }
                     .padding()
                 }
-            }
-            .onAppear {
-                if let location = notesItem.location {
-                    position = .region(
-                        MKCoordinateRegion(
-                            center: location,
-                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                        )
-                    )
-                    fetchLocationName(for: location) { name in
-                        selectedLocationName = name ?? "Unknown"
+                .background(.black)
+                .toolbar(content: {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            imageSheetExpanded = false
+                        } label: {
+                            Image(systemName: "xmark")
+                        }
                     }
-                }
+                })
+                .frame(width: .infinity, height: .infinity)
+                .ignoresSafeArea(.keyboard)
             }
+        }
+        .sheet(isPresented: $isMapClicked) {
+                    FullScreenMapView(location: notesItem.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), locationName: selectedLocationName)
         }
         .navigationTitle("Note Details")
         .navigationBarTitleDisplayMode(.inline)
@@ -115,5 +165,103 @@ struct NotesDetail: View {
                 completion(nil)
             }
         }
+    }
+    
+    private func thumbnailScrollView(imagesData: [Data]) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHStack(spacing: 10) {
+                ForEach(Array(imagesData.enumerated()), id: \.element) { index, imageData in
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedImageIndex = index
+                        }
+                    } label: {
+                        Image(uiImage: UIImage(data: imageData)!)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(index == selectedImageIndex ? Color.white : Color.clear, lineWidth: 2)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 20)
+        }
+        .frame(height: 80)
+    }
+}
+
+
+struct FullScreenMapView: View {
+    let location: CLLocationCoordinate2D
+    let locationName: String
+    @State private var position: MapCameraPosition
+    @Environment(\.dismiss) var dismiss
+    
+    init(location: CLLocationCoordinate2D, locationName: String) {
+        self.location = location
+        self.locationName = locationName
+        _position = State(initialValue: .region(MKCoordinateRegion(
+            center: location,
+            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        )))
+    }
+    
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Map(position: $position) {
+                Marker(locationName, coordinate: location)
+            }
+            .mapStyle(.standard(elevation: .realistic))
+            .mapControls {
+                MapCompass()
+                MapPitchToggle()
+                MapUserLocationButton()
+            }
+            .edgesIgnoringSafeArea(.all)
+            
+            VStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .padding(8)
+                        .background(Circle().fill(Color.black.opacity(0.5)))
+                }
+                .padding()
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    Button {
+                        openMapsForDirections()
+                    } label: {
+                        Image(systemName: "arrow.triangle.turn.up.right.diamond.fill")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Circle().fill(Color.blue.opacity(0.8)))
+                    }
+                    .padding()
+                }
+            }
+        }
+    }
+    
+    private func openMapsForDirections() {
+        let placemark = MKPlacemark(coordinate: location)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = locationName
+        mapItem.openInMaps(launchOptions: [
+            MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
+        ])
     }
 }

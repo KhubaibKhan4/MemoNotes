@@ -287,6 +287,8 @@
 				INFOPLIST_FILE = Notes/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Provide us the Photo Library Access to get Image or Video.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -318,6 +320,8 @@
 				INFOPLIST_FILE = Notes/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Provide us the Photo Library Access to get Image or Video.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
