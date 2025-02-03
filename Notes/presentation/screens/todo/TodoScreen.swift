@@ -12,6 +12,8 @@ struct TodoScreen: View {
     
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject var appManager: AppManager
+    
     
     @Query(filter: .true, sort: \TodoItem.id, order: .forward, animation: .smooth) private var todoList: [TodoItem]
     @Query(filter: #Predicate<TodoItem> { $0.isCompleted == false }) private var inCompleteList: [TodoItem]
@@ -143,7 +145,7 @@ struct TodoScreen: View {
             VStack(alignment: .leading) {
                 Text(item.title)
                     .font(.headline)
-                    .foregroundColor(item.isCompleted ? .gray : .primary)
+                    .foregroundColor(item.isCompleted ? .gray : appManager.isDark ? .white : .black)
                 
                 Text(item.isCompleted ? "Completed" : "Pending")
                     .font(.subheadline)
@@ -156,7 +158,7 @@ struct TodoScreen: View {
                 .font(.title2)
         }
         .padding()
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
+        .background(RoundedRectangle(cornerRadius: 12).fill(appManager.isDark ? .gray.opacity(0.1) : .white))
         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
     

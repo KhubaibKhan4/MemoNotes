@@ -16,8 +16,9 @@ struct SettingScreen: View {
     @Environment(\.requestReview) private var requestReview
     @Environment(\.colorScheme) private var colorScheme
     
-    @AppStorage("isDarkMode") private var isDark : Bool = false
     @State private var themeText: String = "Light Mode"
+    
+    @EnvironmentObject private var appManager: AppManager
     
     var body: some View {
         NavigationView {
@@ -30,17 +31,17 @@ struct SettingScreen: View {
                     }
                     
                     Section("Color Scheme") {
-                        Toggle(isOn: $isDark) {
+                        Toggle(isOn: $appManager.isDark) {
                             Text(themeText)
                         }.toggleStyle(.switch)
-                            .onChange(of: isDark) { oldValue, newValue in
+                            .onChange(of: appManager.isDark) { oldValue, newValue in
                                 print("Color Scheme Changed \(newValue)")
                                 if newValue  {
                                     themeText = "Dark Mode"
                                 }else {
                                     themeText = "Light Mode"
                                 }
-                                isDark = newValue
+                                appManager.isDark = newValue
                             }
                     }
                     
@@ -57,14 +58,13 @@ struct SettingScreen: View {
                             Label("Privacy Policy", systemImage: "shield.fill")
                         }
                     }
-
+                    
                 }.onAppear {
-                    themeText = isDark ? "Dark Mode" : "Light Mode"
+                    themeText = appManager.isDark ? "Dark Mode" : "Light Mode"
                 }
             }
-                .preferredColorScheme(isDark ? .dark : .light)
+            .preferredColorScheme(appManager.isDark ? .dark : .light)
             .navigationTitle("Setting")
-                
         }
     }
 }

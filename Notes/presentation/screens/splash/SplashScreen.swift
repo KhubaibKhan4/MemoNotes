@@ -7,6 +7,8 @@
 import SwiftUI
 
 struct SplashScreen: View {
+    @EnvironmentObject var appManager: AppManager
+    
     var body: some View {
         VStack {
             Image("logo")
@@ -16,6 +18,7 @@ struct SplashScreen: View {
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.white)
+        .background(appManager.isDark ? .black : .white)
+        .preferredColorScheme(appManager.isDark ? .dark : .light)
     }
 }

@@ -46,7 +46,7 @@ struct HomeScreen: View{
         NavigationView {
             VStack{
                 if searchResults.isEmpty {
-                    ContentUnavailableView.init("No Notes Found", systemImage: "text.page.badge.magnifyingglass", description: Text("No Notes Found in the Database. Please try to research other items."))
+                    ContentUnavailableView.init(LocalizedStringKey("No Notes Found"), systemImage: "text.page.badge.magnifyingglass", description: Text(LocalizedStringKey("No Notes Found in the Database. Please try to research other items.")))
                     
                 }else{
                     List{
@@ -61,7 +61,7 @@ struct HomeScreen: View{
                                                 Button {
                                                     togglePin(for: item)
                                                 } label: {
-                                                    Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash.fill" : "pin.fill")
+                                                    Label(item.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: item.isPinned ? "pin.slash.fill" : "pin.fill")
                                                 }
                                                 .tint(.yellow)
                                             }
@@ -78,7 +78,7 @@ struct HomeScreen: View{
                                     Button {
                                         togglePin(for: item)
                                     } label: {
-                                        Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash.fill" : "pin.fill")
+                                        Label(item.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), systemImage: item.isPinned ? "pin.slash.fill" : "pin.fill")
                                     }
                                     .tint(.yellow)
                                 }
@@ -95,7 +95,7 @@ struct HomeScreen: View{
                 }
             }
             .preferredColorScheme(isDark ? .dark : .light)
-            .navigationTitle("Notes")
+            .navigationTitle(LocalizedStringKey("Notes"))
             .searchable(text: $searchText, isPresented: $isSearchPresented)
             .toolbar {
                 ToolbarItem(placement:.topBarTrailing) {
