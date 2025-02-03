@@ -27,37 +27,81 @@ struct TodoScreen: View {
     
     var body: some View {
         NavigationView {
-            
-            VStack {
+            ZStack {
+                Color(.systemGroupedBackground).edgesIgnoringSafeArea(.all)
                 
                 if todoList.isEmpty {
-                    ContentUnavailableView("No Notes Found", systemImage: "text.document.fill", description: Text("There're no notes yet. Add a note to get started."))
+                    VStack {
+                        Image(systemName: "note.text.badge.plus")
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .foregroundColor(.gray.opacity(0.5))
+                        Text("No Tasks Found")
+                            .font(.headline)
+                            .foregroundColor(.gray)
+                        Text("Start by adding a new task.")
+                            .font(.subheadline)
+                            .foregroundColor(.gray.opacity(0.7))
+                    }
                 } else {
                     List {
                         if !completedList.isEmpty {
-                            Section("Complete Tasks") {
-                                ForEach(completedList) { completeItem in
-                                    todoRow(for: completeItem)
+                            Section(header: Text("✅ Completed Tasks")) {
+                                ForEach(completedList) { item in
+                                    todoCard(for: item)
+                                        .swipeActions(edge: .trailing) {
+                                            Button {
+                                                toggleCompletion(for: item)
+                                            } label: {
+                                                Label("UnComplete", systemImage: item.isCompleted ? "xmark.circle" : "checkmark.circle.fill")
+                                            }
+                                            .tint(.green)
+                                            
+                                            Button("Edit") {
+                                                editItem(item)
+                                            }
+                                            .tint(.blue)
+                                            
+                                            Button("Delete", role: .destructive) {
+                                                deleteItem(item)
+                                            }
+                                        }
                                 }
                             }
                         }
-                        
                         if !inCompleteList.isEmpty {
-                            Section("Incomplete Tasks") {
+                            Section(header: Text("⏳ Pending Tasks")) {
                                 ForEach(inCompleteList) { item in
-                                    todoRow(for: item)
+                                    todoCard(for: item)
+                                        .swipeActions(edge: .trailing) {
+                                            Button {
+                                                toggleCompletion(for: item)
+                                            } label: {
+                                                Label("Complete", systemImage: item.isCompleted ? "xmark.circle" : "checkmark.circle.fill")
+                                            }
+                                            .tint(.green)
+                                            
+                                            Button("Edit") {
+                                                editItem(item)
+                                            }
+                                            .tint(.blue)
+                                            
+                                            Button("Delete", role: .destructive) {
+                                                deleteItem(item)
+                                            }
+                                        }
                                 }
                             }
                         }
-                    }.refreshable {
-                        print("Pull to Refresh Init")
                     }
-                    
+                    .listStyle(.insetGrouped)
+                    .refreshable {
+                        print("Refreshing tasks...")
+                    }
                 }
             }
-            
             .toolbar {
-                ToolbarItem {
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
                         title = ""
                         selectedItem = nil
@@ -65,11 +109,13 @@ struct TodoScreen: View {
                         isSheet.toggle()
                     } label: {
                         Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.blue)
                     }
                 }
             }
             .preferredColorScheme(isDark ? .dark : .light)
-            .navigationTitle("Todo")
+            .navigationTitle("📝 Todo List")
             .sheet(isPresented: $isSheet) {
                 TodoSheetContent(
                     title: $title,
@@ -92,43 +138,26 @@ struct TodoScreen: View {
         }
     }
     
-    private func todoRow(for item: TodoItem) -> some View {
+    private func todoCard(for item: TodoItem) -> some View {
         HStack {
-            Text(item.title)
+            VStack(alignment: .leading) {
+                Text(item.title)
+                    .font(.headline)
+                    .foregroundColor(item.isCompleted ? .gray : .primary)
+                
+                Text(item.isCompleted ? "Completed" : "Pending")
+                    .font(.subheadline)
+                    .foregroundColor(item.isCompleted ? .green : .red)
+            }
             Spacer()
-            if item.isCompleted {
-                Image(systemName: "checkmark.circle")
-                    .foregroundColor(.green)
-            }
-        }
-        .contextMenu {
-            Button(action: {
-                toggleCompletion(for: item)
-            }) {
-                Label(item.isCompleted ? "Mark as Incomplete" : "Mark as Complete", systemImage: item.isCompleted ? "xmark.circle.fill" : "checkmark.circle")
-                    .foregroundColor(.blue)
-            }
-            Button(role: .destructive) {
-                deleteItem(item)
-            } label: {
-                Label("Delete", systemImage: "trash.circle.fill")
-            }
-        }
-        .swipeActions(edge: .trailing) {
-            Button("Edit") {
-                editItem(item)
-            }.tint(.blue)
             
-            Button {
-                toggleCompletion(for: item)
-            } label: {
-                Label("Completed", systemImage: item.isCompleted ? "xmark.square" : "checkmark.square")
-            }.tint(.green)
-            
-            Button("Delete", role: .destructive) {
-                deleteItem(item)
-            }
+            Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
+                .foregroundColor(item.isCompleted ? .green : .gray)
+                .font(.title2)
         }
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
+        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
     }
     
     private func toggleCompletion(for item: TodoItem) {
