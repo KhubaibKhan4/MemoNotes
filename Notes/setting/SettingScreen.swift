@@ -44,27 +44,20 @@ struct SettingScreen: View {
                             }
                     }
                     
-                    
-                    Section("Font Size") {
-                        HStack {
-                            Stepper("Font #\(fontSize) ", value: $fontSize, in: 12...40, step: 1)
-                            
-                        }
-                    }
-                    
-                    Section("Display") {
-                        Toggle("Show Line Number", isOn: $showLineNo)
-                        Toggle("Show Preview", isOn: $showPreview)
-                    }
-                    
                     Section("App Detail") {
                         Button(action: {
                             requestReview()
                         }) {
                             Label("Review", systemImage: "star")
                         }
-                        
                     }
+                    
+                    Section("Privacy Policy") {
+                        NavigationLink(destination: PirvacyPolicyView()) {
+                            Label("Privacy Policy", systemImage: "shield.fill")
+                        }
+                    }
+
                 }.onAppear {
                     themeText = isDark ? "Dark Mode" : "Light Mode"
                 }

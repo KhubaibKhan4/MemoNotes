@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Notas";
+"No Notes Found" = "Nenhuma nota encontrada";
+"No Notes Found in the Database. Please try to research other items." = "Nenhuma nota encontrada na base de dados. Por favor, tente pesquisar outros itens.";
+"Search" = "Pesquisar";
+"Pinned" = "Fixado";
+"Todo" = "Afazeres";
+"Edit" = "Editar";
+"Home" = "Início";
+"Setting" = "Configurações";
+"Description" = "Descrição";
+"Images" = "Imagens";
+"Location" = "Localização";
+"Map" = "Mapa";
+"Photos" = "Fotos";
+"Videos" = "Vídeos";
+"Select Images" = "Selecionar Imagens";
+"Select Video" = "Selecionar Vídeo";
+"Save" = "Salvar";
+"Add Notes" = "Adicionar Notas";
+"Completed Tasks" = "Tarefas Concluídas";
+"Pending Tasks" = "Tarefas Pendentes";
+"Todo List" = "Lista de Afazeres";
+"Localisation" = "Localização";
+"Color Scheme" = "Esquema de Cores";
+"App Detail" = "Detalhes do Aplicativo";
+"Privacy Policy" = "Política de Privacidade";

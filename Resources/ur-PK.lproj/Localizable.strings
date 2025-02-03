@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "نوٹس";
+"No Notes Found" = "کوئی نوٹس نہیں ملا";
+"No Notes Found in the Database. Please try to research other items." = "ڈیٹا بیس میں کوئی نوٹس نہیں ملا۔ براہ کرم دوسری اشیاء تلاش کرنے کی کوشش کریں۔";
+"Search" = "تلاش کریں";
+"Pinned" = "چسپاں";
+"Todo" = "کام";
+"Edit" = "ترمیم کریں";
+"Home" = "ہوم";
+"Setting" = "ترتیبات";
+"Description" = "تفصیل";
+"Images" = "تصاویر";
+"Location" = "مقام";
+"Map" = "نقشہ";
+"Photos" = "تصاویر";
+"Videos" = "ویڈیوز";
+"Select Images" = "تصاویر منتخب کریں";
+"Select Video" = "ویڈیو منتخب کریں";
+"Save" = "محفوظ کریں";
+"Add Notes" = "نوٹس شامل کریں";
+"Completed Tasks" = "مکمل کام";
+"Pending Tasks" = "زیر التوا کام";
+"Todo List" = "کام کی فہرست";
+"Localisation" = "مقامی کاری";
+"Color Scheme" = "رنگ سکیم";
+"App Detail" = "ایپ کی تفصیل";
+"Privacy Policy" = "رازداری کی پالیسی";

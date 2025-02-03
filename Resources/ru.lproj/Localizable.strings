@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Заметки";
+"No Notes Found" = "Заметки не найдены";
+"No Notes Found in the Database. Please try to research other items." = "Заметки в базе данных не найдены. Пожалуйста, попробуйте поискать другие элементы.";
+"Search" = "Поиск";
+"Pinned" = "Закреплено";
+"Todo" = "Дела";
+"Edit" = "Редактировать";
+"Home" = "Главная";
+"Setting" = "Настройки";
+"Description" = "Описание";
+"Images" = "Изображения";
+"Location" = "Местоположение";
+"Map" = "Карта";
+"Photos" = "Фото";
+"Videos" = "Видео";
+"Select Images" = "Выбрать изображения";
+"Select Video" = "Выбрать видео";
+"Save" = "Сохранить";
+"Add Notes" = "Добавить заметки";
+"Completed Tasks" = "Выполненные задачи";
+"Pending Tasks" = "Ожидающие задачи";
+"Todo List" = "Список дел";
+"Localisation" = "Локализация";
+"Color Scheme" = "Цветовая схема";
+"App Detail" = "Сведения о приложении";
+"Privacy Policy" = "Политика конфиденциальности";

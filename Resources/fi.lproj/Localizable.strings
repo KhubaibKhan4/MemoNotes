@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Muistiinpanot";
+"No Notes Found" = "Muistiinpanoja ei löytynyt";
+"No Notes Found in the Database. Please try to research other items." = "Muistiinpanoja ei löytynyt tietokannasta. Yritä etsiä muita kohteita.";
+"Search" = "Hae";
+"Pinned" = "Kiinnitetty";
+"Todo" = "Tehtävät";
+"Edit" = "Muokkaa";
+"Home" = "Koti";
+"Setting" = "Asetukset";
+"Description" = "Kuvaus";
+"Images" = "Kuvat";
+"Location" = "Sijainti";
+"Map" = "Kartta";
+"Photos" = "Valokuvat";
+"Videos" = "Videot";
+"Select Images" = "Valitse kuvat";
+"Select Video" = "Valitse video";
+"Save" = "Tallenna";
+"Add Notes" = "Lisää muistiinpanoja";
+"Completed Tasks" = "Suoritetut tehtävät";
+"Pending Tasks" = "Odottaa tehtävät";
+"Todo List" = "Tehtäväluettelo";
+"Localisation" = "Lokalisointi";
+"Color Scheme" = "Värimaailma";
+"App Detail" = "Sovelluksen tiedot";
+"Privacy Policy" = "Tietosuojakäytäntö";

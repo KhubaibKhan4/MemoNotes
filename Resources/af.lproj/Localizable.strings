@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Notas";
+"No Notes Found" = "Geen notas gevind nie";
+"No Notes Found in the Database. Please try to research other items." = "Geen notas in die databasis gevind nie. Probeer om ander items na te vors.";
+"Search" = "Soek";
+"Pinned" = "Gespeld";
+"Todo" = "Taak";
+"Edit" = "Wysig";
+"Home" = "Tuis";
+"Setting" = "Instelling";
+"Description" = "Beskrywing";
+"Images" = "Beelde";
+"Location" = "Ligging";
+"Map" = "Kaart";
+"Photos" = "Foto's";
+"Videos" = "Video's";
+"Select Images" = "Kies beelde";
+"Select Video" = "Kies video";
+"Save" = "Stoor";
+"Add Notes" = "Voeg notas by";
+"Completed Tasks" = "Voltooide Take";
+"Pending Tasks" = "Hangende Take";
+"Todo List" = "Taaklys";
+"Localisation" = "Lokalisering";
+"Color Scheme" = "Kleurskema";
+"App Detail" = "App Besonderhede";
+"Privacy Policy" = "Privaatheidsbeleid";

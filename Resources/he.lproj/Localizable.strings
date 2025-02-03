@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "הערות";
+"No Notes Found" = "לא נמצאו הערות";
+"No Notes Found in the Database. Please try to research other items." = "לא נמצאו הערות במסד הנתונים. אנא נסה לחקור פריטים אחרים.";
+"Search" = "חיפוש";
+"Pinned" = "מוצמד";
+"Todo" = "מטלות";
+"Edit" = "ערוך";
+"Home" = "בית";
+"Setting" = "הגדרות";
+"Description" = "תיאור";
+"Images" = "תמונות";
+"Location" = "מיקום";
+"Map" = "מפה";
+"Photos" = "תמונות";
+"Videos" = "סרטונים";
+"Select Images" = "בחר תמונות";
+"Select Video" = "בחר סרטון";
+"Save" = "שמור";
+"Add Notes" = "הוסף הערות";
+"Completed Tasks" = "משימות שהושלמו";
+"Pending Tasks" = "משימות בהמתנה";
+"Todo List" = "רשימת מטלות";
+"Localisation" = "לוקליזציה";
+"Color Scheme" = "ערכת צבעים";
+"App Detail" = "פרטי יישום";
+"Privacy Policy" = "מדיניות פרטיות";

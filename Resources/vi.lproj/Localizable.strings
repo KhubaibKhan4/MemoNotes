@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Ghi chú";
+"No Notes Found" = "Không tìm thấy ghi chú";
+"No Notes Found in the Database. Please try to research other items." = "Không tìm thấy ghi chú trong cơ sở dữ liệu. Vui lòng thử tìm kiếm các mục khác.";
+"Search" = "Tìm kiếm";
+"Pinned" = "Đã ghim";
+"Todo" = "Việc cần làm";
+"Edit" = "Chỉnh sửa";
+"Home" = "Trang chủ";
+"Setting" = "Cài đặt";
+"Description" = "Mô tả";
+"Images" = "Hình ảnh";
+"Location" = "Vị trí";
+"Map" = "Bản đồ";
+"Photos" = "Ảnh";
+"Videos" = "Video";
+"Select Images" = "Chọn hình ảnh";
+"Select Video" = "Chọn video";
+"Save" = "Lưu";
+"Add Notes" = "Thêm ghi chú";
+"Completed Tasks" = "Công việc đã hoàn thành";
+"Pending Tasks" = "Công việc đang chờ xử lý";
+"Todo List" = "Danh sách việc cần làm";
+"Localisation" = "Nội địa hóa";
+"Color Scheme" = "Bảng màu";
+"App Detail" = "Chi tiết ứng dụng";
+"Privacy Policy" = "Chính sách bảo mật";

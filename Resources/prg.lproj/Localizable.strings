@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "یادداشت‌ها";
+"No Notes Found" = "هیچ یادداشتی یافت نشد";
+"No Notes Found in the Database. Please try to research other items." = "هیچ یادداشتی در پایگاه داده یافت نشد. لطفاً موارد دیگر را بررسی کنید.";
+"Search" = "جستجو";
+"Pinned" = "سنجاق شده";
+"Todo" = "کارها";
+"Edit" = "ویرایش";
+"Home" = "خانه";
+"Setting" = "تنظیمات";
+"Description" = "توضیحات";
+"Images" = "تصاویر";
+"Location" = "مکان";
+"Map" = "نقشه";
+"Photos" = "عکس‌ها";
+"Videos" = "ویدیوها";
+"Select Images" = "انتخاب تصاویر";
+"Select Video" = "انتخاب ویدیو";
+"Save" = "ذخیره";
+"Add Notes" = "اضافه کردن یادداشت";
+"Completed Tasks" = "کارهای تکمیل شده";
+"Pending Tasks" = "کارهای در انتظار";
+"Todo List" = "لیست کارها";
+"Localisation" = "بومی سازی";
+"Color Scheme" = "طرح رنگ";
+"App Detail" = "جزئیات برنامه";
+"Privacy Policy" = "حریم خصوصی";

@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Белешке";
+"No Notes Found" = "Белешке нису пронађене";
+"No Notes Found in the Database. Please try to research other items." = "Белешке нису пронађене у бази података. Покушајте да истражите друге ставке.";
+"Search" = "Претрага";
+"Pinned" = "Прикачено";
+"Todo" = "Задаци";
+"Edit" = "Уреди";
+"Home" = "Почетна";
+"Setting" = "Подешавања";
+"Description" = "Опис";
+"Images" = "Слике";
+"Location" = "Локација";
+"Map" = "Мапа";
+"Photos" = "Фотографије";
+"Videos" = "Видео снимци";
+"Select Images" = "Изабери слике";
+"Select Video" = "Изабери видео";
+"Save" = "Сачувај";
+"Add Notes" = "Додај белешке";
+"Completed Tasks" = "Завршени задаци";
+"Pending Tasks" = "Задаци на чекању";
+"Todo List" = "Листа задатака";
+"Localisation" = "Локализација";
+"Color Scheme" = "Шема боја";
+"App Detail" = "Детаљи апликације";
+"Privacy Policy" = "Политика приватности";

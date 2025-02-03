@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "notes.jpg",
+      "filename" : "Untitled design.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -13,7 +13,6 @@
           "value" : "dark"
         }
       ],
-      "filename" : "notes_dark.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -25,6 +24,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "Untitled design 2.jpg",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

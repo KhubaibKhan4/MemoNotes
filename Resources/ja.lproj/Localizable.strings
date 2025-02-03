@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "メモ";
+"No Notes Found" = "メモが見つかりません";
+"No Notes Found in the Database. Please try to research other items." = "データベースにメモが見つかりません。他の項目を調べてみてください。";
+"Search" = "検索";
+"Pinned" = "ピン留め";
+"Todo" = "やること";
+"Edit" = "編集";
+"Home" = "ホーム";
+"Setting" = "設定";
+"Description" = "説明";
+"Images" = "画像";
+"Location" = "場所";
+"Map" = "地図";
+"Photos" = "写真";
+"Videos" = "ビデオ";
+"Select Images" = "画像を選択";
+"Select Video" = "ビデオを選択";
+"Save" = "保存";
+"Add Notes" = "メモを追加";
+"Completed Tasks" = "完了したタスク";
+"Pending Tasks" = "保留中のタスク";
+"Todo List" = "やることリスト";
+"Localisation" = "ローカライズ";
+"Color Scheme" = "配色";
+"App Detail" = "アプリの詳細";
+"Privacy Policy" = "プライバシーポリシー";

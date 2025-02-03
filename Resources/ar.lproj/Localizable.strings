@@ -5,8 +5,29 @@
 //  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
 //
 
-"Notes" = "ملحوظات";
+"Notes" = "ملاحظات";
 "No Notes Found" = "لم يتم العثور على ملاحظات";
 "No Notes Found in the Database. Please try to research other items." = "لم يتم العثور على ملاحظات في قاعدة البيانات. يرجى محاولة البحث عن عناصر أخرى.";
-"Search" = "يبحث";
-"Todo" = "ما يجب القيام به";
+"Search" = "بحث";
+"Pinned" = "مثبتة";
+"Todo" = "مهام";
+"Edit" = "تعديل";
+"Home" = "الرئيسية";
+"Setting" = "إعدادات";
+"Description" = "الوصف";
+"Images" = "صور";
+"Location" = "الموقع";
+"Map" = "خريطة";
+"Photos" = "صور";
+"Videos" = "فيديوهات";
+"Select Images" = "اختر صور";
+"Select Video" = "اختر فيديو";
+"Save" = "حفظ";
+"Add Notes" = "أضف ملاحظات";
+"Completed Tasks" = "المهام المكتملة";
+"Pending Tasks" = "المهام المعلقة";
+"Todo List" = "قائمة المهام";
+"Localisation" = "توطين";
+"Color Scheme" = "نظام الألوان";
+"App Detail" = "تفاصيل التطبيق";
+"Privacy Policy" = "سياسة الخصوصية";

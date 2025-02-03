@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Märkmed";
+"No Notes Found" = "Märkmeid ei leitud";
+"No Notes Found in the Database. Please try to research other items." = "Märkmeid ei leitud andmebaasist. Palun proovige otsida teisi elemente.";
+"Search" = "Otsi";
+"Pinned" = "Kinnitatud";
+"Todo" = "Ülesanded";
+"Edit" = "Muuda";
+"Home" = "Avaleht";
+"Setting" = "Seaded";
+"Description" = "Kirjeldus";
+"Images" = "Pildid";
+"Location" = "Asukoht";
+"Map" = "Kaart";
+"Photos" = "Fotod";
+"Videos" = "Videod";
+"Select Images" = "Vali pildid";
+"Select Video" = "Vali video";
+"Save" = "Salvesta";
+"Add Notes" = "Lisa märkmed";
+"Completed Tasks" = "Lõpetatud ülesanded";
+"Pending Tasks" = "Ootel ülesanded";
+"Todo List" = "Ülesannete nimekiri";
+"Localisation" = "Lokaliseerimine";
+"Color Scheme" = "Värviskeem";
+"App Detail" = "Rakenduse üksikasjad";
+"Privacy Policy" = "Privaatsuspoliitika";

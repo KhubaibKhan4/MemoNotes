@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "تێبینییەکان";
+"No Notes Found" = "هیچ تێبینییەک نەدۆزراوەتەوە";
+"No Notes Found in the Database. Please try to research other items." = "هیچ تێبینییەک لە بنکەدراوەکەدا نەدۆزراوەتەوە. تکایە هەوڵ بدەیت بەدوای بابەتی تردا بگەڕێیت.";
+"Search" = "گەڕان";
+"Pinned" = "چەسپێنراو";
+"Todo" = "کارەکان";
+"Edit" = "دەستکاری";
+"Home" = "سەرەکی";
+"Setting" = "ڕێکخستنەکان";
+"Description" = "وەسف";
+"Images" = "وێنەکان";
+"Location" = "شوێن";
+"Map" = "نەخشە";
+"Photos" = "وێنەکان";
+"Videos" = "ڤیدیۆکان";
+"Select Images" = "هەڵبژاردنی وێنەکان";
+"Select Video" = "هەڵبژاردنی ڤیدیۆ";
+"Save" = "پاشەکەوتکردن";
+"Add Notes" = "زیادکردنی تێبینییەکان";
+"Completed Tasks" = "ئەرکە تەواوکراوەکان";
+"Pending Tasks" = "ئەرکە چاوەڕوانکراوەکان";
+"Todo List" = "لیستی کارەکان";
+"Localisation" = "بەکۆمەڵیکردن";
+"Color Scheme" = "ڕەنگی شێوە";
+"App Detail" = "وردەکارییەکانی ئەپ";
+"Privacy Policy" = "سیاسەتی تایبەتمەندی";

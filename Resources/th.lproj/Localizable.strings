@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "บันทึก";
+"No Notes Found" = "ไม่พบโน้ต";
+"No Notes Found in the Database. Please try to research other items." = "ไม่พบโน้ตในฐานข้อมูล โปรดลองค้นหารายการอื่น";
+"Search" = "ค้นหา";
+"Pinned" = "ปักหมุด";
+"Todo" = "สิ่งที่ต้องทำ";
+"Edit" = "แก้ไข";
+"Home" = "หน้าหลัก";
+"Setting" = "การตั้งค่า";
+"Description" = "คำอธิบาย";
+"Images" = "รูปภาพ";
+"Location" = "ตำแหน่ง";
+"Map" = "แผนที่";
+"Photos" = "ภาพถ่าย";
+"Videos" = "วิดีโอ";
+"Select Images" = "เลือกรูปภาพ";
+"Select Video" = "เลือกวิดีโอ";
+"Save" = "บันทึก";
+"Add Notes" = "เพิ่มโน้ต";
+"Completed Tasks" = "งานที่เสร็จสิ้น";
+"Pending Tasks" = "งานที่รอดำเนินการ";
+"Todo List" = "รายการสิ่งที่ต้องทำ";
+"Localisation" = "การแปลเป็นภาษาท้องถิ่น";
+"Color Scheme" = "ชุดสี";
+"App Detail" = "รายละเอียดแอป";
+"Privacy Policy" = "นโยบายความเป็นส่วนตัว";

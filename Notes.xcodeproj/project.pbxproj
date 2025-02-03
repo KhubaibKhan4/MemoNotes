@@ -119,6 +119,38 @@
 				Base,
 				ar,
 				es,
+				hi,
+				"ur-PK",
+				ru,
+				it,
+				id,
+				"pt-PT",
+				fr,
+				de,
+				ja,
+				sv,
+				nb,
+				nl,
+				tr,
+				af,
+				th,
+				vi,
+				ms,
+				prg,
+				kbd,
+				he,
+				pl,
+				cs,
+				hu,
+				ro,
+				uk,
+				el,
+				sr,
+				da,
+				fi,
+				et,
+				ko,
+				"bn-BD",
 			);
 			mainGroup = 49BA1F7D2CBD8E700099CDCB;
 			minimizedProjectReferenceProxies = 1;
@@ -212,6 +244,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -268,6 +301,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -284,6 +318,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NoteSync;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
@@ -318,6 +353,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = NoteSync;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";

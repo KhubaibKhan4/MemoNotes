@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Notlar";
+"No Notes Found" = "Not bulunamadı";
+"No Notes Found in the Database. Please try to research other items." = "Veritabanında not bulunamadı. Lütfen diğer öğeleri araştırmayı deneyin.";
+"Search" = "Ara";
+"Pinned" = "Sabitlenmiş";
+"Todo" = "Yapılacaklar";
+"Edit" = "Düzenle";
+"Home" = "Ana Sayfa";
+"Setting" = "Ayarlar";
+"Description" = "Açıklama";
+"Images" = "Resimler";
+"Location" = "Konum";
+"Map" = "Harita";
+"Photos" = "Fotoğraflar";
+"Videos" = "Videolar";
+"Select Images" = "Resimleri seç";
+"Select Video" = "Video seç";
+"Save" = "Kaydet";
+"Add Notes" = "Not ekle";
+"Completed Tasks" = "Tamamlanan Görevler";
+"Pending Tasks" = "Bekleyen Görevler";
+"Todo List" = "Yapılacaklar Listesi";
+"Localisation" = "Yerelleştirme";
+"Color Scheme" = "Renk Şeması";
+"App Detail" = "Uygulama Detayı";
+"Privacy Policy" = "Gizlilik Politikası";

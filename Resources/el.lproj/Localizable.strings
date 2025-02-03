@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Σημειώσεις";
+"No Notes Found" = "Δεν βρέθηκαν σημειώσεις";
+"No Notes Found in the Database. Please try to research other items." = "Δεν βρέθηκαν σημειώσεις στη βάση δεδομένων. Προσπαθήστε να ερευνήσετε άλλα στοιχεία.";
+"Search" = "Αναζήτηση";
+"Pinned" = "Καρφιτσωμένο";
+"Todo" = "Υποχρεώσεις";
+"Edit" = "Επεξεργασία";
+"Home" = "Αρχική";
+"Setting" = "Ρυθμίσεις";
+"Description" = "Περιγραφή";
+"Images" = "Εικόνες";
+"Location" = "Τοποθεσία";
+"Map" = "Χάρτης";
+"Photos" = "Φωτογραφίες";
+"Videos" = "Βίντεο";
+"Select Images" = "Επιλογή εικόνων";
+"Select Video" = "Επιλογή βίντεο";
+"Save" = "Αποθήκευση";
+"Add Notes" = "Προσθήκη σημειώσεων";
+"Completed Tasks" = "Ολοκληρωμένες εργασίες";
+"Pending Tasks" = "Εκκρεμείς εργασίες";
+"Todo List" = "Λίστα υποχρεώσεων";
+"Localisation" = "Τοπική προσαρμογή";
+"Color Scheme" = "Συνδυασμός χρωμάτων";
+"App Detail" = "Λεπτομέρειες εφαρμογής";
+"Privacy Policy" = "Πολιτική απορρήτου";

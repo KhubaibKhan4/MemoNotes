@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Poznámky";
+"No Notes Found" = "Nenalezeny žádné poznámky";
+"No Notes Found in the Database. Please try to research other items." = "V databázi nebyly nalezeny žádné poznámky. Zkuste prosím vyhledat jiné položky.";
+"Search" = "Hledat";
+"Pinned" = "Připnuto";
+"Todo" = "Úkoly";
+"Edit" = "Upravit";
+"Home" = "Domů";
+"Setting" = "Nastavení";
+"Description" = "Popis";
+"Images" = "Obrázky";
+"Location" = "Umístění";
+"Map" = "Mapa";
+"Photos" = "Fotky";
+"Videos" = "Videa";
+"Select Images" = "Vybrat obrázky";
+"Select Video" = "Vybrat video";
+"Save" = "Uložit";
+"Add Notes" = "Přidat poznámky";
+"Completed Tasks" = "Dokončené úkoly";
+"Pending Tasks" = "Čekající úkoly";
+"Todo List" = "Seznam úkolů";
+"Localisation" = "Lokalizace";
+"Color Scheme" = "Barevné schéma";
+"App Detail" = "Podrobnosti o aplikaci";
+"Privacy Policy" = "Zásady ochrany osobních údajů";

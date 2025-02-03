@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "메모";
+"No Notes Found" = "메모를 찾을 수 없음";
+"No Notes Found in the Database. Please try to research other items." = "데이터베이스에서 메모를 찾을 수 없습니다. 다른 항목을 검색해 보세요.";
+"Search" = "검색";
+"Pinned" = "고정됨";
+"Todo" = "할 일";
+"Edit" = "편집";
+"Home" = "홈";
+"Setting" = "설정";
+"Description" = "설명";
+"Images" = "이미지";
+"Location" = "위치";
+"Map" = "지도";
+"Photos" = "사진";
+"Videos" = "비디오";
+"Select Images" = "이미지 선택";
+"Select Video" = "비디오 선택";
+"Save" = "저장";
+"Add Notes" = "메모 추가";
+"Completed Tasks" = "완료된 작업";
+"Pending Tasks" = "대기 중인 작업";
+"Todo List" = "할 일 목록";
+"Localisation" = "현지화";
+"Color Scheme" = "색 구성표";
+"App Detail" = "앱 정보";
+"Privacy Policy" = "개인 정보 정책";

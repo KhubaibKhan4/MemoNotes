@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Catatan";
+"No Notes Found" = "Tidak Ada Catatan Ditemukan";
+"No Notes Found in the Database. Please try to research other items." = "Tidak Ada Catatan Ditemukan di Database. Silakan coba teliti item lain.";
+"Search" = "Cari";
+"Pinned" = "Disematkan";
+"Todo" = "Tugas";
+"Edit" = "Edit";
+"Home" = "Beranda";
+"Setting" = "Pengaturan";
+"Description" = "Deskripsi";
+"Images" = "Gambar";
+"Location" = "Lokasi";
+"Map" = "Peta";
+"Photos" = "Foto";
+"Videos" = "Video";
+"Select Images" = "Pilih Gambar";
+"Select Video" = "Pilih Video";
+"Save" = "Simpan";
+"Add Notes" = "Tambah Catatan";
+"Completed Tasks" = "Tugas Selesai";
+"Pending Tasks" = "Tugas Tertunda";
+"Todo List" = "Daftar Tugas";
+"Localisation" = "Lokalisasi";
+"Color Scheme" = "Skema Warna";
+"App Detail" = "Detail Aplikasi";
+"Privacy Policy" = "Kebijakan Privasi";

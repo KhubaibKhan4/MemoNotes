@@ -1,0 +1,33 @@
+//
+//  Localizable.strings
+//  Notes
+//
+//  Created by Muhammad Khubaib Imtiaz on 27/11/2024.
+//
+
+"Notes" = "Noter";
+"No Notes Found" = "Ingen noter fundet";
+"No Notes Found in the Database. Please try to research other items." = "Ingen noter fundet i databasen. Prøv at søge efter andre elementer.";
+"Search" = "Søg";
+"Pinned" = "Fastgjort";
+"Todo" = "Opgave";
+"Edit" = "Rediger";
+"Home" = "Hjem";
+"Setting" = "Indstillinger";
+"Description" = "Beskrivelse";
+"Images" = "Billeder";
+"Location" = "Placering";
+"Map" = "Kort";
+"Photos" = "Billeder";
+"Videos" = "Videoer";
+"Select Images" = "Vælg billeder";
+"Select Video" = "Vælg video";
+"Save" = "Gem";
+"Add Notes" = "Tilføj noter";
+"Completed Tasks" = "Afsluttede opgaver";
+"Pending Tasks" = "Afventende opgaver";
+"Todo List" = "Opgaveliste";
+"Localisation" = "Lokalisering";
+"Color Scheme" = "Farveskema";
+"App Detail" = "Appdetaljer";
+"Privacy Policy" = "Privatlivspolitik";
