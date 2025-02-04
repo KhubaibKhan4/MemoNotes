@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		49BA1F862CBD8E700099CDCB /* Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Notes.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		49BA1F862CBD8E700099CDCB /* CloudNote AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CloudNote AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -67,7 +67,7 @@
 		49BA1F872CBD8E700099CDCB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				49BA1F862CBD8E700099CDCB /* Notes.app */,
+				49BA1F862CBD8E700099CDCB /* CloudNote AI.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -93,7 +93,7 @@
 			);
 			name = Notes;
 			productName = Notes;
-			productReference = 49BA1F862CBD8E700099CDCB /* Notes.app */;
+			productReference = 49BA1F862CBD8E700099CDCB /* CloudNote AI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -314,11 +314,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
-				DEVELOPMENT_TEAM = X2MJP5MGGS;
+				DEVELOPMENT_TEAM = XWNB8PG966;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NoteSync;
+				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
@@ -333,8 +333,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.codespacepro.Notes.note;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes;
+				PRODUCT_NAME = "CloudNote AI";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -349,11 +349,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
-				DEVELOPMENT_TEAM = X2MJP5MGGS;
+				DEVELOPMENT_TEAM = XWNB8PG966;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = NoteSync;
+				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
@@ -368,8 +368,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.codespacepro.Notes.note;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes;
+				PRODUCT_NAME = "CloudNote AI";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

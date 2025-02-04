@@ -17,6 +17,7 @@ struct SettingScreen: View {
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var themeText: String = "Light Mode"
+    @State private var appVersion: String = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Unknown"
     
     @EnvironmentObject private var appManager: AppManager
     
@@ -26,7 +27,7 @@ struct SettingScreen: View {
                 Group {
                     Section("Localization") {
                         NavigationLink(destination: CountrySelectorView(), label: {
-                            Label("Languages", systemImage: "globe")
+                            Label("Languages: \(appManager.languageName)", systemImage: "globe")
                         })
                     }
                     
@@ -36,11 +37,7 @@ struct SettingScreen: View {
                         }.toggleStyle(.switch)
                             .onChange(of: appManager.isDark) { oldValue, newValue in
                                 print("Color Scheme Changed \(newValue)")
-                                if newValue  {
-                                    themeText = "Dark Mode"
-                                }else {
-                                    themeText = "Light Mode"
-                                }
+                                themeText = newValue ? "Dark Mode" : "Light Mode"
                                 appManager.isDark = newValue
                             }
                     }
@@ -59,12 +56,21 @@ struct SettingScreen: View {
                         }
                     }
                     
+                    Section("App Version") {
+                        HStack {
+                            Label("App Version", systemImage: "info.circle")
+                            Spacer()
+                            Text(appVersion)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
                 }.onAppear {
                     themeText = appManager.isDark ? "Dark Mode" : "Light Mode"
                 }
             }
             .preferredColorScheme(appManager.isDark ? .dark : .light)
-            .navigationTitle("Setting")
+            .navigationTitle("Settings")
         }
     }
 }

@@ -13,9 +13,9 @@ struct CountrySelectorView: View {
     @State private var selectedCountry: Country? = nil
     @State private var countries: [Country] = [
         Country(name: "United States", flag: "🇺🇸", language: "English", languageCode: "en"),
-        Country(name: "Canada", flag: "🇨🇦", language: "French", languageCode: "en, fr"),
+        Country(name: "Canada", flag: "🇨🇦", language: "French", languageCode: "fr"),
         Country(name: "United Kingdom", flag: "🇬🇧", language: "English", languageCode: "en"),
-        Country(name: "India", flag: "🇮🇳", language: "Hindi", languageCode: "hi, en"),
+        Country(name: "India", flag: "🇮🇳", language: "Hindi", languageCode: "hi"),
         Country(name: "Germany", flag: "🇩🇪", language: "German", languageCode: "de"),
         Country(name: "Australia", flag: "🇦🇺", language: "English", languageCode: "en"),
         Country(name: "Japan", flag: "🇯🇵", language: "Japanese", languageCode: "ja"),
@@ -32,16 +32,16 @@ struct CountrySelectorView: View {
         Country(name: "Norway", flag: "🇳🇴", language: "Norwegian", languageCode: "no"),
         Country(name: "Netherlands", flag: "🇳🇱", language: "Dutch", languageCode: "nl"),
         Country(name: "Turkey", flag: "🇹🇷", language: "Turkish", languageCode: "tr"),
-        Country(name: "South Africa", flag: "🇿🇦", language: "Afrikaans", languageCode: "af, en"),
+        Country(name: "South Africa", flag: "🇿🇦", language: "Afrikaans", languageCode: "af"),
         Country(name: "Egypt", flag: "🇪🇬", language: "Arabic", languageCode: "ar"),
         Country(name: "Thailand", flag: "🇹🇭", language: "Thai", languageCode: "th"),
         Country(name: "Vietnam", flag: "🇻🇳", language: "Vietnamese", languageCode: "vi"),
         Country(name: "Argentina", flag: "🇦🇷", language: "Spanish", languageCode: "es"),
         Country(name: "Nigeria", flag: "🇳🇬", language: "English", languageCode: "en"),
         Country(name: "Indonesia", flag: "🇮🇩", language: "Indonesian", languageCode: "id"),
-        Country(name: "Pakistan", flag: "🇵🇰", language: "Urdu", languageCode: "ur, en"),
+        Country(name: "Pakistan", flag: "🇵🇰", language: "Urdu", languageCode: "ur"),
         Country(name: "Bangladesh", flag: "🇧🇩", language: "Bengali", languageCode: "bn"),
-        Country(name: "Philippines", flag: "🇵🇭", language: "Filipino", languageCode: "fil, en"),
+        Country(name: "Philippines", flag: "🇵🇭", language: "Filipino", languageCode: "fil"),
         Country(name: "Malaysia", flag: "🇲🇾", language: "Malay", languageCode: "ms"),
         Country(name: "Iran", flag: "🇮🇷", language: "Persian", languageCode: "fa"),
         Country(name: "Iraq", flag: "🇮🇶", language: "Kurdish", languageCode: "ar, ku"),
@@ -54,15 +54,15 @@ struct CountrySelectorView: View {
         Country(name: "Ukraine", flag: "🇺🇦", language: "Ukrainian", languageCode: "uk"),
         Country(name: "Greece", flag: "🇬🇷", language: "Greek", languageCode: "el"),
         Country(name: "Serbia", flag: "🇷🇸", language: "Serbian", languageCode: "sr"),
-        Country(name: "Switzerland", flag: "🇨🇭", language: "French", languageCode: "de, fr, it"),
+        Country(name: "Switzerland", flag: "🇨🇭", language: "French", languageCode: "de"),
         Country(name: "Denmark", flag: "🇩🇰", language: "Danish", languageCode: "da"),
         Country(name: "Finland", flag: "🇫🇮", language: "Finnish", languageCode: "fi, sv"),
         Country(name: "Iceland", flag: "🇮🇸", language: "Icelandic", languageCode: "is"),
         Country(name: "Estonia", flag: "🇪🇪", language: "Estonian", languageCode: "et"),
         Country(name: "Latvia", flag: "🇱🇻", language: "Latvian", languageCode: "lv"),
         Country(name: "Lithuania", flag: "🇱🇹", language: "Lithuanian", languageCode: "lt"),
-        Country(name: "Belarus", flag: "🇧🇾", language: "Russian", languageCode: "be, ru"),
-        Country(name: "Kazakhstan", flag: "🇰🇿", language: "Russian", languageCode: "kk, ru"),
+        Country(name: "Belarus", flag: "🇧🇾", language: "Russian", languageCode: "be"),
+        Country(name: "Kazakhstan", flag: "🇰🇿", language: "Russian", languageCode: "kk"),
     ]
     
     
@@ -84,21 +84,6 @@ struct CountrySelectorView: View {
     
     var body: some View {
         VStack {
-            if let selectedCountry = selectedCountry {
-                HStack {
-                    Text(selectedCountry.flag)
-                        .font(.largeTitle)
-                    Text(selectedCountry.language)
-                        .font(.title)
-                        .bold()
-                }
-                .padding()
-            } else {
-                Text("Select a language")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-                    .padding()
-            }
             
             TextField("Search countries", text: $searchText)
                 .padding(10)
@@ -111,9 +96,9 @@ struct CountrySelectorView: View {
                     Text(country.flag)
                         .font(.largeTitle)
                     VStack(alignment: .leading) {
-                        Text(country.name)
+                        Text(country.language)
                             .font(.headline)
-                        Text("\(country.language) (\(country.languageCode))")
+                        Text("\(country.languageCode)")
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
@@ -133,7 +118,13 @@ struct CountrySelectorView: View {
             .listStyle(PlainListStyle())
             .padding()
         }
-        .navigationTitle("Select Country")
+        .navigationTitle("Select Language")
+        .onAppear {
+            if let selected = countries.first(where: { $0.languageCode == appManager.appLanguage }) {
+                selectedCountry = selected
+            }
+        }
+        
     }
 }
 
