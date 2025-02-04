@@ -18,6 +18,11 @@ Memo Notes is a lightweight and intuitive note-taking app built for iOS devices,
 - Add Rich Text Editor.
 - Add Rich Text Viewer.
 
+  
+## Download CloudNote AI
+
+[![Download on the App Store](https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg)](https://apps.apple.com/us/app/cloudnote-ai/id6741465473)
+
 # Screenshots
 
 | ![Screenshot 1](https://github.com/KhubaibKhan4/MemoTask/blob/main/assests/1.png) | ![Screenshot 2](https://github.com/KhubaibKhan4/MemoTask/blob/main/assests/2.png) | ![Screenshot 3](https://github.com/KhubaibKhan4/MemoTask/blob/main/assests/3.png) |
