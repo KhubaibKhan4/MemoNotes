@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "49BA1F852CBD8E700099CDCB"
-               BuildableName = "Notes.app"
+               BuildableName = "CloudNote AI.app"
                BlueprintName = "Notes"
                ReferencedContainer = "container:Notes.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "49BA1F852CBD8E700099CDCB"
-            BuildableName = "Notes.app"
+            BuildableName = "CloudNote AI.app"
             BlueprintName = "Notes"
             ReferencedContainer = "container:Notes.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "49BA1F852CBD8E700099CDCB"
-            BuildableName = "Notes.app"
+            BuildableName = "CloudNote AI.app"
             BlueprintName = "Notes"
             ReferencedContainer = "container:Notes.xcodeproj">
          </BuildableReference>
