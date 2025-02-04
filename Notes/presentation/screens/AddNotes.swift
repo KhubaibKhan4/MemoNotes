@@ -23,6 +23,8 @@ struct AddNotes: View {
     @State private var selectedVideo: URL?
     @State private var selectedVideoItem: PhotosPickerItem?
     
+    @AppStorage("isSubscribed") var isSubscribed: Bool = false
+    
     @Binding var title: String
     @Binding var desc: String
     @Binding var navTitle: String
@@ -123,6 +125,13 @@ struct AddNotes: View {
                                 .padding(6)
                             }
                     }
+                }
+                
+                if !isSubscribed {
+                    BannerAdView()
+                        .background(.gray)
+                        .frame(width: 320, height: 100)
+                        .padding(10)
                 }
                 
                 if !selectedImagesData.isEmpty {

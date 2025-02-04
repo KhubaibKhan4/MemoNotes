@@ -19,7 +19,7 @@ struct NotesDetail: View {
             span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
         )
     )
-    
+    @AppStorage("isSubscribed") var isSubscribed: Bool = false
     @State var selectedLocationName: String = ""
     @State var isMapClicked: Bool = false
     @Environment(\.dismiss) private var dismiss
@@ -101,6 +101,15 @@ struct NotesDetail: View {
                         .frame(height: 250)
                         .cornerRadius(10)
                 }
+            }
+            
+            Spacer()
+            
+            if !isSubscribed {
+                BannerAdView()
+                    .background(.gray)
+                    .frame(width: 320, height: 100)
+                    .padding(10)
             }
         }
         .sheet(isPresented: $imageSheetExpanded) {

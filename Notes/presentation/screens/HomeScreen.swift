@@ -15,6 +15,7 @@ struct HomeScreen: View{
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("isSubscribed") var isSubscribed: Bool = false
     
     
     @Query private var notestList : [NotesItem]
@@ -45,10 +46,21 @@ struct HomeScreen: View{
     var body : some View {
         NavigationView {
             VStack{
+                
                 if searchResults.isEmpty {
                     ContentUnavailableView.init(LocalizedStringKey("No Notes Found"), systemImage: "text.page.badge.magnifyingglass", description: Text(LocalizedStringKey("No Notes Found in the Database. Please try to research other items.")))
                     
                 }else{
+                    Spacer()
+                        .frame(height: 8)
+                    if !isSubscribed {
+                        BannerAdView()
+                            .background(.gray)
+                            .frame(width: 320, height: 100)
+                            .padding(10)
+                    }
+                    Spacer()
+                        .frame(height: 8)
                     List{
                         if(searchResults.isEmpty){
                             

@@ -6,8 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5E16E97960667C79AE34CC5A /* Pods_Notes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 468743EC78FEB487BF370F4A /* Pods_Notes.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		468743EC78FEB487BF370F4A /* Pods_Notes.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Notes.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		49BA1F862CBD8E700099CDCB /* CloudNote AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CloudNote AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		49D19C022D5246AE00D9AAEA /* Google_Mobile_Ads_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Google_Mobile_Ads_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		49E9375C2D52445900FB8531 /* Google_Mobile_Ads_SDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Google_Mobile_Ads_SDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		68A119011F71D1B855E83407 /* Pods-Notes.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Notes.debug.xcconfig"; path = "Target Support Files/Pods-Notes/Pods-Notes.debug.xcconfig"; sourceTree = "<group>"; };
+		70B3419E321DB2750175386F /* Pods-Notes.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Notes.release.xcconfig"; path = "Target Support Files/Pods-Notes/Pods-Notes.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -41,17 +50,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5E16E97960667C79AE34CC5A /* Pods_Notes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		3622B93368E04F3CCE63554D /* Pods */ = {
+		020A3CFF0B96529A022019B1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				49D19C022D5246AE00D9AAEA /* Google_Mobile_Ads_SDK.framework */,
+				49E9375C2D52445900FB8531 /* Google_Mobile_Ads_SDK.framework */,
+				468743EC78FEB487BF370F4A /* Pods_Notes.framework */,
 			);
-			path = Pods;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		49BA1F7D2CBD8E700099CDCB = {
@@ -60,7 +73,8 @@
 				49B7C3BC2D00D8E900FE8DE5 /* Resources */,
 				49BA1F882CBD8E700099CDCB /* Notes */,
 				49BA1F872CBD8E700099CDCB /* Products */,
-				3622B93368E04F3CCE63554D /* Pods */,
+				AE03191456BD6541CD930A91 /* Pods */,
+				020A3CFF0B96529A022019B1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +86,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		AE03191456BD6541CD930A91 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				68A119011F71D1B855E83407 /* Pods-Notes.debug.xcconfig */,
+				70B3419E321DB2750175386F /* Pods-Notes.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -79,9 +102,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 49BA1F942CBD8E710099CDCB /* Build configuration list for PBXNativeTarget "Notes" */;
 			buildPhases = (
+				6877D1F39AAE12242E67BC4C /* [CP] Check Pods Manifest.lock */,
 				49BA1F822CBD8E700099CDCB /* Sources */,
 				49BA1F832CBD8E700099CDCB /* Frameworks */,
 				49BA1F842CBD8E700099CDCB /* Resources */,
+				528B27B824FFBC1671C52FE8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -104,7 +129,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1600;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					49BA1F852CBD8E700099CDCB = {
 						CreatedOnToolsVersion = 16.0;
@@ -174,6 +199,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		528B27B824FFBC1671C52FE8 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Notes/Pods-Notes-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Notes/Pods-Notes-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Notes/Pods-Notes-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6877D1F39AAE12242E67BC4C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Notes-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		49BA1F822CBD8E700099CDCB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -190,6 +257,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -254,6 +322,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -308,6 +377,7 @@
 		};
 		49BA1F952CBD8E710099CDCB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 68A119011F71D1B855E83407 /* Pods-Notes.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -316,6 +386,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
 				DEVELOPMENT_TEAM = XWNB8PG966;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
@@ -324,6 +395,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Provide us the Photo Library Access to get Image or Video.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "To keep this app free, we use tracking to show relevant ads and measure their effectiveness.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -343,6 +415,7 @@
 		};
 		49BA1F962CBD8E710099CDCB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 70B3419E321DB2750175386F /* Pods-Notes.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -351,6 +424,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
 				DEVELOPMENT_TEAM = XWNB8PG966;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Notes/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
@@ -359,6 +433,7 @@
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Provide us the Location Permission to Provide the realtime location inside the app.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Provide us the Photo Library Access to get Image or Video.";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "To keep this app free, we use tracking to show relevant ads and measure their effectiveness.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
