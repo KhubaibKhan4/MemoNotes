@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import AppTrackingTransparency
 
 
 struct ContentView: View {
@@ -39,22 +38,9 @@ struct ContentView: View {
         }.onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 isSplash = false
-                requestTrackingPermission()
             }
         }
     }
-    func requestTrackingPermission() {
-            ATTrackingManager.requestTrackingAuthorization { status in
-                switch status {
-                case .authorized:
-                    print("Tracking authorized")
-                case .denied, .notDetermined, .restricted:
-                    print("Tracking not authorized")
-                @unknown default:
-                    break
-                }
-            }
-        }
 }
 
 

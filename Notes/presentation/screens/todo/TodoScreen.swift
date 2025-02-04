@@ -13,7 +13,6 @@ struct TodoScreen: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var appManager: AppManager
-    @AppStorage("isSubscribed") var isSubscribed: Bool = false
     
     
     @Query(filter: .true, sort: \TodoItem.id, order: .forward, animation: .smooth) private var todoList: [TodoItem]
@@ -47,72 +46,59 @@ struct TodoScreen: View {
                             .foregroundColor(.gray.opacity(0.7))
                     }
                 } else {
-                    VStack {
-                        Spacer()
-                            .frame(height: 8)
-                        if !isSubscribed {
-                            BannerAdView()
-                                .background(.gray)
-                                .frame(width: 320, height: 100)
-                                .padding(10)
-                        }
-                        Spacer()
-                            .frame(height: 8)
-                        
-                        List {
-                            if !completedList.isEmpty {
-                                Section(header: Text("✅ Completed Tasks")) {
-                                    ForEach(completedList) { item in
-                                        todoCard(for: item)
-                                            .swipeActions(edge: .trailing) {
-                                                Button {
-                                                    toggleCompletion(for: item)
-                                                } label: {
-                                                    Label("UnComplete", systemImage: item.isCompleted ? "xmark.circle" : "checkmark.circle.fill")
-                                                }
-                                                .tint(.green)
-                                                
-                                                Button("Edit") {
-                                                    editItem(item)
-                                                }
-                                                .tint(.blue)
-                                                
-                                                Button("Delete", role: .destructive) {
-                                                    deleteItem(item)
-                                                }
+                    List {
+                        if !completedList.isEmpty {
+                            Section(header: Text("✅ Completed Tasks")) {
+                                ForEach(completedList) { item in
+                                    todoCard(for: item)
+                                        .swipeActions(edge: .trailing) {
+                                            Button {
+                                                toggleCompletion(for: item)
+                                            } label: {
+                                                Label("UnComplete", systemImage: item.isCompleted ? "xmark.circle" : "checkmark.circle.fill")
                                             }
-                                    }
-                                }
-                            }
-                            if !inCompleteList.isEmpty {
-                                Section(header: Text("⏳ Pending Tasks")) {
-                                    ForEach(inCompleteList) { item in
-                                        todoCard(for: item)
-                                            .swipeActions(edge: .trailing) {
-                                                Button {
-                                                    toggleCompletion(for: item)
-                                                } label: {
-                                                    Label("Complete", systemImage: item.isCompleted ? "xmark.circle" : "checkmark.circle.fill")
-                                                }
-                                                .tint(.green)
-                                                
-                                                Button("Edit") {
-                                                    editItem(item)
-                                                }
-                                                .tint(.blue)
-                                                
-                                                Button("Delete", role: .destructive) {
-                                                    deleteItem(item)
-                                                }
+                                            .tint(.green)
+                                            
+                                            Button("Edit") {
+                                                editItem(item)
                                             }
-                                    }
+                                            .tint(.blue)
+                                            
+                                            Button("Delete", role: .destructive) {
+                                                deleteItem(item)
+                                            }
+                                        }
                                 }
                             }
                         }
-                        .listStyle(.insetGrouped)
-                        .refreshable {
-                            print("Refreshing tasks...")
+                        if !inCompleteList.isEmpty {
+                            Section(header: Text("⏳ Pending Tasks")) {
+                                ForEach(inCompleteList) { item in
+                                    todoCard(for: item)
+                                        .swipeActions(edge: .trailing) {
+                                            Button {
+                                                toggleCompletion(for: item)
+                                            } label: {
+                                                Label("Complete", systemImage: item.isCompleted ? "xmark.circle" : "checkmark.circle.fill")
+                                            }
+                                            .tint(.green)
+                                            
+                                            Button("Edit") {
+                                                editItem(item)
+                                            }
+                                            .tint(.blue)
+                                            
+                                            Button("Delete", role: .destructive) {
+                                                deleteItem(item)
+                                            }
+                                        }
+                                }
+                            }
                         }
+                    }
+                    .listStyle(.insetGrouped)
+                    .refreshable {
+                        print("Refreshing tasks...")
                     }
                 }
             }

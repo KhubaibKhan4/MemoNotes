@@ -6,16 +6,13 @@
 //
 
 import SwiftUI
-import GoogleMobileAds
+
 @main
 struct NotesApp: App {
+    
     @StateObject var appManager: AppManager = AppManager()
     
-    init() {
-        MobileAds.shared.start { status in
-            print("Google Mobile Ads SDK initialized: \(status)")
-        }
-    }
+    
     
     var body: some Scene {
         WindowGroup {
