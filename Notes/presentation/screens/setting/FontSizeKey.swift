@@ -5,7 +5,7 @@
 //  Created by Muhammad Khubaib Imtiaz on 16/12/2024.
 //
 
-import SwiftUICore
+import SwiftUI
 
 struct FontSizeKey: EnvironmentKey {
     static let defaultValue: CGFloat = 12
