@@ -6,18 +6,17 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct NotesApp: App {
     
     @StateObject var appManager: AppManager = AppManager()
     
-    
-    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(for: [NotesItem.self,TodoItem.self])
+                .modelContainer(for: [NotesItem.self, TodoItem.self])
                 .environment(\.locale, Locale(identifier: appManager.appLanguage))
                 .environmentObject(appManager)
                 .preferredColorScheme(appManager.isDark ? .dark : .light)
