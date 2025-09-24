@@ -1,0 +1,4 @@
+# Xcode user-specific files
+*.xcuserstate
+*.xcuserdata/
+
