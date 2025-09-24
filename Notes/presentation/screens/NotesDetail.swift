@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import SwiftData
 import CoreLocation
 import MapKit
 import AVKit
 
 struct NotesDetail: View {
-    @State var notesItem: NotesItem
+    @Environment(\.modelContext) private var context
+
+    @Bindable var notesItem: NotesItem
     @State private var imageSheetExpanded: Bool = false
     @State private var position: MapCameraPosition = .region(
         MKCoordinateRegion(
@@ -69,16 +72,22 @@ struct NotesDetail: View {
                     .foregroundColor(.secondary)
             }
             
-            // Checklist details
+            // Checklist details (interactive)
             if !notesItem.checklist.isEmpty {
                 Section(header: Text("Checklist")) {
-                    ForEach(notesItem.checklist) { item in
-                        HStack {
-                            Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
-                                .foregroundColor(item.isDone ? .green : .gray)
+                    ForEach($notesItem.checklist) { $item in
+                        Toggle(isOn: $item.isDone) {
                             Text(item.title)
-                            Spacer()
                         }
+                        .onChange(of: item.isDone) { _, _ in
+                            notesItem.updatedAt = Date()
+                            try? context.save()
+                        }
+                    }
+                    .onDelete { offsets in
+                        notesItem.checklist.remove(atOffsets: offsets)
+                        notesItem.updatedAt = Date()
+                        try? context.save()
                     }
                 }
             }
