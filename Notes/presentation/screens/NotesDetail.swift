@@ -27,30 +27,68 @@ struct NotesDetail: View {
     
     var body: some View {
         List {
+            // Header
             Section {
-                HStack {
+                HStack(alignment: .firstTextBaseline) {
                     Text(notesItem.title)
                         .font(.title)
                         .fontWeight(.bold)
+                        .lineLimit(2)
+                    
+                    Spacer()
                     
                     if notesItem.isPinned {
                         Image(systemName: "pin.fill")
-                            .foregroundColor(.red)
+                            .foregroundColor(.orange)
                     }
+                }
+                if !notesItem.tags.isEmpty {
+                    TagsChipsView(tags: notesItem.tags, limit: 8)
+                        .padding(.top, 4)
+                }
+                
+                // Checklist summary
+                if !notesItem.checklist.isEmpty {
+                    let total = notesItem.checklist.count
+                    let done = notesItem.checklist.filter { $0.isDone }.count
+                    HStack(spacing: 8) {
+                        Image(systemName: done == total ? "checkmark.circle.fill" : "checkmark.circle")
+                            .foregroundColor(done == total ? .green : .gray)
+                        Text("\(done)/\(total) completed")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    .padding(.top, 2)
                 }
             }
             
+            // Description
             Section(header: Text("Description")) {
                 Text(notesItem.desc)
                     .font(.body)
                     .foregroundColor(.secondary)
             }
             
+            // Checklist details
+            if !notesItem.checklist.isEmpty {
+                Section(header: Text("Checklist")) {
+                    ForEach(notesItem.checklist) { item in
+                        HStack {
+                            Image(systemName: item.isDone ? "checkmark.circle.fill" : "circle")
+                                .foregroundColor(item.isDone ? .green : .gray)
+                            Text(item.title)
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            
+            // Images
             if let imagesData = notesItem.images, !imagesData.isEmpty {
                 Section(header: Text("Images")) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(imagesData, id: \.self) { imageData in
+                            ForEach(Array(imagesData.enumerated()), id: \.offset) { idx, imageData in
                                 if let uiImage = UIImage(data: imageData) {
                                     Image(uiImage: uiImage)
                                         .resizable()
@@ -59,7 +97,8 @@ struct NotesDetail: View {
                                         .clipped()
                                         .cornerRadius(10)
                                         .onTapGesture {
-                                            imageSheetExpanded = !imageSheetExpanded
+                                            selectedImageIndex = idx
+                                            imageSheetExpanded = true
                                         }
                                 }
                             }
@@ -67,21 +106,9 @@ struct NotesDetail: View {
                     }
                     .frame(height: 160)
                 }
-                .onAppear {
-                    if let location = notesItem.location {
-                        position = .region(
-                            MKCoordinateRegion(
-                                center: location,
-                                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-                            )
-                        )
-                        fetchLocationName(for: location) { name in
-                            selectedLocationName = name ?? "Unknown"
-                        }
-                    }
-                }
             }
             
+            // Map
             if let location = notesItem.location {
                 Section(header: Text("Location")) {
                     Map(position: $position) {
@@ -93,8 +120,20 @@ struct NotesDetail: View {
                         isMapClicked = true
                     }
                 }
+                .onAppear {
+                    position = .region(
+                        MKCoordinateRegion(
+                            center: location,
+                            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                        )
+                    )
+                    fetchLocationName(for: location) { name in
+                        selectedLocationName = name ?? "Unknown"
+                    }
+                }
             }
             
+            // Video
             if let videoURL = notesItem.videoURL {
                 Section(header: Text("Video")) {
                     VideoPlayer(player: AVPlayer(url: videoURL))
@@ -102,13 +141,34 @@ struct NotesDetail: View {
                         .cornerRadius(10)
                 }
             }
+            
+            // Dates
+            Section {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "calendar")
+                            .foregroundColor(.secondary)
+                        Text("Created: \(formattedDate(notesItem.createdAt))")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                    HStack(spacing: 8) {
+                        Image(systemName: "clock")
+                            .foregroundColor(.secondary)
+                        Text("Updated: \(formattedDate(notesItem.updatedAt))")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
         }
         .sheet(isPresented: $imageSheetExpanded) {
             if let imagesData = notesItem.images, !imagesData.isEmpty {
                 ZStack(alignment: .topTrailing) {
                     VStack(spacing: 0) {
-                        if let imagesData = notesItem.images, imagesData.indices.contains(selectedImageIndex) {
-                            Image(uiImage: UIImage(data: imagesData[selectedImageIndex])!)
+                        if imagesData.indices.contains(selectedImageIndex),
+                           let ui = UIImage(data: imagesData[selectedImageIndex]) {
+                            Image(uiImage: ui)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -146,7 +206,7 @@ struct NotesDetail: View {
             }
         }
         .sheet(isPresented: $isMapClicked) {
-                    FullScreenMapView(location: notesItem.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), locationName: selectedLocationName)
+            FullScreenMapView(location: notesItem.location ?? CLLocationCoordinate2D(latitude: 0, longitude: 0), locationName: selectedLocationName)
         }
         .navigationTitle("Note Details")
         .navigationBarTitleDisplayMode(.inline)
@@ -155,7 +215,7 @@ struct NotesDetail: View {
     private func fetchLocationName(for coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
         let geocoder = CLGeocoder()
         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+        geocoder.reverseGeocodeLocation(location) { placemarks, _ in
             if let placemark = placemarks?.first {
                 let name = [placemark.name, placemark.locality, placemark.country]
                     .compactMap { $0 }
@@ -167,26 +227,35 @@ struct NotesDetail: View {
         }
     }
     
+    private func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
+    }
+    
     private func thumbnailScrollView(imagesData: [Data]) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 10) {
-                ForEach(Array(imagesData.enumerated()), id: \.element) { index, imageData in
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            selectedImageIndex = index
+                ForEach(Array(imagesData.enumerated()), id: \.offset) { index, imageData in
+                    if let ui = UIImage(data: imageData) {
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                selectedImageIndex = index
+                            }
+                        } label: {
+                            Image(uiImage: ui)
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 60, height: 60)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(index == selectedImageIndex ? Color.white : Color.clear, lineWidth: 2)
+                                )
                         }
-                    } label: {
-                        Image(uiImage: UIImage(data: imageData)!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(width: 60, height: 60)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .stroke(index == selectedImageIndex ? Color.white : Color.clear, lineWidth: 2)
-                            )
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .padding(.vertical, 8)
@@ -194,22 +263,7 @@ struct NotesDetail: View {
         }
         .frame(height: 80)
     }
-    
-    func getVideoURL(from data: Data?) -> URL? {
-        guard let data = data else { return nil }
-        
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("tempVideo.mp4")
-        
-        do {
-            try data.write(to: tempURL, options: .atomic)
-            return tempURL
-        } catch {
-            print("Error writing video data to file: \(error)")
-            return nil
-        }
-    }
 }
-
 
 struct FullScreenMapView: View {
     let location: CLLocationCoordinate2D
@@ -277,5 +331,40 @@ struct FullScreenMapView: View {
         mapItem.openInMaps(launchOptions: [
             MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving
         ])
+    }
+}
+
+// Reuse the chips view from Home
+private struct TagsChipsView: View {
+    let tags: [String]
+    let limit: Int
+    
+    init(tags: [String], limit: Int = 8) {
+        self.tags = tags
+        self.limit = limit
+    }
+    
+    var body: some View {
+        let shown = Array(tags.prefix(limit))
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(shown, id: \.self) { tag in
+                    Text(tag)
+                        .font(.caption2)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(Color.blue.opacity(0.15)))
+                        .foregroundColor(.blue)
+                }
+                if tags.count > shown.count {
+                    Text("+\(tags.count - shown.count)")
+                        .font(.caption2)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(Color.secondary.opacity(0.15)))
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
     }
 }
