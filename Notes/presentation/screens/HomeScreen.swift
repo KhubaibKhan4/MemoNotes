@@ -100,12 +100,15 @@ struct HomeScreen: View {
             .navigationTitle(LocalizedStringKey("Notes"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Picker("", selection: $sortMode) {
-                        Label("Recent", systemImage: "clock.arrow.circlepath").tag(SortMode.recent)
-                        Label("Title", systemImage: "textformat").tag(SortMode.title)
+                    Menu {
+                        Picker("Sort by", selection: $sortMode) {
+                            Label("Recent", systemImage: "clock.arrow.circlepath").tag(SortMode.recent)
+                            Label("Title", systemImage: "textformat").tag(SortMode.title)
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down.circle")
                     }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 220)
+                    .accessibilityLabel("Sort")
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
