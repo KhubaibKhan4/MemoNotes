@@ -13,22 +13,29 @@ import CoreLocation
 import AVKit
 import UniformTypeIdentifiers
 
+/// Creates a new note, or edits `editingNote` when one is passed in.
 struct AddNotes: View {
     
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     
+    /// The note being edited, or `nil` when adding a new one.
+    var editingNote: NotesItem? = nil
+    var onSave: () -> Void = {}
+    
     // Media selection
     @State private var selectedItems = [PhotosPickerItem]()
-    @State private var selectedImages = [Image]()
     @State private var selectedImagesData = [Data]()
     @State private var selectedVideo: URL?
     @State private var selectedVideoItem: PhotosPickerItem?
+    @State private var isLoadingVideo = false
+    /// The video the note had before editing; only deleted from disk once the edit is saved.
+    @State private var originalVideoURL: URL?
+    @State private var didLoadNote = false
     
     // Inputs
-    @Binding var title: String
-    @Binding var desc: String
-    @Binding var navTitle: String
+    @State private var title: String = ""
+    @State private var desc: String = ""
     
     @State private var isPinned: Bool = false
     
@@ -65,8 +72,6 @@ struct AddNotes: View {
     
     // For center-drop feature
     @State private var mapCenter: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522)
-    
-    var onSave: () -> Void
     
     var body: some View {
         VStack {
@@ -140,7 +145,6 @@ struct AddNotes: View {
                 
                 PhotosSectionView(
                     selectedItems: $selectedItems,
-                    selectedImages: $selectedImages,
                     selectedImagesData: $selectedImagesData,
                     onMoveImage: moveImage
                 )
@@ -148,34 +152,47 @@ struct AddNotes: View {
                 VideosSectionView(
                     selectedVideoItem: $selectedVideoItem,
                     selectedVideo: $selectedVideo,
-                    onSaveVideoToDocuments: saveVideoToDocuments,
+                    isLoading: isLoadingVideo,
                     onThumbnail: videoThumbnail
                 )
             }
             .onChange(of: selectedItems) { _, newItems in
+                guard !newItems.isEmpty else { return }
                 Task { await loadSelectedImages(newItems) }
             }
             .onChange(of: selectedVideoItem) { _, newItem in
+                guard let newItem else { return }
+                isLoadingVideo = true
                 Task {
-                    if let item = newItem, let url = try? await item.loadTransferable(type: URL.self) {
-                        selectedVideo = await saveVideoToDocuments(url: url)
-                    }
+                    let picked = try? await newItem.loadTransferable(type: PickedVideo.self)
+                    if let picked { selectedVideo = picked.url }
+                    isLoadingVideo = false
+                    selectedVideoItem = nil
+                }
+            }
+            .onChange(of: selectedVideo) { oldValue, newValue in
+                // A video picked during this session that gets replaced or removed is no longer needed.
+                if let oldValue, oldValue != newValue, oldValue != originalVideoURL {
+                    MediaStore.deleteVideo(oldValue)
                 }
             }
             .onAppear {
+                loadEditingNoteIfNeeded()
                 locationManager.checkPermissionStatus()
                 setupSearchCompleter()
             }
-            .onChange(of: locationManager.userLocation) { location in
+            .onChange(of: locationManager.userLocation) { _, location in
                 if let userLocation = location {
                     zoomToUserLocation(userLocation)
                 }
             }
-            .onChange(of: locationManager.permissionDenied) { denied in
+            .onChange(of: locationManager.permissionDenied) { _, denied in
                 permissionDenied = denied
             }
         }
-        .navigationTitle("Add Notes")
+        .navigationTitle(editingNote == nil ? "Add Note" : "Edit Note")
+        .navigationBarTitleDisplayMode(.inline)
+        .interactiveDismissDisabled()
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $isMapSheet, content: {
             MapSheetView(
@@ -196,7 +213,7 @@ struct AddNotes: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
-                    dismiss()
+                    cancel()
                 } label: {
                     HStack {
                         Image(systemName: "chevron.backward")
@@ -207,31 +224,89 @@ struct AddNotes: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     if validate() {
-                        let noteItem = NotesItem(
-                            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-                            desc: desc.trimmingCharacters(in: .whitespacesAndNewlines),
-                            isPinned: isPinned,
-                            location: selectedLocation,
-                            images: selectedImagesData,
-                            videoURL: selectedVideo,
-                            tags: tags,
-                            checklist: checklistItems,
-                            createdAt: Date(),
-                            updatedAt: Date()
-                        )
-                        context.insert(noteItem)
-                        try? context.save()
-                        onSave()
-                        dismiss()
+                        save()
                     } else {
                         showValidation = true
                     }
                 } label: {
                     Text("Save")
                 }
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoadingVideo)
             }
         }
+    }
+    
+    // MARK: - Load / Save
+    
+    private func loadEditingNoteIfNeeded() {
+        guard let note = editingNote, !didLoadNote else { return }
+        didLoadNote = true
+        title = note.title
+        desc = note.desc
+        isPinned = note.isPinned
+        tags = note.tags
+        // Edit copies so that Cancel leaves the saved checklist untouched.
+        checklistItems = note.checklist.map { ChecklistItem(title: $0.title, isDone: $0.isDone) }
+        selectedImagesData = note.images ?? []
+        selectedVideo = note.playableVideoURL
+        originalVideoURL = selectedVideo
+        if let location = note.location {
+            selectedLocation = location
+            position = .region(MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)))
+            mapCenter = location
+            fetchLocationName(for: location) { name in
+                selectedLocationName = name ?? "Unknown"
+            }
+        }
+    }
+    
+    private func save() {
+        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedDesc = desc.trimmingCharacters(in: .whitespacesAndNewlines)
+        let images = selectedImagesData.isEmpty ? nil : selectedImagesData
+        
+        if let note = editingNote {
+            note.title = trimmedTitle
+            note.desc = trimmedDesc
+            note.isPinned = isPinned
+            note.tags = tags
+            note.location = selectedLocation
+            note.images = images
+            note.videoURL = selectedVideo
+            let oldChecklist = note.checklist
+            note.checklist = checklistItems
+            oldChecklist.forEach { context.delete($0) }
+            note.updatedAt = Date()
+            if originalVideoURL != selectedVideo {
+                MediaStore.deleteVideo(originalVideoURL)
+            }
+        } else {
+            let noteItem = NotesItem(
+                title: trimmedTitle,
+                desc: trimmedDesc,
+                isPinned: isPinned,
+                location: selectedLocation,
+                images: images,
+                videoURL: selectedVideo,
+                tags: tags,
+                checklist: checklistItems,
+                createdAt: Date(),
+                updatedAt: Date()
+            )
+            context.insert(noteItem)
+        }
+        try? context.save()
+        Haptics.success()
+        onSave()
+        dismiss()
+    }
+    
+    private func cancel() {
+        // Don't leave a video on disk that was picked but never saved.
+        if selectedVideo != originalVideoURL {
+            MediaStore.deleteVideo(selectedVideo)
+        }
+        dismiss()
     }
     
     // MARK: - Validation
@@ -312,20 +387,6 @@ struct AddNotes: View {
     
     // MARK: - Media helpers
     
-    private func saveVideoToDocuments(url: URL) async -> URL? {
-        do {
-            let data = try Data(contentsOf: url)
-            let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            let fileName = "video-\(UUID().uuidString).\(url.pathExtension)"
-            let fileURL = documentsDirectory.appendingPathComponent(fileName)
-            try data.write(to: fileURL)
-            return fileURL
-        } catch {
-            print("Error saving video: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
     private func videoThumbnail(for url: URL) -> UIImage? {
         let asset = AVAsset(url: url)
         let generator = AVAssetImageGenerator(asset: asset)
@@ -352,21 +413,16 @@ struct AddNotes: View {
         }
     }
     
+    /// Adds newly picked photos after the ones the note already has.
     private func loadSelectedImages(_ newItems: [PhotosPickerItem]) async {
-        selectedImages.removeAll()
-        for item in newItems {
-            if let image = try? await item.loadTransferable(type: Image.self) {
-                selectedImages.append(image)
-            }
-        }
-        var imageDataArray = [Data]()
         for item in newItems {
             if let data = try? await item.loadTransferable(type: Data.self),
                let compressed = await compressImageData(data, maxDimension: 1600, quality: 0.7) {
-                imageDataArray.append(compressed)
+                selectedImagesData.append(compressed)
             }
         }
-        selectedImagesData = imageDataArray
+        // Clear the picker so the next pick adds photos instead of replacing them.
+        selectedItems = []
     }
     
     // MARK: - Search Completer
@@ -457,7 +513,7 @@ private struct NoteSectionView: View {
         Section("Note") {
             HStack {
                 TextField("Title", text: $title)
-                    .onChange(of: title) { _ in
+                    .onChange(of: title) { _, _ in
                         if showValidation { _ = onValidate() }
                     }
                 Text("\(title.count)/80")
@@ -473,7 +529,7 @@ private struct NoteSectionView: View {
             VStack(alignment: .leading) {
                 TextField("Description", text: $desc, axis: .vertical)
                     .lineLimit(3...6)
-                    .onChange(of: desc) { _ in
+                    .onChange(of: desc) { _, _ in
                         if showValidation { _ = onValidate() }
                     }
                 Text("\(desc.count)/500")
@@ -796,14 +852,13 @@ private struct _FlexibleWrap: Layout {
 
 private struct PhotosSectionView: View {
     @Binding var selectedItems: [PhotosPickerItem]
-    @Binding var selectedImages: [Image]
     @Binding var selectedImagesData: [Data]
     var onMoveImage: (Int, Int) -> Void
     
     var body: some View {
         Section("Photos") {
             PhotosPicker(selection: $selectedItems, matching: .images) {
-                Label("Select Photos", systemImage: "photo.on.rectangle.angled")
+                Label(selectedImagesData.isEmpty ? "Select Photos" : "Add Photos", systemImage: "photo.on.rectangle.angled")
             }
             if selectedImagesData.isEmpty {
                 Text("No photos selected").foregroundColor(.secondary)
@@ -841,7 +896,6 @@ private struct PhotosSectionView: View {
                                         
                                         Button(role: .destructive) {
                                             selectedImagesData.remove(at: index)
-                                            if index < selectedImages.count { selectedImages.remove(at: index) }
                                         } label: {
                                             Image(systemName: "trash")
                                         }
@@ -856,7 +910,6 @@ private struct PhotosSectionView: View {
                 }
                 
                 Button(role: .destructive) {
-                    selectedImages.removeAll()
                     selectedImagesData.removeAll()
                     selectedItems.removeAll()
                 } label: {
@@ -871,7 +924,7 @@ private struct VideosSectionView: View {
     @Binding var selectedVideoItem: PhotosPickerItem?
     @Binding var selectedVideo: URL?
     
-    let onSaveVideoToDocuments: (URL) async -> URL?
+    let isLoading: Bool
     let onThumbnail: (URL) -> UIImage?
     
     var body: some View {
@@ -879,8 +932,14 @@ private struct VideosSectionView: View {
             PhotosPicker(selection: $selectedVideoItem, matching: .videos) {
                 Label(selectedVideo == nil ? "Select Video" : "Change Video", systemImage: "video.fill.badge.plus")
             }
+            .disabled(isLoading)
             
-            if let url = selectedVideo {
+            if isLoading {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("Loading video…").foregroundColor(.secondary)
+                }
+            } else if let url = selectedVideo {
                 VStack(alignment: .leading, spacing: 8) {
                     if let thumb = onThumbnail(url) {
                         Image(uiImage: thumb)
@@ -907,7 +966,6 @@ private struct VideosSectionView: View {
                     
                     Button(role: .destructive) {
                         selectedVideo = nil
-                        selectedVideoItem = nil
                     } label: {
                         Label("Remove Video", systemImage: "trash")
                     }

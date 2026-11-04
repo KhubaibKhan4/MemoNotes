@@ -27,8 +27,19 @@ struct NotesDetail: View {
     @State var isMapClicked: Bool = false
     @Environment(\.dismiss) private var dismiss
     @State private var selectedImageIndex: Int = 0
+    @State private var isEditing: Bool = false
+    @AppStorage("FontSize") private var fontSize = 16.0
+    @AppStorage("ShowLineNo") private var showLineNo = false
     
     var body: some View {
+        if notesItem.isDeleted || notesItem.modelContext == nil {
+            ContentUnavailableView("Note Deleted", systemImage: "note.text")
+        } else {
+            noteContent
+        }
+    }
+    
+    private var noteContent: some View {
         List {
             // Header
             Section {
@@ -66,10 +77,10 @@ struct NotesDetail: View {
             }
             
             // Description
-            Section(header: Text("Description")) {
-                Text(notesItem.desc)
-                    .font(.body)
-                    .foregroundColor(.secondary)
+            if !notesItem.desc.isEmpty {
+                Section(header: Text("Description")) {
+                    descriptionText
+                }
             }
             
             // Checklist details (interactive)
@@ -80,11 +91,14 @@ struct NotesDetail: View {
                             Text(item.title)
                         }
                         .onChange(of: item.isDone) { _, _ in
+                            Haptics.tap()
                             notesItem.updatedAt = Date()
                             try? context.save()
                         }
                     }
                     .onDelete { offsets in
+                        // Removing from the relationship alone would leave orphaned rows behind.
+                        offsets.map { notesItem.checklist[$0] }.forEach { context.delete($0) }
                         notesItem.checklist.remove(atOffsets: offsets)
                         notesItem.updatedAt = Date()
                         try? context.save()
@@ -143,7 +157,7 @@ struct NotesDetail: View {
             }
             
             // Video
-            if let videoURL = notesItem.videoURL {
+            if let videoURL = notesItem.playableVideoURL {
                 Section(header: Text("Video")) {
                     VideoPlayer(player: AVPlayer(url: videoURL))
                         .frame(height: 250)
@@ -219,6 +233,16 @@ struct NotesDetail: View {
         }
         .navigationTitle("Note Details")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Edit") { isEditing = true }
+            }
+        }
+        .sheet(isPresented: $isEditing) {
+            NavigationStack {
+                AddNotes(editingNote: notesItem)
+            }
+        }
     }
     
     private func fetchLocationName(for coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
@@ -236,6 +260,33 @@ struct NotesDetail: View {
         }
     }
     
+    @ViewBuilder
+    private var descriptionText: some View {
+        if showLineNo {
+            let lines = notesItem.desc.components(separatedBy: .newlines)
+            let numberWidth = CGFloat(String(lines.count).count) * fontSize * 0.65
+            VStack(alignment: .leading, spacing: 2) {
+                ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
+                    HStack(alignment: .firstTextBaseline, spacing: 10) {
+                        Text("\(index + 1)")
+                            .font(.system(size: fontSize * 0.8, design: .monospaced))
+                            .foregroundStyle(.tertiary)
+                            .frame(minWidth: numberWidth, alignment: .trailing)
+                        Text(line.isEmpty ? " " : line)
+                            .font(.system(size: fontSize))
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+            .textSelection(.enabled)
+        } else {
+            Text(notesItem.desc)
+                .font(.system(size: fontSize))
+                .foregroundColor(.secondary)
+                .textSelection(.enabled)
+        }
+    }
+
     private func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

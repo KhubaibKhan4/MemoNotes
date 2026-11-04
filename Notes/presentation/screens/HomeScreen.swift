@@ -17,16 +17,8 @@ struct HomeScreen: View {
     
     @Query private var notestList: [NotesItem]
     
-    @State private var selectedItem: NotesItem?
-    @State private var isSheetExpanded: Bool = false
-    
-    // Add / Edit bindings
-    @State private var notesTitle: String = ""
-    @State private var notesDesc: String = ""
-    @State private var navTitle: String = "Add Notes"
-    
-    @State private var selectedLocation: CLLocationCoordinate2D?
-    @State private var selectedLocationName: String = "No Location Selected"
+    /// The note open in the edit sheet.
+    @State private var editingNote: NotesItem?
     
     // UI State
     @State private var searchText: String = ""
@@ -47,7 +39,7 @@ struct HomeScreen: View {
     }
     
     private var filteredAndSortedNotes: [NotesItem] {
-        var items = notestList
+        var items = notestList.filter { !$0.isDeleted }
         
         // Search
         if !searchText.isEmpty {
@@ -122,12 +114,7 @@ struct HomeScreen: View {
                         }
                         
                         NavigationLink {
-                            AddNotes(
-                                title: $notesTitle,
-                                desc: $notesDesc,
-                                navTitle: $navTitle,
-                                onSave: { resetAddState() }
-                            )
+                            AddNotes()
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .imageScale(.large)
@@ -165,32 +152,12 @@ struct HomeScreen: View {
                 .padding(.bottom, 24)
             }
             .navigationDestination(isPresented: $pushAdd) {
-                AddNotes(
-                    title: $notesTitle,
-                    desc: $notesDesc,
-                    navTitle: $navTitle,
-                    onSave: { resetAddState() }
-                )
+                AddNotes()
             }
-            .sheet(isPresented: $isSheetExpanded, onDismiss: { resetEditState() }) {
-                UpdateNotes(
-                    title: $notesTitle,
-                    desc: $notesDesc,
-                    navTitle: $navTitle,
-                    selectedLocation: $selectedLocation,
-                    selectedLocationName: $selectedLocationName,
-                    onSave: {
-                        if let selectedItem = selectedItem {
-                            selectedItem.title = notesTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-                            selectedItem.desc = notesDesc.trimmingCharacters(in: .whitespacesAndNewlines)
-                            selectedItem.location = selectedLocation
-                            selectedItem.updatedAt = Date()
-                            try? context.save()
-                        }
-                        isSheetExpanded = false
-                        resetEditState()
-                    }
-                )
+            .sheet(item: $editingNote) { note in
+                NavigationStack {
+                    AddNotes(editingNote: note)
+                }
             }
         }
     }
@@ -454,20 +421,14 @@ struct HomeScreen: View {
     }
     
     private func togglePin(for note: NotesItem) {
-        if let index = notestList.firstIndex(where: { $0.id == note.id }) {
-            notestList[index].isPinned.toggle()
-            notestList[index].updatedAt = Date()
-            try? context.save()
-        }
+        note.isPinned.toggle()
+        note.updatedAt = Date()
+        try? context.save()
+        Haptics.tap(.medium)
     }
     
     private func presentEdit(for item: NotesItem) {
-        selectedItem = item
-        notesTitle = item.title
-        notesDesc = item.desc
-        selectedLocation = item.location
-        navTitle = "Update Note"
-        isSheetExpanded = true
+        editingNote = item
     }
     
     private func deleteItems(_ offsets: IndexSet) {
@@ -478,27 +439,10 @@ struct HomeScreen: View {
     }
     
     private func deleteItem(_ item: NotesItem) {
+        MediaStore.deleteVideo(item.videoURL)
         context.delete(item)
         try? context.save()
-    }
-    
-    private func resetAddState() {
-        // reset fields back to default for next add
-        notesTitle = ""
-        notesDesc = ""
-        navTitle = "Add Notes"
-        selectedLocation = nil
-        selectedLocationName = "No Location Selected"
-    }
-    
-    private func resetEditState() {
-        selectedItem = nil
-        notesTitle = ""
-        notesDesc = ""
-        navTitle = "Add Notes"
-        selectedLocation = nil
-        selectedLocationName = "No Location Selected"
-        isSheetExpanded = false
+        Haptics.warning()
     }
 }
 
@@ -567,6 +511,7 @@ private struct NoteCard: View {
     let item: NotesItem
     let style: Style
     let colorScheme: ColorScheme
+    @AppStorage("ShowPreview") private var showPreview = true
     
     enum Style {
         case list
@@ -575,6 +520,16 @@ private struct NoteCard: View {
     }
     
     var body: some View {
+        // A note deleted elsewhere (e.g. Reset All Data) can still be rendered once
+        // before the query refreshes; reading its properties then would crash.
+        if item.isDeleted || item.modelContext == nil {
+            EmptyView()
+        } else {
+            cardContent
+        }
+    }
+    
+    private var cardContent: some View {
         VStack(alignment: .leading, spacing: 10) {
             mediaHeader
             
@@ -595,7 +550,7 @@ private struct NoteCard: View {
                 TagsChipsView(tags: item.tags, limit: 3)
             }
             
-            if !item.desc.isEmpty {
+            if showPreview && !item.desc.isEmpty {
                 Text(item.desc)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
