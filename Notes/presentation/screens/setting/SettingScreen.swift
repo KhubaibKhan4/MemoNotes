@@ -102,12 +102,16 @@ struct SettingScreen: View {
                 }
 
                 // ---- Notifications & Haptics
-                Section(header: Label("Feedback", systemImage: "bell")) {
+                Section {
                     Toggle(isOn: $notificationsEnabled) {
                         Label("Enable Notifications", systemImage: "bell.badge")
                     }
                     .onChange(of: notificationsEnabled) { _, enabled in
-                        if enabled { requestNotificationPermission() }
+                        if enabled {
+                            requestNotificationPermission()
+                        } else {
+                            ReminderScheduler.cancelAll()
+                        }
                     }
 
                     Toggle(isOn: $hapticsEnabled) {
@@ -116,6 +120,10 @@ struct SettingScreen: View {
                     .onChange(of: hapticsEnabled) { _, enabled in
                         if enabled { Haptics.tap(.medium) }
                     }
+                } header: {
+                    Label("Feedback", systemImage: "bell")
+                } footer: {
+                    Text("Notifications are used for reminders on notes and todos.")
                 }
 
                 // ---- Data
@@ -140,7 +148,7 @@ struct SettingScreen: View {
                 } header: {
                     Label("Data", systemImage: "externaldrive")
                 } footer: {
-                    Text("Exports notes, photos, checklists and todos as a JSON file. Videos are not included. Importing adds notes and todos without replacing what you have.")
+                    Text("Exports notes, photos, checklists, todos and reminders as a JSON file. Videos are not included. Importing adds notes and todos without replacing what you have.")
                 }
 
                 // ---- About & Support
@@ -229,6 +237,7 @@ struct SettingScreen: View {
             defer { if didAccess { url.stopAccessingSecurityScopedResource() } }
 
             let added = try DataManager.importBackup(try Data(contentsOf: url), context: context)
+            ReminderScheduler.resync(context: context)
             Haptics.success()
             let notes = added.notes == 1 ? "1 note" : "\(added.notes) notes"
             let todos = added.todos == 1 ? "1 todo" : "\(added.todos) todos"
@@ -243,6 +252,7 @@ struct SettingScreen: View {
     private func resetAllData() {
         do {
             try DataManager.deleteAllData(context: context)
+            ReminderScheduler.cancelAll()
         } catch {
             resultMessage = "Couldn't delete all data: \(error.localizedDescription)"
             return
@@ -268,15 +278,15 @@ struct SettingScreen: View {
         Task {
             let center = UNUserNotificationCenter.current()
             let settings = await center.notificationSettings()
-            switch settings.authorizationStatus {
-            case .authorized, .provisional, .ephemeral:
-                return
-            case .denied:
+            if settings.authorizationStatus == .denied {
                 notificationsEnabled = false
                 showNotificationsDeniedAlert = true
-            default:
-                let granted = (try? await center.requestAuthorization(options: [.alert, .sound, .badge])) ?? false
-                if !granted { notificationsEnabled = false }
+                return
+            }
+            if await ReminderScheduler.ensurePermission() {
+                ReminderScheduler.resync(context: context)
+            } else {
+                notificationsEnabled = false
             }
         }
     }

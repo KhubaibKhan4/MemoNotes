@@ -182,6 +182,15 @@ struct NotesDetail: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
+                    if let reminder = notesItem.reminderDate, reminder > Date() {
+                        HStack(spacing: 8) {
+                            Image(systemName: "bell.fill")
+                                .foregroundColor(.orange)
+                            Text("Reminder: \(formattedDate(reminder))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 }
             }
         }

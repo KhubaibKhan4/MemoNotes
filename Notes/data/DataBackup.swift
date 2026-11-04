@@ -28,6 +28,8 @@ struct NotesBackup: Codable {
         var checklist: [ChecklistEntry]
         var createdAt: Date
         var updatedAt: Date
+        // Optional so backups from older versions still import.
+        var reminderDate: Date?
     }
 
     struct ChecklistEntry: Codable {
@@ -40,6 +42,12 @@ struct NotesBackup: Codable {
         var id: String
         var title: String
         var isCompleted: Bool
+        // Optional so backups from older versions still import.
+        var notes: String?
+        var dueDate: Date?
+        var hasReminder: Bool?
+        var priority: Int?
+        var createdAt: Date?
     }
 }
 
@@ -87,10 +95,22 @@ enum DataManager {
                         NotesBackup.ChecklistEntry(id: $0.id, title: $0.title, isDone: $0.isDone)
                     },
                     createdAt: note.createdAt,
-                    updatedAt: note.updatedAt
+                    updatedAt: note.updatedAt,
+                    reminderDate: note.reminderDate
                 )
             },
-            todos: todos.map { NotesBackup.Todo(id: $0.id, title: $0.title, isCompleted: $0.isCompleted) }
+            todos: todos.map {
+                NotesBackup.Todo(
+                    id: $0.id,
+                    title: $0.title,
+                    isCompleted: $0.isCompleted,
+                    notes: $0.notes,
+                    dueDate: $0.dueDate,
+                    hasReminder: $0.hasReminder,
+                    priority: $0.priorityRaw,
+                    createdAt: $0.createdAt
+                )
+            }
         )
 
         let encoder = JSONEncoder()
@@ -124,14 +144,23 @@ enum DataManager {
             note.id = entry.id
             note.latitude = entry.latitude
             note.longitude = entry.longitude
+            note.reminderDate = entry.reminderDate
             context.insert(note)
             addedNotes += 1
         }
 
         var addedTodos = 0
         for entry in backup.todos where !existingTodoIDs.contains(entry.id) {
-            let todo = TodoItem(title: entry.title, isCompleted: entry.isCompleted)
+            let todo = TodoItem(
+                title: entry.title,
+                isCompleted: entry.isCompleted,
+                notes: entry.notes ?? "",
+                dueDate: entry.dueDate,
+                hasReminder: entry.hasReminder ?? false,
+                priority: TodoPriority(rawValue: entry.priority ?? 0) ?? .none
+            )
             todo.id = entry.id
+            if let createdAt = entry.createdAt { todo.createdAt = createdAt }
             context.insert(todo)
             addedTodos += 1
         }

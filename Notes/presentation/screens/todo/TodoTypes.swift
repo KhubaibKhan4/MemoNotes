@@ -12,6 +12,8 @@ enum Sort: Int, CaseIterable, Identifiable {
     case titleAsc
     case titleDesc
     case status
+    case dueDate
+    case priority
     
     var id: Int { rawValue }
 }

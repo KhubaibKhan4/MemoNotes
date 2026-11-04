@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct NotesApp: App {
     
+    @UIApplicationDelegateAdaptor(NotificationDelegate.self) private var notificationDelegate
     @StateObject var appManager: AppManager = AppManager()
     
     var body: some Scene {
