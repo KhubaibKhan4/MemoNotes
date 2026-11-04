@@ -10,6 +10,7 @@ import SwiftData
 
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var context
     @State private var isSelected : Int = 0
     @AppStorage("isPermissionGranted") var isPermissionGranted = false
     
@@ -39,6 +40,10 @@ struct ContentView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 isSplash = false
             }
+        }
+        .task {
+            // Rebuild pending reminders in case they were lost (reinstall, restore, permission changes).
+            ReminderScheduler.resync(context: context)
         }
     }
 }

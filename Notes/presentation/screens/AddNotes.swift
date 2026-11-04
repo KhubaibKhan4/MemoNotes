@@ -39,6 +39,11 @@ struct AddNotes: View {
     
     @State private var isPinned: Bool = false
     
+    // Reminder
+    @State private var hasReminder: Bool = false
+    @State private var reminderDate: Date = .nextHour
+    @State private var showNotificationsOffAlert: Bool = false
+    
     // Tags
     @State private var tags: [String] = []
     @State private var newTag: String = ""
@@ -83,6 +88,20 @@ struct AddNotes: View {
                     showValidation: $showValidation,
                     onValidate: validate
                 )
+                
+                ReminderSectionView(
+                    hasReminder: $hasReminder,
+                    reminderDate: $reminderDate
+                )
+                .onChange(of: hasReminder) { _, isOn in
+                    guard isOn else { return }
+                    Task {
+                        if !(await ReminderScheduler.ensurePermission()) {
+                            hasReminder = false
+                            showNotificationsOffAlert = true
+                        }
+                    }
+                }
                 
                 TagsSectionView(
                     tags: $tags,
@@ -193,6 +212,16 @@ struct AddNotes: View {
         .navigationTitle(editingNote == nil ? "Add Note" : "Edit Note")
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
+        .alert("Notifications Are Off", isPresented: $showNotificationsOffAlert) {
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("Allow notifications for this app in the Settings app to get reminders.")
+        }
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $isMapSheet, content: {
             MapSheetView(
@@ -250,6 +279,10 @@ struct AddNotes: View {
         selectedImagesData = note.images ?? []
         selectedVideo = note.playableVideoURL
         originalVideoURL = selectedVideo
+        if let date = note.reminderDate, date > Date() {
+            hasReminder = true
+            reminderDate = date
+        }
         if let location = note.location {
             selectedLocation = location
             position = .region(MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)))
@@ -264,8 +297,12 @@ struct AddNotes: View {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedDesc = desc.trimmingCharacters(in: .whitespacesAndNewlines)
         let images = selectedImagesData.isEmpty ? nil : selectedImagesData
+        let reminder = hasReminder ? reminderDate : nil
+        let savedNote: NotesItem
         
         if let note = editingNote {
+            savedNote = note
+            note.reminderDate = reminder
             note.title = trimmedTitle
             note.desc = trimmedDesc
             note.isPinned = isPinned
@@ -293,9 +330,12 @@ struct AddNotes: View {
                 createdAt: Date(),
                 updatedAt: Date()
             )
+            noteItem.reminderDate = reminder
             context.insert(noteItem)
+            savedNote = noteItem
         }
         try? context.save()
+        ReminderScheduler.schedule(savedNote)
         Haptics.success()
         onSave()
         dismiss()
@@ -501,6 +541,28 @@ struct AddNotes: View {
 }
 
 // MARK: - Subviews
+
+private struct ReminderSectionView: View {
+    @Binding var hasReminder: Bool
+    @Binding var reminderDate: Date
+    
+    var body: some View {
+        Section {
+            Toggle(isOn: $hasReminder.animation()) {
+                Label("Remind me", systemImage: "bell")
+            }
+            if hasReminder {
+                DatePicker("Time", selection: $reminderDate, in: Date()...)
+            }
+        } header: {
+            Text("Reminder")
+        } footer: {
+            if hasReminder {
+                Text("You'll get a notification at this time.")
+            }
+        }
+    }
+}
 
 private struct NoteSectionView: View {
     @Binding var title: String

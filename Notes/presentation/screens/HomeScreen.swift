@@ -439,6 +439,7 @@ struct HomeScreen: View {
     }
     
     private func deleteItem(_ item: NotesItem) {
+        ReminderScheduler.cancel(noteID: item.id)
         MediaStore.deleteVideo(item.videoURL)
         context.delete(item)
         try? context.save()
@@ -567,6 +568,13 @@ private struct NoteCard: View {
                         .labelStyle(.iconOnly)
                         .foregroundStyle(.blue)
                         .imageScale(.small)
+                }
+                if let reminder = item.reminderDate, reminder > Date() {
+                    Label("", systemImage: "bell.fill")
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.orange)
+                        .imageScale(.small)
+                        .accessibilityLabel("Reminder set")
                 }
                 if item.videoURL != nil {
                     Label("", systemImage: "video.fill")

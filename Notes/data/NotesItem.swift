@@ -42,6 +42,8 @@ class NotesItem: Identifiable {
     @Relationship(deleteRule: .cascade) var checklist: [ChecklistItem]
     var createdAt: Date
     var updatedAt: Date
+    /// When set and in the future, a notification fires at this time.
+    var reminderDate: Date? = nil
     
     init(
         title: String,
