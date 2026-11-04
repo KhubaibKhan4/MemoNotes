@@ -755,7 +755,12 @@ private struct NoteCard: View {
     }
     
     private var cardBackground: some ShapeStyle {
-        if item.isPinned {
+        if let tint = item.noteColor?.color {
+            return AnyShapeStyle(LinearGradient(colors: [
+                tint.opacity(colorScheme == .dark ? 0.40 : 0.30),
+                tint.opacity(0.10)
+            ], startPoint: .topLeading, endPoint: .bottomTrailing))
+        } else if item.isPinned {
             return AnyShapeStyle(LinearGradient(colors: [
                 Color.orange.opacity(colorScheme == .dark ? 0.35 : 0.25),
                 Color.orange.opacity(0.08)
