@@ -28,6 +28,7 @@ struct NotesDetail: View {
     @Environment(\.dismiss) private var dismiss
     @State private var selectedImageIndex: Int = 0
     @State private var isEditing: Bool = false
+    @State private var aiAction: NoteAIAction?
     @AppStorage("FontSize") private var fontSize = 16.0
     @AppStorage("ShowLineNo") private var showLineNo = false
     
@@ -244,7 +245,18 @@ struct NotesDetail: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                NoteAIMenu(activeAction: $aiAction)
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 Button("Edit") { isEditing = true }
+            }
+        }
+        .sheet(item: $aiAction) { action in
+            switch action {
+            case .summarize:
+                NoteSummarySheet(note: notesItem)
+            case .actionItems:
+                NoteActionItemsSheet(note: notesItem)
             }
         }
         .sheet(isPresented: $isEditing) {
