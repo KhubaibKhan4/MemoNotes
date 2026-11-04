@@ -65,6 +65,9 @@ class NotesItem: Identifiable {
     /// Notes are removed for good 30 days after this.
     var deletedAt: Date? = nil
     
+    /// Card color (a `NoteColor` name). `nil` for the default look.
+    var colorName: String? = nil
+    
     var isInTrash: Bool { deletedAt != nil }
 
     /// Checklist items in display order. SwiftData relationships are unordered,

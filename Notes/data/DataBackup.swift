@@ -33,6 +33,7 @@ struct NotesBackup: Codable {
         var richText: Data?
         /// Folder name; folders are matched or created by name on import.
         var folder: String?
+        var color: String?
     }
 
     struct ChecklistEntry: Codable {
@@ -102,7 +103,8 @@ enum DataManager {
                     updatedAt: note.updatedAt,
                     reminderDate: note.reminderDate,
                     richText: note.richText,
-                    folder: note.folder?.name
+                    folder: note.folder?.name,
+                    color: note.colorName
                 )
             },
             todos: todos.map {
@@ -166,6 +168,7 @@ enum DataManager {
             note.reminderDate = entry.reminderDate
             note.richText = entry.richText
             note.folder = folder(named: entry.folder)
+            note.colorName = entry.color
             context.insert(note)
             addedNotes += 1
         }

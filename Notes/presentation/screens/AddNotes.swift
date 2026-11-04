@@ -44,6 +44,7 @@ struct AddNotes: View {
     
     @State private var isPinned: Bool = false
     @State private var folder: NoteFolder?
+    @State private var noteColor: NoteColor?
     
     // Reminder
     @State private var hasReminder: Bool = false
@@ -96,6 +97,7 @@ struct AddNotes: View {
                     baseSize: fontSize,
                     isPinned: $isPinned,
                     folder: $folder,
+                    noteColor: $noteColor,
                     showValidation: $showValidation,
                     onValidate: validate
                 )
@@ -293,6 +295,7 @@ struct AddNotes: View {
         }
         didLoadNote = true
         folder = note.folder
+        noteColor = note.noteColor
         title = note.title
         richDesc = RichTextCoder.decode(note.richText, fallback: note.desc, baseSize: fontSize)
         isPinned = note.isPinned
@@ -333,6 +336,7 @@ struct AddNotes: View {
             note.richText = richData
             note.isPinned = isPinned
             note.folder = folder
+            note.noteColor = noteColor
             note.tags = tags
             note.location = selectedLocation
             note.images = images
@@ -360,6 +364,7 @@ struct AddNotes: View {
             noteItem.reminderDate = reminder
             noteItem.richText = richData
             noteItem.folder = folder
+            noteItem.noteColor = noteColor
             context.insert(noteItem)
             savedNote = noteItem
         }
@@ -635,6 +640,7 @@ private struct NoteSectionView: View {
     var baseSize: CGFloat
     @Binding var isPinned: Bool
     @Binding var folder: NoteFolder?
+    @Binding var noteColor: NoteColor?
     @Binding var showValidation: Bool
     var onValidate: () -> Bool
     
@@ -667,7 +673,47 @@ private struct NoteSectionView: View {
             
             Toggle("Pin this note", isOn: $isPinned)
             FolderPicker(selection: $folder)
+            NoteColorPicker(selection: $noteColor)
         }
+    }
+}
+
+/// A row of color dots; the first one means "no color".
+private struct NoteColorPicker: View {
+    @Binding var selection: NoteColor?
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label("Color", systemImage: "paintpalette")
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    dot(nil)
+                    ForEach(NoteColor.allCases) { dot($0) }
+                }
+                .padding(.vertical, 4)
+            }
+        }
+    }
+    
+    private func dot(_ option: NoteColor?) -> some View {
+        let isSelected = selection == option
+        return Button {
+            selection = option
+            Haptics.tap()
+        } label: {
+            Circle()
+                .fill(option?.color ?? Color.secondary.opacity(0.2))
+                .frame(width: 30, height: 30)
+                .overlay {
+                    if option == nil {
+                        Image(systemName: "slash.circle").foregroundStyle(.secondary)
+                    }
+                }
+                .overlay(Circle().strokeBorder(Color.primary, lineWidth: isSelected ? 2.5 : 0).padding(-4))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(option?.title ?? "No color")
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
