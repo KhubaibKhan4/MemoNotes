@@ -104,7 +104,6 @@ struct TodoScreen: View {
                 }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
-            .preferredColorScheme(appManager.isDark ? .dark : .light)
             .sheet(isPresented: $isPresentingEditor, onDismiss: {
                 editingItem = nil // Reset after dismiss
             }) {
@@ -140,7 +139,7 @@ struct TodoScreen: View {
     // MARK: - Derived Data
     
     private var filteredSortedTodos: [TodoItem] {
-        var items = allTodos
+        var items = allTodos.filter { !$0.isDeleted }
         
         // Filter by search
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -234,6 +233,7 @@ struct TodoScreen: View {
                         HStack(spacing: 12) {
                             Button {
                                 item.isCompleted.toggle()
+                                Haptics.tap()
                                 try? context.save()
                             } label: {
                                 Image(systemName: item.isCompleted ? "checkmark.circle.fill" : "circle")
@@ -272,6 +272,7 @@ struct TodoScreen: View {
                         .swipeActions(edge: .leading, allowsFullSwipe: true) {
                             Button {
                                 item.isCompleted.toggle()
+                                Haptics.tap()
                                 try? context.save()
                             } label: {
                                 if item.isCompleted {
@@ -291,6 +292,7 @@ struct TodoScreen: View {
                             }
                             Button {
                                 item.isCompleted.toggle()
+                                Haptics.tap()
                                 try? context.save()
                             } label: {
                                 if item.isCompleted {

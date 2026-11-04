@@ -19,7 +19,7 @@ struct NotesApp: App {
                 .modelContainer(for: [NotesItem.self, TodoItem.self])
                 .environment(\.locale, Locale(identifier: appManager.appLanguage))
                 .environmentObject(appManager)
-                .preferredColorScheme(appManager.isDark ? .dark : .light)
+                .preferredColorScheme(appManager.theme.colorScheme)
                 .environment(\.locale, .init(identifier: appManager.appLanguage))
                 .environment(\.layoutDirection, isRTL(langauge: appManager.appLanguage) ? .rightToLeft : .leftToRight)
         }

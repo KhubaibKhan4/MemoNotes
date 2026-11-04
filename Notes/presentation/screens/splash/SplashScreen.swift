@@ -18,7 +18,6 @@ struct SplashScreen: View {
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(appManager.isDark ? .black : .white)
-        .preferredColorScheme(appManager.isDark ? .dark : .light)
+        .background(Color(.systemBackground))
     }
 }
