@@ -9,9 +9,10 @@ import SwiftData
 
 @Model
 class TodoItem: Identifiable {
-    var id: String
-    var title: String
-    var isCompleted: Bool
+    // Defaults are required for iCloud (CloudKit) sync; see NotesItem.swift.
+    var id: String = UUID().uuidString
+    var title: String = ""
+    var isCompleted: Bool = false
 
     // Added for due dates and reminders. Default values let SwiftData
     // migrate existing stores automatically.

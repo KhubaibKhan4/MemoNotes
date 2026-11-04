@@ -35,6 +35,7 @@ struct SettingScreen: View {
     @State private var showImporter = false
     @State private var exportDocument: BackupDocument?
     @State private var resultMessage: String?
+    @State private var isSignedInToICloud = FileManager.default.ubiquityIdentityToken != nil
 
     private var themeBinding: Binding<ThemeOption> {
         Binding(get: { appManager.theme }, set: { appManager.theme = $0 })
@@ -126,6 +127,24 @@ struct SettingScreen: View {
                     Text("Notifications are used for reminders on notes and todos.")
                 }
 
+                // ---- iCloud
+                Section {
+                    HStack {
+                        Label("iCloud Sync", systemImage: "icloud")
+                        Spacer()
+                        Text(isSignedInToICloud ? "On" : "Off")
+                            .foregroundColor(.secondary)
+                    }
+                } header: {
+                    Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                } footer: {
+                    if isSignedInToICloud {
+                        Text("Notes, checklists, photos, todos and reminders sync to your other devices signed in to the same iCloud account. Videos stay on the device that added them.")
+                    } else {
+                        Text("Sign in to iCloud in the Settings app to sync notes and todos across your devices.")
+                    }
+                }
+                
                 // ---- Data
                 Section {
                     Button {
@@ -175,12 +194,17 @@ struct SettingScreen: View {
                 }
             }
             .navigationTitle("Settings")
-            .onAppear(perform: syncNotificationPermission)
+            .onAppear {
+                syncNotificationPermission()
+                isSignedInToICloud = FileManager.default.ubiquityIdentityToken != nil
+            }
             .alert("Reset All App Data?", isPresented: $showResetAlert) {
                 Button("Delete All", role: .destructive) { resetAllData() }
                 Button("Cancel", role: .cancel) { }
             } message: {
-                Text("This will erase all your notes, todos, and settings. This cannot be undone.")
+                Text(isSignedInToICloud
+                     ? "This will erase all your notes, todos, and settings — on this device and on your other devices that sync through iCloud. This cannot be undone."
+                     : "This will erase all your notes, todos, and settings. This cannot be undone.")
             }
             .alert("Notifications Are Off", isPresented: $showNotificationsDeniedAlert) {
                 Button("Open Settings") {
