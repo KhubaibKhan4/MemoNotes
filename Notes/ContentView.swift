@@ -71,6 +71,7 @@ struct ContentView: View {
             // reminders added or changed on other devices through iCloud, and ones lost
             // after a reinstall, restore or permission change.
             if phase == .active {
+                NoteTrash.purgeExpired(context: context)
                 ReminderScheduler.resync(context: context)
             }
         }

@@ -14,7 +14,7 @@ enum SharedStore {
     static let appGroupID = "group.com.brikmas.aipowerednotes.sync.notes"
 
     static var schema: Schema {
-        Schema([NotesItem.self, ChecklistItem.self, TodoItem.self])
+        Schema([NotesItem.self, ChecklistItem.self, TodoItem.self, NoteFolder.self])
     }
 
     /// `nil` when the App Group isn't set up (missing entitlement).

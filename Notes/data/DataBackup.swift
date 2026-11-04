@@ -31,6 +31,8 @@ struct NotesBackup: Codable {
         // Optional so backups from older versions still import.
         var reminderDate: Date?
         var richText: Data?
+        /// Folder name; folders are matched or created by name on import.
+        var folder: String?
     }
 
     struct ChecklistEntry: Codable {
@@ -78,7 +80,8 @@ struct BackupDocument: FileDocument {
 enum DataManager {
 
     static func exportBackup(context: ModelContext) throws -> Data {
-        let notes = try context.fetch(FetchDescriptor<NotesItem>())
+        // Notes in Recently Deleted aren't backed up.
+        let notes = try context.fetch(FetchDescriptor<NotesItem>()).filter { !$0.isInTrash }
         let todos = try context.fetch(FetchDescriptor<TodoItem>())
 
         let backup = NotesBackup(
@@ -98,7 +101,8 @@ enum DataManager {
                     createdAt: note.createdAt,
                     updatedAt: note.updatedAt,
                     reminderDate: note.reminderDate,
-                    richText: note.richText
+                    richText: note.richText,
+                    folder: note.folder?.name
                 )
             },
             todos: todos.map {
@@ -131,6 +135,19 @@ enum DataManager {
         let existingNoteIDs = Set(try context.fetch(FetchDescriptor<NotesItem>()).map(\.id))
         let existingTodoIDs = Set(try context.fetch(FetchDescriptor<TodoItem>()).map(\.id))
 
+        var folders = Dictionary(
+            (try context.fetch(FetchDescriptor<NoteFolder>())).map { ($0.name.lowercased(), $0) },
+            uniquingKeysWith: { first, _ in first }
+        )
+        func folder(named name: String?) -> NoteFolder? {
+            guard let name = name?.trimmingCharacters(in: .whitespacesAndNewlines), !name.isEmpty else { return nil }
+            if let existing = folders[name.lowercased()] { return existing }
+            let created = NoteFolder(name: name)
+            context.insert(created)
+            folders[name.lowercased()] = created
+            return created
+        }
+
         var addedNotes = 0
         for entry in backup.notes where !existingNoteIDs.contains(entry.id) {
             let note = NotesItem(
@@ -148,6 +165,7 @@ enum DataManager {
             note.longitude = entry.longitude
             note.reminderDate = entry.reminderDate
             note.richText = entry.richText
+            note.folder = folder(named: entry.folder)
             context.insert(note)
             addedNotes += 1
         }
@@ -178,6 +196,7 @@ enum DataManager {
         try context.fetch(FetchDescriptor<NotesItem>()).forEach { context.delete($0) }
         try context.fetch(FetchDescriptor<ChecklistItem>()).forEach { context.delete($0) }
         try context.fetch(FetchDescriptor<TodoItem>()).forEach { context.delete($0) }
+        try context.fetch(FetchDescriptor<NoteFolder>()).forEach { context.delete($0) }
         try context.save()
         MediaStore.deleteAllVideos()
     }

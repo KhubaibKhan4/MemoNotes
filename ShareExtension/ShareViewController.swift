@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftUI
+import SwiftData
 import UniformTypeIdentifiers
 
 final class ShareViewController: UIViewController {
@@ -118,6 +119,10 @@ final class ShareModel: ObservableObject {
     @Published var tag = ""
     @Published var images: [Data] = []
     @Published var errorMessage: String?
+    /// Folders to file a note in: (id, name). Empty when there are none.
+    @Published var folders: [(id: String, name: String)] = []
+    /// Remembered between shares, so WhatsApp messages keep landing in the same folder.
+    @Published var folderID: String = SharedStore.sharedDefaults.string(forKey: "ShareFolderID") ?? ""
 
     private let onDone: () -> Void
     private let onCancel: () -> Void
@@ -142,7 +147,16 @@ final class ShareModel: ObservableObject {
             body = split.body
         }
         images = content.images
+        loadFolders()
         isLoading = false
+    }
+
+    private func loadFolders() {
+        guard SharedStore.storeURL != nil,
+              let container = try? SharedStore.makeContainer(syncWithICloud: false) else { return }
+        let descriptor = FetchDescriptor<NoteFolder>(sortBy: [SortDescriptor(\.name)])
+        folders = ((try? container.mainContext.fetch(descriptor)) ?? []).map { ($0.id, $0.name) }
+        if !folders.contains(where: { $0.id == folderID }) { folderID = "" }
     }
 
     func save() {
@@ -158,13 +172,21 @@ final class ShareModel: ObservableObject {
             switch kind {
             case .note:
                 let tagName = tag.trimmingCharacters(in: .whitespacesAndNewlines)
-                context.insert(NotesItem(
+                let note = NotesItem(
                     title: trimmedTitle,
                     desc: trimmedBody,
                     isPinned: false,
                     images: images.isEmpty ? nil : images,
                     tags: tagName.isEmpty ? [] : [tagName]
-                ))
+                )
+                if !folderID.isEmpty {
+                    let id = folderID
+                    var descriptor = FetchDescriptor<NoteFolder>(predicate: #Predicate { $0.id == id })
+                    descriptor.fetchLimit = 1
+                    note.folder = try? context.fetch(descriptor).first
+                }
+                context.insert(note)
+                SharedStore.sharedDefaults.set(folderID, forKey: "ShareFolderID")
             case .task:
                 context.insert(TodoItem(title: trimmedTitle, isCompleted: false, notes: trimmedBody))
             }
@@ -218,6 +240,16 @@ struct ShareView: View {
                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                         }
                                     }
+                                }
+                            }
+                        }
+                    }
+                    if !model.folders.isEmpty {
+                        Section {
+                            Picker("Folder", selection: $model.folderID) {
+                                Text("None").tag("")
+                                ForEach(model.folders, id: \.id) { folder in
+                                    Text(folder.name).tag(folder.id)
                                 }
                             }
                         }

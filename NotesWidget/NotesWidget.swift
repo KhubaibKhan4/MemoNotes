@@ -44,7 +44,8 @@ enum WidgetData {
         guard let container = try? SharedStore.makeContainer(syncWithICloud: false) else { return [] }
         let context = ModelContext(container)
         let descriptor = FetchDescriptor<NotesItem>(sortBy: [SortDescriptor(\.updatedAt, order: .reverse)])
-        let all = (try? context.fetch(descriptor)) ?? []
+        // Leave out notes in Recently Deleted.
+        let all = ((try? context.fetch(descriptor)) ?? []).filter { $0.deletedAt == nil }
         // Pinned notes first, then the most recently edited.
         let ordered = all.filter(\.isPinned) + all.filter { !$0.isPinned }
         return ordered.prefix(limit).map {
