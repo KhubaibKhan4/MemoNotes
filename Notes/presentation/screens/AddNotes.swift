@@ -50,6 +50,9 @@ struct AddNotes: View {
     // Tags
     @State private var tags: [String] = []
     @State private var newTag: String = ""
+    @State private var suggestedTags: [String] = []
+    @State private var isSuggestingTags = false
+    @State private var tagSuggestionMessage: String?
     
     // Checklist
     @State private var checklistItems: [ChecklistItem] = []
@@ -110,8 +113,14 @@ struct AddNotes: View {
                 TagsSectionView(
                     tags: $tags,
                     newTag: $newTag,
+                    suggestedTags: suggestedTags,
+                    isSuggesting: isSuggestingTags,
+                    suggestionMessage: tagSuggestionMessage,
+                    canSuggest: NoteAI.isSupported,
                     onAdd: addTag,
-                    onDelete: deleteTag
+                    onDelete: deleteTag,
+                    onSuggest: suggestTags,
+                    onAcceptSuggestion: acceptSuggestedTag
                 )
                 
                 ChecklistSectionView(
@@ -522,6 +531,40 @@ struct AddNotes: View {
         }
         newTag = ""
     }
+    /// Asks Apple Intelligence for tags based on the title and text.
+    private func suggestTags() {
+        if case .unavailable(let message) = NoteAI.status {
+            tagSuggestionMessage = message
+            return
+        }
+        let noteTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        let noteBody = String(richDesc.characters)
+        guard !noteTitle.isEmpty || !noteBody.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            tagSuggestionMessage = "Write a title or some text first."
+            return
+        }
+        isSuggestingTags = true
+        tagSuggestionMessage = nil
+        Task {
+            do {
+                let found = try await NoteAI.suggestTags(title: noteTitle, body: noteBody, existing: tags)
+                suggestedTags = found
+                if found.isEmpty { tagSuggestionMessage = "No new tags to suggest." }
+            } catch {
+                tagSuggestionMessage = NoteAI.message(for: error)
+            }
+            isSuggestingTags = false
+        }
+    }
+    
+    private func acceptSuggestedTag(_ tag: String) {
+        if !tags.contains(where: { $0.caseInsensitiveCompare(tag) == .orderedSame }) {
+            tags.append(tag)
+        }
+        suggestedTags.removeAll { $0 == tag }
+        Haptics.tap()
+    }
+    
     private func deleteTag(_ tag: String) {
         if let idx = tags.firstIndex(of: tag) {
             tags.remove(at: idx)
@@ -617,11 +660,17 @@ private struct NoteSectionView: View {
 private struct TagsSectionView: View {
     @Binding var tags: [String]
     @Binding var newTag: String
+    var suggestedTags: [String]
+    var isSuggesting: Bool
+    var suggestionMessage: String?
+    var canSuggest: Bool
     var onAdd: () -> Void
     var onDelete: (String) -> Void
+    var onSuggest: () -> Void
+    var onAcceptSuggestion: (String) -> Void
     
     var body: some View {
-        Section("Tags") {
+        Section {
             HStack {
                 TextField("Add a tag", text: $newTag)
                     .onSubmit(onAdd)
@@ -633,6 +682,42 @@ private struct TagsSectionView: View {
             } else {
                 Text("No tags yet").foregroundColor(.secondary)
             }
+            if canSuggest {
+                Button(action: onSuggest) {
+                    HStack {
+                        Label("Suggest Tags", systemImage: "sparkles")
+                        if isSuggesting {
+                            Spacer()
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(isSuggesting)
+                if !suggestedTags.isEmpty {
+                    FlexibleWrap(spacing: 8) {
+                        ForEach(suggestedTags, id: \.self) { tag in
+                            Button {
+                                onAcceptSuggestion(tag)
+                            } label: {
+                                Label(tag, systemImage: "plus")
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(Capsule().strokeBorder(Color.accentColor.opacity(0.6)))
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityLabel("Add tag \(tag)")
+                        }
+                    }
+                }
+                if let suggestionMessage {
+                    Text(suggestionMessage)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        } header: {
+            Text("Tags")
         }
     }
 }
