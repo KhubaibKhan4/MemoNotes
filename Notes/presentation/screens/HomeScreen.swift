@@ -16,7 +16,37 @@ struct HomeScreen: View {
     @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var appManager: AppManager
     
-    @Query private var notestList: [NotesItem]
+    @Query private var allNotes: [NotesItem]
+    @Query(sort: \NoteFolder.name) private var folders: [NoteFolder]
+    
+    /// Notes that aren't in Recently Deleted.
+    private var notestList: [NotesItem] {
+        allNotes.filter { !$0.isDeleted && !$0.isInTrash }
+    }
+    
+    /// Notes in the folder being viewed (all notes when no folder is chosen).
+    private var folderNotes: [NotesItem] {
+        guard let id = selectedFolderID else { return notestList }
+        return notestList.filter { $0.folder?.id == id }
+    }
+    
+    private var selectedFolder: NoteFolder? {
+        folders.first { $0.id == selectedFolderID }
+    }
+    
+    private var trashCount: Int {
+        allNotes.filter { !$0.isDeleted && $0.isInTrash }.count
+    }
+    
+    // Folders & Recently Deleted
+    @AppStorage("SelectedFolderID") private var storedFolderID: String = ""
+    private var selectedFolderID: String? {
+        storedFolderID.isEmpty ? nil : storedFolderID
+    }
+    @State private var showManageFolders = false
+    @State private var showTrash = false
+    @State private var showNewFolder = false
+    @State private var newFolderName = ""
     
     /// A note opened from a widget.
     @State private var openedNote: NotesItem?
@@ -38,12 +68,12 @@ struct HomeScreen: View {
     
     // Derived data
     private var allTags: [String] {
-        let tags = notestList.flatMap { $0.tags }
+        let tags = folderNotes.flatMap { $0.tags }
         return Array(Set(tags)).sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
     }
     
     private var filteredAndSortedNotes: [NotesItem] {
-        var items = notestList.filter { !$0.isDeleted }
+        var items = folderNotes
         
         // Search
         if !searchText.isEmpty {
@@ -118,7 +148,7 @@ struct HomeScreen: View {
                         }
                         
                         NavigationLink {
-                            AddNotes()
+                            AddNotes(defaultFolder: selectedFolder)
                         } label: {
                             Image(systemName: "plus.circle.fill")
                                 .imageScale(.large)
@@ -155,11 +185,31 @@ struct HomeScreen: View {
                 .padding(.trailing, 20)
                 .padding(.bottom, 24)
             }
-            .navigationDestination(isPresented: $pushAdd) {
-                AddNotes()
+            // One destination for every screen pushed from Home: several separate
+            // navigationDestination modifiers on one screen can make SwiftUI loop forever.
+            .navigationDestination(item: route) { route in
+                switch route {
+                case .newNote:
+                    AddNotes(defaultFolder: selectedFolder)
+                case .note(let note):
+                    NotesDetail(notesItem: note)
+                case .trash:
+                    TrashScreen()
+                }
             }
-            .navigationDestination(item: $openedNote) { note in
-                NotesDetail(notesItem: note)
+            .sheet(isPresented: $showManageFolders) {
+                ManageFoldersSheet()
+            }
+            .alert("New Folder", isPresented: $showNewFolder) {
+                TextField("Name", text: $newFolderName)
+                Button("Cancel", role: .cancel) { newFolderName = "" }
+                Button("Create") { createFolder() }
+            } message: {
+                Text("Enter a name for this folder.")
+            }
+            .onChange(of: folders.map(\.id)) { _, ids in
+                // The folder being viewed was deleted (here or on another device).
+                if let id = selectedFolderID, !ids.contains(id) { storedFolderID = "" }
             }
             .onChange(of: appManager.pendingRoute, initial: true) { _, route in
                 handle(route)
@@ -179,9 +229,8 @@ struct HomeScreen: View {
             // Hero stats + quick filters
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Your Notes")
-                        .font(.title).bold()
-                    Text("\(notestList.count) total • \(pinnedNotes.count) pinned")
+                    folderMenu
+                    Text("\(folderNotes.count) total • \(pinnedNotes.count) pinned")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -200,6 +249,83 @@ struct HomeScreen: View {
                 .padding(.horizontal, 12)
                 .padding(.bottom, 8)
         }
+    }
+    
+    /// Which screen is pushed on top of Home, built from the individual flags.
+    private var route: Binding<HomeRoute?> {
+        Binding(
+            get: {
+                if pushAdd { return .newNote }
+                if let openedNote { return .note(openedNote) }
+                if showTrash { return .trash }
+                return nil
+            },
+            set: { newValue in
+                if newValue == nil {
+                    pushAdd = false
+                    openedNote = nil
+                    showTrash = false
+                }
+            }
+        )
+    }
+    
+    /// The heading doubles as a menu for choosing a folder.
+    private var folderMenu: some View {
+        Menu {
+            Picker("Folder", selection: $storedFolderID) {
+                Label("All Notes", systemImage: "tray.full").tag("")
+                ForEach(folders) { folder in
+                    Label("\(folder.name) (\(folder.activeNoteCount))", systemImage: "folder").tag(folder.id)
+                }
+            }
+            Divider()
+            Button {
+                newFolderName = ""
+                showNewFolder = true
+            } label: {
+                Label("New Folder…", systemImage: "folder.badge.plus")
+            }
+            if !folders.isEmpty {
+                Button {
+                    showManageFolders = true
+                } label: {
+                    Label("Manage Folders", systemImage: "folder.badge.gearshape")
+                }
+            }
+            Divider()
+            Button {
+                showTrash = true
+            } label: {
+                Label(trashCount > 0 ? "Recently Deleted (\(trashCount))" : "Recently Deleted", systemImage: "trash")
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Text(selectedFolder?.name ?? "Your Notes")
+                    .font(.title).bold()
+                    .lineLimit(1)
+                Image(systemName: "chevron.down")
+                    .font(.headline)
+                    .foregroundStyle(.secondary)
+            }
+            .foregroundStyle(.primary)
+        }
+        .accessibilityLabel("Folder: \(selectedFolder?.name ?? "All Notes")")
+    }
+    
+    private func createFolder() {
+        let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
+        newFolderName = ""
+        guard !name.isEmpty else { return }
+        if let existing = folders.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }) {
+            storedFolderID = existing.id
+            return
+        }
+        let folder = NoteFolder(name: String(name.prefix(40)))
+        context.insert(folder)
+        try? context.save()
+        storedFolderID = folder.id
+        Haptics.success()
     }
     
     private func quickFilterButton(_ systemName: String, isOn: Binding<Bool>) -> some View {
@@ -382,9 +508,11 @@ struct HomeScreen: View {
                 .font(.system(size: 64, weight: .light))
                 .foregroundStyle(.secondary)
             
-            Text("No notes yet")
+            Text(selectedFolder == nil ? "No notes yet" : "No notes in \(selectedFolder?.name ?? "")")
                 .font(.title3).bold()
-            Text("Tap the + button to create your first note. Add images, tags, a checklist, a location and more.")
+            Text(selectedFolder == nil
+                 ? "Tap the + button to create your first note. Add images, tags, a checklist, a location and more."
+                 : "Tap the + button to add a note to this folder.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 24)
@@ -464,13 +592,19 @@ struct HomeScreen: View {
         }
     }
     
+    /// Moves the note to Recently Deleted, where it can be restored for 30 days.
     private func deleteItem(_ item: NotesItem) {
-        ReminderScheduler.cancel(noteID: item.id)
-        MediaStore.deleteVideo(item.videoURL)
-        context.delete(item)
-        try? context.save()
+        NoteTrash.moveToTrash(item, context: context)
         Haptics.warning()
     }
+}
+
+// MARK: - Navigation
+
+private enum HomeRoute: Hashable {
+    case newNote
+    case note(NotesItem)
+    case trash
 }
 
 // MARK: - Layout & Sort Modes

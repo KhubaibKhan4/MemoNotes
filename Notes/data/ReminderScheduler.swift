@@ -68,7 +68,7 @@ enum ReminderScheduler {
 
     static func schedule(_ note: NotesItem) {
         cancel(noteID: note.id)
-        guard isEnabled, let date = note.reminderDate, date > Date() else { return }
+        guard isEnabled, !note.isInTrash, let date = note.reminderDate, date > Date() else { return }
 
         let content = UNMutableNotificationContent()
         content.title = note.title

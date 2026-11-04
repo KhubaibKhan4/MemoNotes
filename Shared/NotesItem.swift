@@ -57,6 +57,15 @@ class NotesItem: Identifiable {
     var updatedAt: Date = Date()
     /// When set and in the future, a notification fires at this time.
     var reminderDate: Date? = nil
+    
+    /// The folder this note is filed in, if any.
+    var folder: NoteFolder?
+    
+    /// When the note was moved to Recently Deleted. `nil` for normal notes.
+    /// Notes are removed for good 30 days after this.
+    var deletedAt: Date? = nil
+    
+    var isInTrash: Bool { deletedAt != nil }
 
     /// Checklist items in display order. SwiftData relationships are unordered,
     /// so the order is kept in each item's `sortIndex`.

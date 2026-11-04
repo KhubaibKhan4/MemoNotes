@@ -21,6 +21,8 @@ struct AddNotes: View {
     
     /// The note being edited, or `nil` when adding a new one.
     var editingNote: NotesItem? = nil
+    /// Folder for a new note (the folder being viewed on Home).
+    var defaultFolder: NoteFolder? = nil
     var onSave: () -> Void = {}
     
     // Media selection
@@ -41,6 +43,7 @@ struct AddNotes: View {
     @Environment(\.fontResolutionContext) private var fontContext
     
     @State private var isPinned: Bool = false
+    @State private var folder: NoteFolder?
     
     // Reminder
     @State private var hasReminder: Bool = false
@@ -92,6 +95,7 @@ struct AddNotes: View {
                     richDesc: $richDesc,
                     baseSize: fontSize,
                     isPinned: $isPinned,
+                    folder: $folder,
                     showValidation: $showValidation,
                     onValidate: validate
                 )
@@ -281,8 +285,14 @@ struct AddNotes: View {
     // MARK: - Load / Save
     
     private func loadEditingNoteIfNeeded() {
-        guard let note = editingNote, !didLoadNote else { return }
+        guard !didLoadNote else { return }
+        guard let note = editingNote else {
+            didLoadNote = true
+            folder = defaultFolder
+            return
+        }
         didLoadNote = true
+        folder = note.folder
         title = note.title
         richDesc = RichTextCoder.decode(note.richText, fallback: note.desc, baseSize: fontSize)
         isPinned = note.isPinned
@@ -322,6 +332,7 @@ struct AddNotes: View {
             note.desc = trimmedDesc
             note.richText = richData
             note.isPinned = isPinned
+            note.folder = folder
             note.tags = tags
             note.location = selectedLocation
             note.images = images
@@ -348,6 +359,7 @@ struct AddNotes: View {
             )
             noteItem.reminderDate = reminder
             noteItem.richText = richData
+            noteItem.folder = folder
             context.insert(noteItem)
             savedNote = noteItem
         }
@@ -622,6 +634,7 @@ private struct NoteSectionView: View {
     @Binding var richDesc: AttributedString
     var baseSize: CGFloat
     @Binding var isPinned: Bool
+    @Binding var folder: NoteFolder?
     @Binding var showValidation: Bool
     var onValidate: () -> Bool
     
@@ -653,6 +666,7 @@ private struct NoteSectionView: View {
             }
             
             Toggle("Pin this note", isOn: $isPinned)
+            FolderPicker(selection: $folder)
         }
     }
 }
