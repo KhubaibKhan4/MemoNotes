@@ -289,9 +289,8 @@ struct NotesDetail: View {
             }
             .textSelection(.enabled)
         } else {
-            Text(notesItem.desc)
-                .font(.system(size: fontSize))
-                .foregroundColor(.secondary)
+            Text(RichTextCoder.decode(notesItem.richText, fallback: notesItem.desc, baseSize: fontSize))
+                .foregroundColor(notesItem.richText == nil ? .secondary : .primary)
                 .textSelection(.enabled)
         }
     }

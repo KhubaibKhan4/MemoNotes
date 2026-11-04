@@ -35,7 +35,10 @@ struct AddNotes: View {
     
     // Inputs
     @State private var title: String = ""
-    @State private var desc: String = ""
+    /// The formatted note body. Its plain text is saved to `desc`.
+    @State private var richDesc = AttributedString()
+    @AppStorage("FontSize") private var fontSize = 16.0
+    @Environment(\.fontResolutionContext) private var fontContext
     
     @State private var isPinned: Bool = false
     
@@ -83,7 +86,8 @@ struct AddNotes: View {
             Form {
                 NoteSectionView(
                     title: $title,
-                    desc: $desc,
+                    richDesc: $richDesc,
+                    baseSize: fontSize,
                     isPinned: $isPinned,
                     showValidation: $showValidation,
                     onValidate: validate
@@ -271,7 +275,7 @@ struct AddNotes: View {
         guard let note = editingNote, !didLoadNote else { return }
         didLoadNote = true
         title = note.title
-        desc = note.desc
+        richDesc = RichTextCoder.decode(note.richText, fallback: note.desc, baseSize: fontSize)
         isPinned = note.isPinned
         tags = note.tags
         // Edit copies so that Cancel leaves the saved checklist untouched.
@@ -295,7 +299,9 @@ struct AddNotes: View {
     
     private func save() {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedDesc = desc.trimmingCharacters(in: .whitespacesAndNewlines)
+        let body = RichTextCoder.trimmed(richDesc)
+        let trimmedDesc = String(body.characters)
+        let richData = RichTextCoder.encode(body, context: fontContext, baseSize: fontSize)
         let images = selectedImagesData.isEmpty ? nil : selectedImagesData
         let reminder = hasReminder ? reminderDate : nil
         let savedNote: NotesItem
@@ -305,6 +311,7 @@ struct AddNotes: View {
             note.reminderDate = reminder
             note.title = trimmedTitle
             note.desc = trimmedDesc
+            note.richText = richData
             note.isPinned = isPinned
             note.tags = tags
             note.location = selectedLocation
@@ -331,6 +338,7 @@ struct AddNotes: View {
                 updatedAt: Date()
             )
             noteItem.reminderDate = reminder
+            noteItem.richText = richData
             context.insert(noteItem)
             savedNote = noteItem
         }
@@ -354,7 +362,7 @@ struct AddNotes: View {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedTitle.isEmpty else { return false }
         guard trimmedTitle.count <= 80 else { return false }
-        guard desc.count <= 500 else { return false }
+        guard richDesc.characters.count <= NoteSectionView.maxBodyLength else { return false }
         return true
     }
     
@@ -565,8 +573,11 @@ private struct ReminderSectionView: View {
 }
 
 private struct NoteSectionView: View {
+    static let maxBodyLength = 10_000
+    
     @Binding var title: String
-    @Binding var desc: String
+    @Binding var richDesc: AttributedString
+    var baseSize: CGFloat
     @Binding var isPinned: Bool
     @Binding var showValidation: Bool
     var onValidate: () -> Bool
@@ -588,19 +599,13 @@ private struct NoteSectionView: View {
                 }
             }
             
-            VStack(alignment: .leading) {
-                TextField("Description", text: $desc, axis: .vertical)
-                    .lineLimit(3...6)
-                    .onChange(of: desc) { _, _ in
-                        if showValidation { _ = onValidate() }
-                    }
-                Text("\(desc.count)/500")
-                    .foregroundColor(desc.count > 500 ? .red : .secondary)
-                    .font(.footnote)
-            }
-            .onChange(of: desc) { _, new in
-                if new.count > 500 {
-                    desc = String(new.prefix(500))
+            VStack(alignment: .leading, spacing: 4) {
+                RichTextEditor(text: $richDesc, baseSize: baseSize)
+                let count = richDesc.characters.count
+                if count > Self.maxBodyLength * 9 / 10 {
+                    Text("\(count)/\(Self.maxBodyLength)")
+                        .foregroundColor(count > Self.maxBodyLength ? .red : .secondary)
+                        .font(.footnote)
                 }
             }
             

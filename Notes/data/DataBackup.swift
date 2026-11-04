@@ -30,6 +30,7 @@ struct NotesBackup: Codable {
         var updatedAt: Date
         // Optional so backups from older versions still import.
         var reminderDate: Date?
+        var richText: Data?
     }
 
     struct ChecklistEntry: Codable {
@@ -96,7 +97,8 @@ enum DataManager {
                     },
                     createdAt: note.createdAt,
                     updatedAt: note.updatedAt,
-                    reminderDate: note.reminderDate
+                    reminderDate: note.reminderDate,
+                    richText: note.richText
                 )
             },
             todos: todos.map {
@@ -145,6 +147,7 @@ enum DataManager {
             note.latitude = entry.latitude
             note.longitude = entry.longitude
             note.reminderDate = entry.reminderDate
+            note.richText = entry.richText
             context.insert(note)
             addedNotes += 1
         }
