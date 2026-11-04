@@ -20,6 +20,9 @@ struct SettingScreen: View {
     @AppStorage("EnableNotifications") private var notificationsEnabled = false
     @AppStorage("EnableHaptics") private var hapticsEnabled = true
     @AppStorage("SelectedAppIcon") private var selectedAppIcon = "AppIcon"
+    @AppStorage(AppLockManager.enabledKey) private var appLockEnabled = false
+    @AppStorage(AppLockManager.timeoutKey) private var appLockTimeout = AppLockTimeout.immediately.rawValue
+    @State private var showLockUnavailableAlert = false
 
     @Environment(\.requestReview) private var requestReview
     @Environment(\.modelContext) private var context
@@ -37,6 +40,27 @@ struct SettingScreen: View {
     @State private var resultMessage: String?
     @State private var isSignedInToICloud = FileManager.default.ubiquityIdentityToken != nil
 
+    /// Turning App Lock on or off requires unlocking first, so nobody else can change it.
+    private var appLockBinding: Binding<Bool> {
+        Binding(
+            get: { appLockEnabled },
+            set: { newValue in
+                guard newValue != appLockEnabled else { return }
+                guard AppLockManager.isAvailable else {
+                    showLockUnavailableAlert = true
+                    return
+                }
+                Task {
+                    let reason = newValue ? "Turn on App Lock" : "Turn off App Lock"
+                    if await AppLockManager.authenticate(reason: reason) {
+                        appLockEnabled = newValue
+                        Haptics.success()
+                    }
+                }
+            }
+        )
+    }
+    
     private var themeBinding: Binding<ThemeOption> {
         Binding(get: { appManager.theme }, set: { appManager.theme = $0 })
     }
@@ -127,6 +151,26 @@ struct SettingScreen: View {
                     Text("Notifications are used for reminders on notes and todos.")
                 }
 
+                // ---- Privacy
+                Section {
+                    Toggle(isOn: appLockBinding) {
+                        Label("Lock with \(AppLockManager.methodName)", systemImage: AppLockManager.methodSymbol)
+                    }
+                    if appLockEnabled {
+                        Picker(selection: $appLockTimeout) {
+                            ForEach(AppLockTimeout.allCases) { option in
+                                Text(option.title).tag(option.rawValue)
+                            }
+                        } label: {
+                            Label("Require Unlock", systemImage: "timer")
+                        }
+                    }
+                } header: {
+                    Label("Privacy", systemImage: "lock")
+                } footer: {
+                    Text("When on, your notes stay hidden until you unlock the app, including in the app switcher.")
+                }
+                
                 // ---- iCloud
                 Section {
                     HStack {
@@ -205,6 +249,11 @@ struct SettingScreen: View {
                 Text(isSignedInToICloud
                      ? "This will erase all your notes, todos, and settings — on this device and on your other devices that sync through iCloud. This cannot be undone."
                      : "This will erase all your notes, todos, and settings. This cannot be undone.")
+            }
+            .alert("App Lock Unavailable", isPresented: $showLockUnavailableAlert) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Set up \(AppLockManager.methodName == "Passcode" ? "a device passcode" : AppLockManager.methodName) in the Settings app to lock your notes.")
             }
             .alert("Notifications Are Off", isPresented: $showNotificationsDeniedAlert) {
                 Button("Open Settings") {
@@ -288,6 +337,8 @@ struct SettingScreen: View {
         showPreview = true
         notificationsEnabled = false
         hapticsEnabled = true
+        appLockEnabled = false
+        appLockTimeout = AppLockTimeout.immediately.rawValue
         appManager.theme = .system
         appManager.appLanguage = "en"
         appManager.languageName = "English"
@@ -377,5 +428,6 @@ private struct AppIconPicker: View {
 #Preview {
     SettingScreen()
         .environmentObject(AppManager())
+        .environmentObject(AppLockManager())
         .modelContainer(for: [NotesItem.self, TodoItem.self], inMemory: true)
 }
