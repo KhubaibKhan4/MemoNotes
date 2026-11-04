@@ -13,6 +13,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var appLock: AppLockManager
+    @EnvironmentObject private var appManager: AppManager
     @AppStorage(AppLockManager.enabledKey) private var isAppLockEnabled = false
     @State private var isSelected : Int = 0
     @AppStorage("isPermissionGranted") var isPermissionGranted = false
@@ -54,8 +55,18 @@ struct ContentView: View {
                 isSplash = false
             }
         }
+        .onOpenURL { url in
+            guard let route = AppRoute(url: url) else { return }
+            isSplash = false
+            isSelected = (route == .todos) ? 1 : 0
+            appManager.pendingRoute = route
+        }
         .onChange(of: scenePhase, initial: true) { _, phase in
             appLock.sceneChanged(to: phase)
+            if phase == .background {
+                // Show the latest notes and todos in the widgets.
+                SharedStore.reloadWidgets()
+            }
             // Rebuild pending reminders whenever the app comes to the front. This picks up
             // reminders added or changed on other devices through iCloud, and ones lost
             // after a reinstall, restore or permission change.

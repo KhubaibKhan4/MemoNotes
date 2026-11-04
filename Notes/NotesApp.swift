@@ -15,29 +15,11 @@ struct NotesApp: App {
     @StateObject var appManager: AppManager = AppManager()
     @StateObject private var appLock = AppLockManager()
 
-    /// Shared database. With `.automatic`, SwiftData syncs through the first iCloud
-    /// container in the app's entitlements, and stays local-only when there is none.
-    private let container: ModelContainer = {
-        let schema = Schema([NotesItem.self, ChecklistItem.self, TodoItem.self])
-        do {
-            let config = ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)
-            return try ModelContainer(for: schema, configurations: [config])
-        } catch {
-            // Never lock people out of their notes: fall back to local storage.
-            print("iCloud store unavailable, using local storage: \(error)")
-            do {
-                let local = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
-                return try ModelContainer(for: schema, configurations: [local])
-            } catch {
-                fatalError("Could not open the notes database: \(error)")
-            }
-        }
-    }()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(container)
+                .modelContainer(AppDatabase.container)
                 .environment(\.locale, Locale(identifier: appManager.appLanguage))
                 .environmentObject(appManager)
                 .environmentObject(appLock)
@@ -51,4 +33,27 @@ struct NotesApp: App {
         let rtlLanguage = ["ar", "he", "fa", "ur"]
         return rtlLanguage.contains(langauge)
     }
+}
+
+/// The app's single connection to the notes database, also used by Siri / Shortcuts actions.
+@MainActor
+enum AppDatabase {
+    /// Shared database in the App Group folder (see `SharedStore`). SwiftData syncs it
+    /// through the first iCloud container in the app's entitlements, if there is one.
+    static let container: ModelContainer = {
+        // Older versions kept the database in the app's private folder; move it once
+        // so the Share Extension and widgets can see existing notes.
+        SharedStore.moveStoreToAppGroupIfNeeded()
+        do {
+            return try SharedStore.makeContainer(syncWithICloud: true)
+        } catch {
+            // Never lock people out of their notes: fall back to local storage.
+            print("iCloud store unavailable, using local storage: \(error)")
+            do {
+                return try SharedStore.makeContainer(syncWithICloud: false)
+            } catch {
+                fatalError("Could not open the notes database: \(error)")
+            }
+        }
+    }()
 }

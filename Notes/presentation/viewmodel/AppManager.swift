@@ -61,6 +61,9 @@ class AppManager: ObservableObject {
         }
     }
 
+    /// Where a widget, control or Siri asked the app to go. Screens clear it once handled.
+    @Published var pendingRoute: AppRoute?
+
     /// Older versions only stored an `isDark` flag; carry that choice over once.
     private static func initialThemeRaw() -> String {
         UserDefaults.standard.bool(forKey: "isDark") ? ThemeOption.dark.rawValue : ThemeOption.system.rawValue

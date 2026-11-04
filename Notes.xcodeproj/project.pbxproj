@@ -6,8 +6,47 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C58F4280A7415A5C32A8CEB3 /* ShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = C08CA9796DC7635277EFE940 /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0E03F2E8EC04F2FC976687DE /* NotesWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 70B953AEB2F0E8955626B269 /* NotesWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B822869C5BAC4E799999C3D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49BA1F7E2CBD8E700099CDCB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 67F9C9BCE134C8F387C5AD68;
+			remoteInfo = ShareExtension;
+		};
+		464D1FEDBB9DABA34FBA7E30 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49BA1F7E2CBD8E700099CDCB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC3AD3B297AEA4711BEA9FFB;
+			remoteInfo = NotesWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		177E66728C8C047593230797 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C58F4280A7415A5C32A8CEB3 /* ShareExtension.appex in Embed Foundation Extensions */,
+				0E03F2E8EC04F2FC976687DE /* NotesWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		49BA1F862CBD8E700099CDCB /* CloudNote AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CloudNote AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		C08CA9796DC7635277EFE940 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		70B953AEB2F0E8955626B269 /* NotesWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotesWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -17,6 +56,20 @@
 				Info.plist,
 			);
 			target = 49BA1F852CBD8E700099CDCB /* Notes */;
+		};
+		005E4A9B4A1CFD42D9663DDD /* Exceptions for "ShareExtension" folder in "ShareExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 67F9C9BCE134C8F387C5AD68 /* ShareExtension */;
+		};
+		58459E28A558E3DF58E99077 /* Exceptions for "NotesWidget" folder in "NotesWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CC3AD3B297AEA4711BEA9FFB /* NotesWidget */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -34,10 +87,45 @@
 			path = Notes;
 			sourceTree = "<group>";
 		};
+		045B6B0E5957290B68AA1DFC /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		EF1E93C75D3F650167A1318D /* ShareExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				005E4A9B4A1CFD42D9663DDD /* Exceptions for "ShareExtension" folder in "ShareExtension" target */,
+			);
+			path = ShareExtension;
+			sourceTree = "<group>";
+		};
+		5EA1428BA0E8236E66E90BF0 /* NotesWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				58459E28A558E3DF58E99077 /* Exceptions for "NotesWidget" folder in "NotesWidget" target */,
+			);
+			path = NotesWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		49BA1F832CBD8E700099CDCB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4D5440DC52A7A70B366BF5F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B50E997D1A37029C7C3EFDE7 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -59,6 +147,9 @@
 			children = (
 				49B7C3BC2D00D8E900FE8DE5 /* Resources */,
 				49BA1F882CBD8E700099CDCB /* Notes */,
+				045B6B0E5957290B68AA1DFC /* Shared */,
+				EF1E93C75D3F650167A1318D /* ShareExtension */,
+				5EA1428BA0E8236E66E90BF0 /* NotesWidget */,
 				49BA1F872CBD8E700099CDCB /* Products */,
 				3622B93368E04F3CCE63554D /* Pods */,
 			);
@@ -68,6 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				49BA1F862CBD8E700099CDCB /* CloudNote AI.app */,
+				C08CA9796DC7635277EFE940 /* ShareExtension.appex */,
+				70B953AEB2F0E8955626B269 /* NotesWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -82,19 +175,65 @@
 				49BA1F822CBD8E700099CDCB /* Sources */,
 				49BA1F832CBD8E700099CDCB /* Frameworks */,
 				49BA1F842CBD8E700099CDCB /* Resources */,
+				177E66728C8C047593230797 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AB00F697B029612DA3E3199B /* PBXTargetDependency */,
+				82711A8CA9D09EBBE6F7FE5B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				49B7C3BC2D00D8E900FE8DE5 /* Resources */,
+				49BA1F882CBD8E700099CDCB /* Notes */,
+				045B6B0E5957290B68AA1DFC /* Shared */,
+			);
+			name = Notes;
+			productName = Notes;
+			productReference = 49BA1F862CBD8E700099CDCB /* CloudNote AI.app */;
+			productType = "com.apple.product-type.application";
+		};
+		67F9C9BCE134C8F387C5AD68 /* ShareExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC91597FF651A0AB2C3B090F /* Build configuration list for PBXNativeTarget "ShareExtension" */;
+			buildPhases = (
+				BE853BACD09E40CEA7FDAB32 /* Sources */,
+				4D5440DC52A7A70B366BF5F2 /* Frameworks */,
+				E909431FA12C9DD0C8620B7D /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				49B7C3BC2D00D8E900FE8DE5 /* Resources */,
-				49BA1F882CBD8E700099CDCB /* Notes */,
+				EF1E93C75D3F650167A1318D /* ShareExtension */,
+				045B6B0E5957290B68AA1DFC /* Shared */,
 			);
-			name = Notes;
-			productName = Notes;
-			productReference = 49BA1F862CBD8E700099CDCB /* CloudNote AI.app */;
-			productType = "com.apple.product-type.application";
+			name = ShareExtension;
+			productName = ShareExtension;
+			productReference = C08CA9796DC7635277EFE940 /* ShareExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		CC3AD3B297AEA4711BEA9FFB /* NotesWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9B1286C8509669CEA9C37D00 /* Build configuration list for PBXNativeTarget "NotesWidget" */;
+			buildPhases = (
+				48323769705D5E86B15317A5 /* Sources */,
+				B50E997D1A37029C7C3EFDE7 /* Frameworks */,
+				7E1CF51CE0EA49D8E06E6F1F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				5EA1428BA0E8236E66E90BF0 /* NotesWidget */,
+				045B6B0E5957290B68AA1DFC /* Shared */,
+			);
+			name = NotesWidget;
+			productName = NotesWidget;
+			productReference = 70B953AEB2F0E8955626B269 /* NotesWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -108,6 +247,12 @@
 				TargetAttributes = {
 					49BA1F852CBD8E700099CDCB = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					67F9C9BCE134C8F387C5AD68 = {
+						CreatedOnToolsVersion = 27.1;
+					};
+					CC3AD3B297AEA4711BEA9FFB = {
+						CreatedOnToolsVersion = 27.1;
 					};
 				};
 			};
@@ -160,12 +305,28 @@
 			projectRoot = "";
 			targets = (
 				49BA1F852CBD8E700099CDCB /* Notes */,
+				67F9C9BCE134C8F387C5AD68 /* ShareExtension */,
+				CC3AD3B297AEA4711BEA9FFB /* NotesWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		49BA1F842CBD8E700099CDCB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E909431FA12C9DD0C8620B7D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7E1CF51CE0EA49D8E06E6F1F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -182,7 +343,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		BE853BACD09E40CEA7FDAB32 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		48323769705D5E86B15317A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AB00F697B029612DA3E3199B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 67F9C9BCE134C8F387C5AD68 /* ShareExtension */;
+			targetProxy = B822869C5BAC4E799999C3D9 /* PBXContainerItemProxy */;
+		};
+		82711A8CA9D09EBBE6F7FE5B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC3AD3B297AEA4711BEA9FFB /* NotesWidget */;
+			targetProxy = 464D1FEDBB9DABA34FBA7E30 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		49BA1F922CBD8E710099CDCB /* Debug */ = {
@@ -322,6 +510,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/Notes.entitlements;
 				INFOPLIST_FILE = Notes/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
@@ -357,6 +546,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Notes/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				CODE_SIGN_ENTITLEMENTS = Entitlements/Notes.entitlements;
 				INFOPLIST_FILE = Notes/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Provide us the Camera Permission to Take Images and Record Videos to Store in Notes App.";
@@ -382,6 +572,106 @@
 			};
 			name = Release;
 		};
+		4A3EA03DC23F997D3660331C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Entitlements/ShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E38549F6280F431BF328C84A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Entitlements/ShareExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShareExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes.ShareExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		5C9DFC517C0A0C14CB8F5618 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Entitlements/NotesWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI Widgets";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes.Widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E0113B0C1E40F5064E7E30D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Entitlements/NotesWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotesWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "CloudNote AI Widgets";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes.Widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -399,6 +689,24 @@
 			buildConfigurations = (
 				49BA1F952CBD8E710099CDCB /* Debug */,
 				49BA1F962CBD8E710099CDCB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC91597FF651A0AB2C3B090F /* Build configuration list for PBXNativeTarget "ShareExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A3EA03DC23F997D3660331C /* Debug */,
+				E38549F6280F431BF328C84A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9B1286C8509669CEA9C37D00 /* Build configuration list for PBXNativeTarget "NotesWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5C9DFC517C0A0C14CB8F5618 /* Debug */,
+				E0113B0C1E40F5064E7E30D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

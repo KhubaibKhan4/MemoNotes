@@ -43,6 +43,8 @@ final class AppLockManager: ObservableObject {
     init() {
         // Start locked so nothing shows before the person unlocks.
         let enabled = UserDefaults.standard.bool(forKey: Self.enabledKey)
+        // Keep the widgets' copy of the setting in step.
+        SharedStore.setAppLockEnabled(enabled)
         isLocked = enabled
         shouldPromptAutomatically = enabled
     }
