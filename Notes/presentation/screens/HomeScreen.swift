@@ -14,8 +14,12 @@ struct HomeScreen: View {
     
     @Environment(\.modelContext) private var context
     @Environment(\.colorScheme) private var colorScheme
+    @EnvironmentObject private var appManager: AppManager
     
     @Query private var notestList: [NotesItem]
+    
+    /// A note opened from a widget.
+    @State private var openedNote: NotesItem?
     
     /// The note open in the edit sheet.
     @State private var editingNote: NotesItem?
@@ -153,6 +157,12 @@ struct HomeScreen: View {
             }
             .navigationDestination(isPresented: $pushAdd) {
                 AddNotes()
+            }
+            .navigationDestination(item: $openedNote) { note in
+                NotesDetail(notesItem: note)
+            }
+            .onChange(of: appManager.pendingRoute, initial: true) { _, route in
+                handle(route)
             }
             .sheet(item: $editingNote) { note in
                 NavigationStack {
@@ -427,6 +437,22 @@ struct HomeScreen: View {
         Haptics.tap(.medium)
     }
     
+    /// Opens a new note or a specific note when a widget, control or Siri asks.
+    private func handle(_ route: AppRoute?) {
+        switch route {
+        case .newNote:
+            openedNote = nil
+            pushAdd = true
+            appManager.pendingRoute = nil
+        case .note(let id):
+            pushAdd = false
+            openedNote = notestList.first { $0.id == id }
+            appManager.pendingRoute = nil
+        case .todos, nil:
+            break
+        }
+    }
+    
     private func presentEdit(for item: NotesItem) {
         editingNote = item
     }
@@ -663,6 +689,7 @@ private struct NoteCard: View {
 
 #Preview {
     HomeScreen()
+        .environmentObject(AppManager())
         .modelContainer(for: NotesItem.self, inMemory: true)
 }
 

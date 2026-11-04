@@ -54,6 +54,7 @@ struct SettingScreen: View {
                     let reason = newValue ? "Turn on App Lock" : "Turn off App Lock"
                     if await AppLockManager.authenticate(reason: reason) {
                         appLockEnabled = newValue
+                        SharedStore.setAppLockEnabled(newValue)
                         Haptics.success()
                     }
                 }
@@ -338,6 +339,7 @@ struct SettingScreen: View {
         notificationsEnabled = false
         hapticsEnabled = true
         appLockEnabled = false
+        SharedStore.setAppLockEnabled(false)
         appLockTimeout = AppLockTimeout.immediately.rawValue
         appManager.theme = .system
         appManager.appLanguage = "en"
