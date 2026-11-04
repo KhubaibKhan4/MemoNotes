@@ -13,6 +13,7 @@ struct NotesApp: App {
 
     @UIApplicationDelegateAdaptor(NotificationDelegate.self) private var notificationDelegate
     @StateObject var appManager: AppManager = AppManager()
+    @StateObject private var appLock = AppLockManager()
 
     /// Shared database. With `.automatic`, SwiftData syncs through the first iCloud
     /// container in the app's entitlements, and stays local-only when there is none.
@@ -39,6 +40,7 @@ struct NotesApp: App {
                 .modelContainer(container)
                 .environment(\.locale, Locale(identifier: appManager.appLanguage))
                 .environmentObject(appManager)
+                .environmentObject(appLock)
                 .preferredColorScheme(appManager.theme.colorScheme)
                 .environment(\.locale, .init(identifier: appManager.appLanguage))
                 .environment(\.layoutDirection, isRTL(langauge: appManager.appLanguage) ? .rightToLeft : .leftToRight)
