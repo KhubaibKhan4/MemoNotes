@@ -19,7 +19,10 @@ import CoreLocation
 class NotesItem: Identifiable {
     var id: String = UUID().uuidString
     var title: String = ""
+    /// Plain text of the note body (used for search, previews, reminders and backups).
     var desc: String = ""
+    /// Formatting for `desc`, as JSON-encoded `RichTextRun`s. `nil` for plain notes.
+    var richText: Data? = nil
     var isPinned: Bool = false
 
     // Persist coordinates separately; expose as computed CLLocationCoordinate2D
