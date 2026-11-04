@@ -58,7 +58,7 @@ struct HomeScreen: View {
             items = items.filter { ($0.images?.isEmpty == false) }
         }
         if filterVideo {
-            items = items.filter { $0.videoURL != nil }
+            items = items.filter { $0.playableVideoURL != nil }
         }
         if filterLocation {
             items = items.filter { $0.location != nil }
@@ -576,7 +576,7 @@ private struct NoteCard: View {
                         .imageScale(.small)
                         .accessibilityLabel("Reminder set")
                 }
-                if item.videoURL != nil {
+                if item.playableVideoURL != nil {
                     Label("", systemImage: "video.fill")
                         .labelStyle(.iconOnly)
                         .foregroundStyle(.purple)

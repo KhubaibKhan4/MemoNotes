@@ -9,13 +9,19 @@ import Foundation
 import SwiftData
 import CoreLocation
 
+// iCloud (CloudKit) sync rules for these models:
+// - every stored property is optional or has a default value,
+// - every relationship is optional and has an inverse,
+// - no unique constraints.
+// Breaking any of these stops sync from starting.
+
 @Model
 class NotesItem: Identifiable {
-    var id: String
-    var title: String
-    var desc: String
-    var isPinned: Bool
-    
+    var id: String = UUID().uuidString
+    var title: String = ""
+    var desc: String = ""
+    var isPinned: Bool = false
+
     // Persist coordinates separately; expose as computed CLLocationCoordinate2D
     var latitude: Double?
     var longitude: Double?
@@ -31,20 +37,38 @@ class NotesItem: Identifiable {
             longitude = newValue?.longitude
         }
     }
-    
+
     // Media
-    // Store image data externally to avoid Core Data transformable class issues and keep the store slim.
+    // Images are stored outside the database file (and as CloudKit assets when syncing).
     @Attribute(.externalStorage) var images: [Data]?
+    /// Local video file. Videos stay on the device that added them; they are not synced.
     var videoURL: URL?
-    
-    // New fields
-    var tags: [String]
-    @Relationship(deleteRule: .cascade) var checklist: [ChecklistItem]
-    var createdAt: Date
-    var updatedAt: Date
+
+    var tags: [String] = []
+
+    /// Stored checklist. Use `checklist` instead, which keeps the items in order.
+    @Relationship(deleteRule: .cascade, originalName: "checklist", inverse: \ChecklistItem.note)
+    var checklistItems: [ChecklistItem]? = []
+
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     /// When set and in the future, a notification fires at this time.
     var reminderDate: Date? = nil
-    
+
+    /// Checklist items in display order. SwiftData relationships are unordered,
+    /// so the order is kept in each item's `sortIndex`.
+    var checklist: [ChecklistItem] {
+        get {
+            (checklistItems ?? []).sorted { $0.sortIndex < $1.sortIndex }
+        }
+        set {
+            for (index, item) in newValue.enumerated() {
+                item.sortIndex = index
+            }
+            checklistItems = newValue
+        }
+    }
+
     init(
         title: String,
         desc: String,
@@ -66,18 +90,22 @@ class NotesItem: Identifiable {
         self.images = images
         self.videoURL = videoURL
         self.tags = tags
-        self.checklist = checklist
         self.createdAt = createdAt
         self.updatedAt = updatedAt
+        self.checklist = checklist
     }
 }
 
 @Model
 class ChecklistItem: Identifiable {
-    var id: String
-    var title: String
-    var isDone: Bool
-    
+    var id: String = UUID().uuidString
+    var title: String = ""
+    var isDone: Bool = false
+    /// Position within the note's checklist.
+    var sortIndex: Int = 0
+    /// The note this item belongs to (inverse of `NotesItem.checklistItems`).
+    var note: NotesItem?
+
     init(id: String = UUID().uuidString, title: String, isDone: Bool = false) {
         self.id = id
         self.title = title

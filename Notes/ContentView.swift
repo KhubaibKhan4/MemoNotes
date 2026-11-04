@@ -11,6 +11,7 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var context
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isSelected : Int = 0
     @AppStorage("isPermissionGranted") var isPermissionGranted = false
     
@@ -41,9 +42,13 @@ struct ContentView: View {
                 isSplash = false
             }
         }
-        .task {
-            // Rebuild pending reminders in case they were lost (reinstall, restore, permission changes).
-            ReminderScheduler.resync(context: context)
+        .onChange(of: scenePhase, initial: true) { _, phase in
+            // Rebuild pending reminders whenever the app comes to the front. This picks up
+            // reminders added or changed on other devices through iCloud, and ones lost
+            // after a reinstall, restore or permission change.
+            if phase == .active {
+                ReminderScheduler.resync(context: context)
+            }
         }
     }
 }
