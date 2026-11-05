@@ -576,7 +576,7 @@ struct HomeScreen: View {
             pushAdd = false
             openedNote = notestList.first { $0.id == id }
             appManager.pendingRoute = nil
-        case .todos, nil:
+        case .todos, .todo, nil:
             break
         }
     }

@@ -267,24 +267,14 @@ struct NotesDetail: View {
     }
     
     private func fetchLocationName(for coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
-        let geocoder = CLGeocoder()
-        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        geocoder.reverseGeocodeLocation(location) { placemarks, _ in
-            if let placemark = placemarks?.first {
-                let name = [placemark.name, placemark.locality, placemark.country]
-                    .compactMap { $0 }
-                    .joined(separator: ", ")
-                completion(name)
-            } else {
-                completion(nil)
-            }
-        }
+        PlaceName.lookup(coordinate, completion: completion)
     }
     
     @ViewBuilder
     private var descriptionText: some View {
         if showLineNo {
-            let lines = notesItem.desc.components(separatedBy: .newlines)
+            let full = RichTextCoder.decode(notesItem.richText, fallback: notesItem.desc, baseSize: fontSize)
+            let lines = RichTextCoder.lines(of: full)
             let numberWidth = CGFloat(String(lines.count).count) * fontSize * 0.65
             VStack(alignment: .leading, spacing: 2) {
                 ForEach(Array(lines.enumerated()), id: \.offset) { index, line in
@@ -293,9 +283,9 @@ struct NotesDetail: View {
                             .font(.system(size: fontSize * 0.8, design: .monospaced))
                             .foregroundStyle(.tertiary)
                             .frame(minWidth: numberWidth, alignment: .trailing)
-                        Text(line.isEmpty ? " " : line)
-                            .font(.system(size: fontSize))
-                            .foregroundColor(.secondary)
+                        // Keeps the line's own formatting (bold, headings, underline…).
+                        Text(line.characters.isEmpty ? AttributedString(" ") : line)
+                            .foregroundColor(notesItem.richText == nil ? .secondary : .primary)
                     }
                 }
             }
@@ -405,8 +395,10 @@ struct FullScreenMapView: View {
     }
     
     private func openMapsForDirections() {
-        let placemark = MKPlacemark(coordinate: location)
-        let mapItem = MKMapItem(placemark: placemark)
+        let mapItem = MKMapItem(
+            location: CLLocation(latitude: location.latitude, longitude: location.longitude),
+            address: nil
+        )
         mapItem.name = locationName
         mapItem.openInMaps(launchOptions: [
             MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving

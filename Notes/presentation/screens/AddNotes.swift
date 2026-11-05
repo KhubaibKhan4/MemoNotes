@@ -208,8 +208,7 @@ struct AddNotes: View {
                 VideosSectionView(
                     selectedVideoItem: $selectedVideoItem,
                     selectedVideo: $selectedVideo,
-                    isLoading: isLoadingVideo,
-                    onThumbnail: videoThumbnail
+                    isLoading: isLoadingVideo
                 )
             }
             .onChange(of: selectedItems) { _, newItems in
@@ -487,23 +486,7 @@ struct AddNotes: View {
     }
     
     private func fetchLocationName(for coordinate: CLLocationCoordinate2D, completion: @escaping (String?) -> Void) {
-        let geocoder = CLGeocoder()
-        let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let error = error {
-                print("Reverse geocoding error: \(error.localizedDescription)")
-                completion(nil)
-                return
-            }
-            if let placemark = placemarks?.first {
-                let name = [placemark.name, placemark.locality, placemark.country]
-                    .compactMap { $0 }
-                    .joined(separator: ", ")
-                completion(name)
-            } else {
-                completion(nil)
-            }
-        }
+        PlaceName.lookup(coordinate, completion: completion)
     }
     
     private func zoomToUserLocation(_ userLocation: CLLocation) {
@@ -519,17 +502,6 @@ struct AddNotes: View {
     
     // MARK: - Media helpers
     
-    private func videoThumbnail(for url: URL) -> UIImage? {
-        let asset = AVAsset(url: url)
-        let generator = AVAssetImageGenerator(asset: asset)
-        generator.appliesPreferredTrackTransform = true
-        do {
-            let cg = try generator.copyCGImage(at: CMTime(seconds: 1, preferredTimescale: 600), actualTime: nil)
-            return UIImage(cgImage: cg)
-        } catch {
-            return nil
-        }
-    }
     
     private func compressImageData(_ data: Data, maxDimension: CGFloat, quality: CGFloat) async -> Data? {
         await withCheckedContinuation { continuation in
@@ -577,7 +549,7 @@ struct AddNotes: View {
         let search = MKLocalSearch(request: request)
         search.start { response, _ in
             if let item = response?.mapItems.first {
-                let coordinate = item.placemark.coordinate
+                let coordinate = item.location.coordinate
                 selectedLocation = coordinate
                 selectedLocationName = item.name ?? "Selected"
                 self.position = .region(MKCoordinateRegion(center: coordinate, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)))
@@ -1195,7 +1167,7 @@ private struct VideosSectionView: View {
     @Binding var selectedVideo: URL?
     
     let isLoading: Bool
-    let onThumbnail: (URL) -> UIImage?
+    @State private var thumbnail: UIImage?
     
     var body: some View {
         Section("Video") {
@@ -1211,7 +1183,7 @@ private struct VideosSectionView: View {
                 }
             } else if let url = selectedVideo {
                 VStack(alignment: .leading, spacing: 8) {
-                    if let thumb = onThumbnail(url) {
+                    if let thumb = thumbnail {
                         Image(uiImage: thumb)
                             .resizable()
                             .scaledToFill()
@@ -1232,6 +1204,7 @@ private struct VideosSectionView: View {
                     
                     VideoPlayer(player: AVPlayer(url: url))
                         .frame(height: 220)
+                        .task(id: url) { thumbnail = await Self.loadThumbnail(for: url) }
                         .cornerRadius(10)
                     
                     Button(role: .destructive) {
@@ -1244,6 +1217,16 @@ private struct VideosSectionView: View {
                 Text("No video selected").foregroundColor(.secondary)
             }
         }
+    }
+    
+    /// Frame one second into the video, loaded off the main thread.
+    private static func loadThumbnail(for url: URL) async -> UIImage? {
+        let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
+        generator.appliesPreferredTrackTransform = true
+        guard let (image, _) = try? await generator.image(at: CMTime(seconds: 1, preferredTimescale: 600)) else {
+            return nil
+        }
+        return UIImage(cgImage: image)
     }
 }
 

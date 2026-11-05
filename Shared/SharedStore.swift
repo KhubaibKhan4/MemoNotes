@@ -96,6 +96,8 @@ enum AppRoute: Equatable {
     case newNote
     case note(id: String)
     case todos
+    /// The todo list, with this task open in the editor.
+    case todo(id: String)
 
     static let scheme = "cloudnote"
 
@@ -104,6 +106,15 @@ enum AppRoute: Equatable {
         case .newNote: URL(string: "\(Self.scheme)://new-note")!
         case .note(let id): URL(string: "\(Self.scheme)://note/\(id)")!
         case .todos: URL(string: "\(Self.scheme)://todos")!
+        case .todo(let id): URL(string: "\(Self.scheme)://todo/\(id)")!
+        }
+    }
+
+    /// Whether this route shows the Todo tab.
+    var isTodoTab: Bool {
+        switch self {
+        case .todos, .todo: true
+        default: false
         }
     }
 
@@ -112,6 +123,10 @@ enum AppRoute: Equatable {
         switch url.host() {
         case "new-note": self = .newNote
         case "todos": self = .todos
+        case "todo":
+            let id = url.lastPathComponent
+            guard !id.isEmpty, id != "/" else { return nil }
+            self = .todo(id: id)
         case "note":
             let id = url.lastPathComponent
             guard !id.isEmpty, id != "/" else { return nil }

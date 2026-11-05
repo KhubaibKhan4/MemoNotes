@@ -26,6 +26,13 @@
 			remoteGlobalIDString = CC3AD3B297AEA4711BEA9FFB;
 			remoteInfo = NotesWidget;
 		};
+		E0384C21474E7F6424ED1E1A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 49BA1F7E2CBD8E700099CDCB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 49BA1F852CBD8E700099CDCB;
+			remoteInfo = Notes;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +54,7 @@
 		49BA1F862CBD8E700099CDCB /* CloudNote AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CloudNote AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C08CA9796DC7635277EFE940 /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		70B953AEB2F0E8955626B269 /* NotesWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotesWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6C811AE6FB62AD856053948F /* NotesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -108,6 +116,11 @@
 			path = NotesWidget;
 			sourceTree = "<group>";
 		};
+		117FE38ED7BFCC30CA998CD0 /* NotesTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = NotesTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +139,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B50E997D1A37029C7C3EFDE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C5799DA557145AE3FF7ABF81 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -159,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				49BA1F862CBD8E700099CDCB /* CloudNote AI.app */,
+				6C811AE6FB62AD856053948F /* NotesTests.xctest */,
 				C08CA9796DC7635277EFE940 /* ShareExtension.appex */,
 				70B953AEB2F0E8955626B269 /* NotesWidget.appex */,
 			);
@@ -235,6 +256,27 @@
 			productReference = 70B953AEB2F0E8955626B269 /* NotesWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		C2630897A5D433E974AFC561 /* NotesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8526F1CCC8CE88D7C471EDB4 /* Build configuration list for PBXNativeTarget "NotesTests" */;
+			buildPhases = (
+				4BAD4B65A913ABDD59B66D6F /* Sources */,
+				C5799DA557145AE3FF7ABF81 /* Frameworks */,
+				84537067B332ACA5960730E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6696A6EE29062325600D27EB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				117FE38ED7BFCC30CA998CD0 /* NotesTests */,
+			);
+			name = NotesTests;
+			productName = NotesTests;
+			productReference = 6C811AE6FB62AD856053948F /* NotesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -247,6 +289,10 @@
 				TargetAttributes = {
 					49BA1F852CBD8E700099CDCB = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					C2630897A5D433E974AFC561 = {
+						CreatedOnToolsVersion = 27.1;
+						TestTargetID = 49BA1F852CBD8E700099CDCB;
 					};
 					67F9C9BCE134C8F387C5AD68 = {
 						CreatedOnToolsVersion = 27.1;
@@ -307,6 +353,7 @@
 				49BA1F852CBD8E700099CDCB /* Notes */,
 				67F9C9BCE134C8F387C5AD68 /* ShareExtension */,
 				CC3AD3B297AEA4711BEA9FFB /* NotesWidget */,
+				C2630897A5D433E974AFC561 /* NotesTests */,
 			);
 		};
 /* End PBXProject section */
@@ -327,6 +374,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		7E1CF51CE0EA49D8E06E6F1F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		84537067B332ACA5960730E5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -357,6 +411,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4BAD4B65A913ABDD59B66D6F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -369,6 +430,11 @@
 			isa = PBXTargetDependency;
 			target = CC3AD3B297AEA4711BEA9FFB /* NotesWidget */;
 			targetProxy = 464D1FEDBB9DABA34FBA7E30 /* PBXContainerItemProxy */;
+		};
+		6696A6EE29062325600D27EB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 49BA1F852CBD8E700099CDCB /* Notes */;
+			targetProxy = E0384C21474E7F6424ED1E1A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -672,6 +738,42 @@
 			};
 			name = Release;
 		};
+		8988AA48AD77EF0376A980D7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CloudNote AI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CloudNote AI";
+			};
+			name = Debug;
+		};
+		E72F92C13BCAAF60251C323B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brikmas.aipowerednotes.sync.notes.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CloudNote AI.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/CloudNote AI";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -707,6 +809,15 @@
 			buildConfigurations = (
 				5C9DFC517C0A0C14CB8F5618 /* Debug */,
 				E0113B0C1E40F5064E7E30D1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8526F1CCC8CE88D7C471EDB4 /* Build configuration list for PBXNativeTarget "NotesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8988AA48AD77EF0376A980D7 /* Debug */,
+				E72F92C13BCAAF60251C323B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
