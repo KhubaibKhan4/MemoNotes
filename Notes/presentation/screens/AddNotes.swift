@@ -50,6 +50,8 @@ struct AddNotes: View {
     @State private var hasReminder: Bool = false
     @State private var reminderDate: Date = .nextHour
     @State private var showNotificationsOffAlert: Bool = false
+    /// Extras the person has added during this edit (their sections stay open).
+    @State private var openedExtras: Set<Extra> = []
     /// A template waiting for "Replace" when the note already has content.
     @State private var pendingTemplate: NoteTemplate?
     
@@ -73,7 +75,7 @@ struct AddNotes: View {
                            span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2))
     )
     @State private var selectedLocation: CLLocationCoordinate2D?
-    @State private var selectedLocationName: String = "No Location Selected"
+    @State private var selectedLocationName: String = String(localized: "No Location Selected")
     
     @StateObject private var locationManager = LocationManager()
     @State private var permissionDenied = false
@@ -93,22 +95,6 @@ struct AddNotes: View {
     var body: some View {
         VStack {
             Form {
-                if editingNote == nil {
-                    Section {
-                        Menu {
-                            ForEach(NoteTemplate.all) { template in
-                                Button {
-                                    chooseTemplate(template)
-                                } label: {
-                                    Label(template.name, systemImage: template.symbol)
-                                }
-                            }
-                        } label: {
-                            Label("Start from a Template", systemImage: "doc.on.doc")
-                        }
-                    }
-                }
-                
                 NoteSectionView(
                     title: $title,
                     richDesc: $richDesc,
@@ -120,6 +106,9 @@ struct AddNotes: View {
                     onValidate: validate
                 )
                 
+                addToNoteSection
+                
+                if isShown(.reminder) {
                 ReminderSectionView(
                     hasReminder: $hasReminder,
                     reminderDate: $reminderDate
@@ -133,7 +122,9 @@ struct AddNotes: View {
                         }
                     }
                 }
+                }
                 
+                if isShown(.tags) {
                 TagsSectionView(
                     tags: $tags,
                     newTag: $newTag,
@@ -146,7 +137,9 @@ struct AddNotes: View {
                     onSuggest: suggestTags,
                     onAcceptSuggestion: acceptSuggestedTag
                 )
+                }
                 
+                if isShown(.checklist) {
                 ChecklistSectionView(
                     checklistItems: $checklistItems,
                     newChecklistTitle: $newChecklistTitle,
@@ -156,8 +149,10 @@ struct AddNotes: View {
                     onDelete: deleteChecklistItem,
                     onMove: moveChecklistItem
                 )
+                }
                 
                 // MARK: - Location Section
+                if isShown(.location) {
                 Section("Location") {
                     HStack(spacing: 10) {
                         Button {
@@ -187,29 +182,35 @@ struct AddNotes: View {
                         Button(role: .destructive) {
                             withAnimation {
                                 selectedLocation = nil
-                                selectedLocationName = "No Location Selected"
+                                selectedLocationName = String(localized: "No Location Selected")
                             }
                         } label: {
                             Label("Clear Location", systemImage: "trash")
                         }
                         .buttonStyle(.bordered)
                     } else {
-                        Text("No location selected")
+                        Text("No Location Selected")
                             .foregroundColor(.secondary)
                     }
                 }
                 
+                }
+                
+                if isShown(.photos) {
                 PhotosSectionView(
                     selectedItems: $selectedItems,
                     selectedImagesData: $selectedImagesData,
                     onMoveImage: moveImage
                 )
+                }
                 
+                if isShown(.video) {
                 VideosSectionView(
                     selectedVideoItem: $selectedVideoItem,
                     selectedVideo: $selectedVideo,
                     isLoading: isLoadingVideo
                 )
+                }
             }
             .onChange(of: selectedItems) { _, newItems in
                 guard !newItems.isEmpty else { return }
@@ -248,6 +249,8 @@ struct AddNotes: View {
         .navigationTitle(editingNote == nil ? "Add Note" : "Edit Note")
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
+        // More room to write: hide the tab bar while a note is open for editing.
+        .toolbar(.hidden, for: .tabBar)
         .confirmationDialog(
             "Replace what you've written?",
             isPresented: Binding(get: { pendingTemplate != nil }, set: { if !$0 { pendingTemplate = nil } }),
@@ -298,6 +301,24 @@ struct AddNotes: View {
                     }
                 }
             }
+            if editingNote == nil {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Section("Start from a Template") {
+                            ForEach(NoteTemplate.all) { template in
+                                Button {
+                                    chooseTemplate(template)
+                                } label: {
+                                    Label(template.name, systemImage: template.symbol)
+                                }
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "doc.on.doc")
+                    }
+                    .accessibilityLabel("Templates")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     if validate() {
@@ -309,6 +330,84 @@ struct AddNotes: View {
                     Text("Save")
                 }
                 .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoadingVideo)
+            }
+        }
+    }
+    
+    // MARK: - Optional sections
+    
+    /// Extras a note can have. Each one's section appears only once it's used,
+    /// so a new note starts as just a title and text.
+    enum Extra: CaseIterable, Hashable {
+        case checklist, reminder, tags, photos, location, video
+        
+        var title: String {
+            switch self {
+            case .checklist: String(localized: "Checklist")
+            case .reminder: String(localized: "Reminder")
+            case .tags: String(localized: "Tags")
+            case .photos: String(localized: "Photos")
+            case .location: String(localized: "Location")
+            case .video: String(localized: "Video")
+            }
+        }
+        
+        var symbol: String {
+            switch self {
+            case .checklist: "checklist"
+            case .reminder: "bell"
+            case .tags: "tag"
+            case .photos: "photo"
+            case .location: "mappin.and.ellipse"
+            case .video: "video"
+            }
+        }
+    }
+    
+    private func hasContent(_ extra: Extra) -> Bool {
+        switch extra {
+        case .checklist: !checklistItems.isEmpty
+        case .reminder: hasReminder
+        case .tags: !tags.isEmpty || !suggestedTags.isEmpty
+        case .photos: !selectedImagesData.isEmpty
+        case .location: selectedLocation != nil
+        case .video: selectedVideo != nil || isLoadingVideo
+        }
+    }
+    
+    private func isShown(_ extra: Extra) -> Bool {
+        openedExtras.contains(extra) || hasContent(extra)
+    }
+    
+    /// Buttons for the extras that aren't on the note yet.
+    @ViewBuilder
+    private var addToNoteSection: some View {
+        let available = Extra.allCases.filter { !isShown($0) }
+        if !available.isEmpty {
+            Section("Add to Note") {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(available, id: \.self) { extra in
+                            Button {
+                                withAnimation {
+                                    _ = openedExtras.insert(extra)
+                                    if extra == .reminder { hasReminder = true }
+                                }
+                                Haptics.tap()
+                            } label: {
+                                Label(extra.title, systemImage: extra.symbol)
+                                    .font(.subheadline)
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                                    .background(Capsule().fill(Color.accentColor.opacity(0.12)))
+                            }
+                            .buttonStyle(.plain)
+                            .foregroundStyle(Color.accentColor)
+                        }
+                    }
+                    .padding(.vertical, 2)
+                }
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
             }
         }
     }
@@ -587,7 +686,7 @@ struct AddNotes: View {
         let noteTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let noteBody = String(richDesc.characters)
         guard !noteTitle.isEmpty || !noteBody.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-            tagSuggestionMessage = "Write a title or some text first."
+            tagSuggestionMessage = String(localized: "Write a title or some text first.")
             return
         }
         isSuggestingTags = true
@@ -596,7 +695,7 @@ struct AddNotes: View {
             do {
                 let found = try await NoteAI.suggestTags(title: noteTitle, body: noteBody, existing: tags)
                 suggestedTags = found
-                if found.isEmpty { tagSuggestionMessage = "No new tags to suggest." }
+                if found.isEmpty { tagSuggestionMessage = String(localized: "No new tags to suggest.") }
             } catch {
                 tagSuggestionMessage = NoteAI.message(for: error)
             }
@@ -675,15 +774,21 @@ private struct NoteSectionView: View {
     var onValidate: () -> Bool
     
     var body: some View {
-        Section("Note") {
-            HStack {
-                TextField("Title", text: $title)
+        // The writing area comes first, like a blank page.
+        Section {
+            HStack(alignment: .firstTextBaseline) {
+                TextField("Title", text: $title, axis: .vertical)
+                    .font(.title2.weight(.bold))
+                    .lineLimit(1...3)
                     .onChange(of: title) { _, _ in
                         if showValidation { _ = onValidate() }
                     }
-                Text("\(title.count)/80")
-                    .foregroundColor(title.count > 80 ? .red : .secondary)
-                    .font(.footnote)
+                // Only show the limit when getting close to it.
+                if title.count > 60 {
+                    Text("\(title.count)/80")
+                        .foregroundColor(title.count > 80 ? .red : .secondary)
+                        .font(.footnote)
+                }
             }
             .onChange(of: title) { _, new in
                 if new.count > 80 {
@@ -701,7 +806,12 @@ private struct NoteSectionView: View {
                 }
             }
             
-            Toggle("Pin this note", isOn: $isPinned)
+        }
+        
+        Section {
+            Toggle(isOn: $isPinned) {
+                Label("Pin", systemImage: "pin")
+            }
             FolderPicker(selection: $folder)
             NoteColorPicker(selection: $noteColor)
         }
@@ -742,7 +852,7 @@ private struct NoteColorPicker: View {
                 .overlay(Circle().strokeBorder(Color.primary, lineWidth: isSelected ? 2.5 : 0).padding(-4))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(option?.title ?? "No color")
+        .accessibilityLabel(option?.title ?? String(localized: "No color"))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
@@ -966,13 +1076,13 @@ private struct MapSheetView: View {
                         .allowsHitTesting(false)
                 }
             }
-            .navigationTitle("Pick a Location")
+            .navigationTitle("Location")
             .toolbarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Clear") {
                         selectedLocation = nil
-                        selectedLocationName = "No Location Selected"
+                        selectedLocationName = String(localized: "No Location Selected")
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {

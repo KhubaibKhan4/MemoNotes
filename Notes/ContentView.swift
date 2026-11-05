@@ -34,7 +34,7 @@ struct ContentView: View {
                         
                     }
                     
-                    Tab("Setting", systemImage: "gear",value:2) {
+                    Tab("Settings", systemImage: "gear", value: 2) {
                         SettingScreen()
                     }
                     

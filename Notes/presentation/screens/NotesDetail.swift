@@ -109,7 +109,7 @@ struct NotesDetail: View {
             
             // Images
             if let imagesData = notesItem.images, !imagesData.isEmpty {
-                Section(header: Text("Images")) {
+                Section(header: Text("Photos")) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(Array(imagesData.enumerated()), id: \.offset) { idx, imageData in

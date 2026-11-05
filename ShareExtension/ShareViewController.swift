@@ -140,7 +140,7 @@ final class ShareModel: ObservableObject {
         let content = await SharedContent.read(from: items)
         let text = content.combinedText
         if text.isEmpty {
-            title = content.images.isEmpty ? "" : (content.images.count == 1 ? "Photo" : "\(content.images.count) Photos")
+            title = content.images.isEmpty ? "String(localized: " : (content.images.count == 1 ? ")Photo" : String(localized: "\(content.images.count) Photos"))
         } else {
             let split = NoteText.split(text)
             title = split.title
@@ -161,7 +161,7 @@ final class ShareModel: ObservableObject {
 
     func save() {
         guard SharedStore.storeURL != nil else {
-            errorMessage = "Saving from other apps isn't available yet. Open CloudNote AI, then try again."
+            errorMessage = String(localized: "Saving from other apps isn't available yet. Open CloudNote AI, then try again.")
             return
         }
         let trimmedTitle = String(title.trimmingCharacters(in: .whitespacesAndNewlines).prefix(NoteText.maxTitleLength))
@@ -194,7 +194,7 @@ final class ShareModel: ObservableObject {
             SharedStore.reloadWidgets()
             onDone()
         } catch {
-            errorMessage = "Couldn't save: \(error.localizedDescription)"
+            errorMessage = String(localized: "Couldn't save: \(error.localizedDescription)")
         }
     }
 

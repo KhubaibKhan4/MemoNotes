@@ -57,7 +57,7 @@ enum ReminderScheduler {
 
         let content = UNMutableNotificationContent()
         content.title = todo.title
-        content.body = todo.notes.isEmpty ? "Task due now" : todo.notes
+        content.body = todo.notes.isEmpty ? String(localized: "Task due now") : todo.notes
         content.sound = .default
         content.userInfo = [linkKey: AppRoute.todo(id: todo.id).url.absoluteString]
         add(id: todoIdentifier(todo.id), content: content, at: due)
@@ -75,7 +75,7 @@ enum ReminderScheduler {
 
         let content = UNMutableNotificationContent()
         content.title = note.title
-        content.body = note.desc.isEmpty ? "Note reminder" : String(note.desc.prefix(150))
+        content.body = note.desc.isEmpty ? String(localized: "Note reminder") : String(note.desc.prefix(150))
         content.sound = .default
         content.userInfo = [linkKey: AppRoute.note(id: note.id).url.absoluteString]
         add(id: noteIdentifier(note.id), content: content, at: date)

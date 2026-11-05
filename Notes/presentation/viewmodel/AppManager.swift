@@ -12,9 +12,9 @@ enum ThemeOption: String, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .system: "System"
-        case .light: "Light"
-        case .dark: "Dark"
+        case .system: String(localized: "System")
+        case .light: String(localized: "Light")
+        case .dark: String(localized: "Dark")
         }
     }
 
@@ -47,18 +47,6 @@ class AppManager: ObservableObject {
     var theme: ThemeOption {
         get { ThemeOption(rawValue: themeRaw) ?? .system }
         set { themeRaw = newValue.rawValue }
-    }
-
-    @AppStorage("language") var appLanguage: String = "en" {
-        didSet {
-            objectWillChange.send()
-        }
-    }
-
-    @AppStorage("languageName") var languageName: String = "English" {
-        didSet {
-            objectWillChange.send()
-        }
     }
 
     /// Where a widget, control or Siri asked the app to go. Screens clear it once handled.

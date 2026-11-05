@@ -51,7 +51,7 @@ struct SettingScreen: View {
                     return
                 }
                 Task {
-                    let reason = newValue ? "Turn on App Lock" : "Turn off App Lock"
+                    let reason = newValue ? String(localized: "Turn on App Lock") : String(localized: "Turn off App Lock")
                     if await AppLockManager.authenticate(reason: reason) {
                         appLockEnabled = newValue
                         SharedStore.setAppLockEnabled(newValue)
@@ -62,6 +62,13 @@ struct SettingScreen: View {
         )
     }
     
+    /// The language the app is showing, in that language (e.g. "Español").
+    private var currentLanguageName: String {
+        let code = Bundle.main.preferredLocalizations.first ?? "en"
+        let locale = Locale(identifier: code)
+        return locale.localizedString(forIdentifier: code)?.capitalized(with: locale) ?? code
+    }
+    
     private var themeBinding: Binding<ThemeOption> {
         Binding(get: { appManager.theme }, set: { appManager.theme = $0 })
     }
@@ -69,20 +76,53 @@ struct SettingScreen: View {
     var body: some View {
         NavigationStack {
             Form {
-                // ---- Localization
-                Section(header: Label("Localization", systemImage: "globe")) {
-                    NavigationLink(destination: CountrySelectorView()) {
-                        HStack {
-                            Label("Language", systemImage: "globe")
-                            Spacer()
-                            Text(appManager.languageName)
-                                .foregroundColor(.secondary)
+                // ---- App header
+                Section {
+                    HStack(spacing: 14) {
+                        Image("logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 60, height: 60)
+                            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("CloudNote AI")
+                                .font(.title3.bold())
+                            Text("Version \(appVersion)")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
                         }
                     }
+                    .padding(.vertical, 4)
+                    .accessibilityElement(children: .combine)
+                }
+                
+                // ---- General
+                Section {
+                    // iOS switches the app's language itself (Settings › CloudNote AI › Language),
+                    // which updates every screen, widgets and the share extension, and handles
+                    // right-to-left languages.
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                    } label: {
+                        HStack {
+                            SettingsRowLabel("Language", systemImage: "globe", color: .blue)
+                            Spacer()
+                            Text(currentLanguageName)
+                                .foregroundColor(.secondary)
+                            Image(systemName: "arrow.up.forward.app")
+                                .font(.footnote)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .foregroundStyle(.primary)
+                } header: {
+                    Text("General")
+                } footer: {
+                    Text("Opens Settings, where you can choose the language for CloudNote AI.")
                 }
 
                 // ---- Appearance
-                Section(header: Label("Appearance", systemImage: "paintbrush")) {
+                Section("Appearance") {
                     Picker("Theme", selection: themeBinding) {
                         ForEach(ThemeOption.allCases, id: \.self) { option in
                             Label(option.displayName, systemImage: option.icon)
@@ -95,13 +135,13 @@ struct SettingScreen: View {
                         NavigationLink {
                             AppIconPicker(selectedIcon: $selectedAppIcon)
                         } label: {
-                            Label("App Icon", systemImage: "app.dashed")
+                            SettingsRowLabel("App Icon", systemImage: "app.dashed", color: .indigo)
                         }
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-                            Label("Note Text Size", systemImage: "textformat.size")
+                            SettingsRowLabel("Note Text Size", systemImage: "textformat.size", color: .gray)
                             Spacer()
                             Text("\(Int(fontSize))pt")
                                 .foregroundColor(.secondary)
@@ -116,13 +156,13 @@ struct SettingScreen: View {
                 // ---- Note Viewing
                 Section {
                     Toggle(isOn: $showLineNo) {
-                        Label("Show Line Numbers", systemImage: "list.number")
+                        SettingsRowLabel("Show Line Numbers", systemImage: "list.number", color: .teal)
                     }
                     Toggle(isOn: $showPreview) {
-                        Label("Show Preview", systemImage: "doc.richtext")
+                        SettingsRowLabel("Show Preview", systemImage: "doc.richtext", color: .cyan)
                     }
                 } header: {
-                    Label("Viewing Options", systemImage: "doc.text.magnifyingglass")
+                    Text("Viewing Options")
                 } footer: {
                     Text("Line numbers appear in a note's description. Preview shows the start of each note in the notes list.")
                 }
@@ -130,7 +170,7 @@ struct SettingScreen: View {
                 // ---- Notifications & Haptics
                 Section {
                     Toggle(isOn: $notificationsEnabled) {
-                        Label("Enable Notifications", systemImage: "bell.badge")
+                        SettingsRowLabel("Notifications", systemImage: "bell.badge.fill", color: .red)
                     }
                     .onChange(of: notificationsEnabled) { _, enabled in
                         if enabled {
@@ -141,13 +181,13 @@ struct SettingScreen: View {
                     }
 
                     Toggle(isOn: $hapticsEnabled) {
-                        Label("Enable Haptics", systemImage: "waveform.path")
+                        SettingsRowLabel("Haptics", systemImage: "waveform", color: .pink)
                     }
                     .onChange(of: hapticsEnabled) { _, enabled in
                         if enabled { Haptics.tap(.medium) }
                     }
                 } header: {
-                    Label("Feedback", systemImage: "bell")
+                    Text("Feedback")
                 } footer: {
                     Text("Notifications are used for reminders on notes and todos.")
                 }
@@ -155,7 +195,7 @@ struct SettingScreen: View {
                 // ---- Privacy
                 Section {
                     Toggle(isOn: appLockBinding) {
-                        Label("Lock with \(AppLockManager.methodName)", systemImage: AppLockManager.methodSymbol)
+                        SettingsRowLabel("Lock with \(AppLockManager.methodName)", systemImage: AppLockManager.methodSymbol, color: .green)
                     }
                     if appLockEnabled {
                         Picker(selection: $appLockTimeout) {
@@ -163,11 +203,11 @@ struct SettingScreen: View {
                                 Text(option.title).tag(option.rawValue)
                             }
                         } label: {
-                            Label("Require Unlock", systemImage: "timer")
+                            SettingsRowLabel("Require Unlock", systemImage: "timer", color: .green)
                         }
                     }
                 } header: {
-                    Label("Privacy", systemImage: "lock")
+                    Text("Privacy")
                 } footer: {
                     Text("When on, your notes stay hidden until you unlock the app, including in the app switcher.")
                 }
@@ -175,13 +215,13 @@ struct SettingScreen: View {
                 // ---- iCloud
                 Section {
                     HStack {
-                        Label("iCloud Sync", systemImage: "icloud")
+                        SettingsRowLabel("iCloud Sync", systemImage: "icloud.fill", color: .blue)
                         Spacer()
                         Text(isSignedInToICloud ? "On" : "Off")
                             .foregroundColor(.secondary)
                     }
                 } header: {
-                    Label("Sync", systemImage: "arrow.triangle.2.circlepath")
+                    Text("Sync")
                 } footer: {
                     if isSignedInToICloud {
                         Text("Notes, checklists, photos, todos and reminders sync to your other devices signed in to the same iCloud account. Videos stay on the device that added them.")
@@ -195,47 +235,41 @@ struct SettingScreen: View {
                     Button {
                         prepareExport()
                     } label: {
-                        Label("Export Data", systemImage: "square.and.arrow.up")
+                        SettingsRowLabel("Export Data", systemImage: "square.and.arrow.up", color: .orange)
                     }
 
                     Button {
                         showImporter = true
                     } label: {
-                        Label("Import Data", systemImage: "square.and.arrow.down")
+                        SettingsRowLabel("Import Data", systemImage: "square.and.arrow.down", color: .orange)
                     }
 
                     Button(role: .destructive) {
                         showResetAlert = true
                     } label: {
-                        Label("Reset All Data", systemImage: "trash")
+                        SettingsRowLabel("Reset All Data", systemImage: "trash.fill", color: .red, isDestructive: true)
                     }
                 } header: {
-                    Label("Data", systemImage: "externaldrive")
+                    Text("Data")
                 } footer: {
                     Text("Exports notes, photos, checklists, todos and reminders as a JSON file. Videos are not included. Importing adds notes and todos without replacing what you have.")
                 }
 
                 // ---- About & Support
-                Section(header: Label("About", systemImage: "info.circle")) {
+                Section("About") {
                     Button {
                         requestReview()
                     } label: {
-                        Label("Rate This App", systemImage: "star.fill")
+                        SettingsRowLabel("Rate This App", systemImage: "star.fill", color: .yellow)
                     }
-                    .foregroundColor(.accentColor)
+                    .foregroundStyle(.primary)
 
                     NavigationLink {
                         PirvacyPolicyView()
                     } label: {
-                        Label("Privacy Policy", systemImage: "shield.lefthalf.fill")
+                        SettingsRowLabel("Privacy Policy", systemImage: "hand.raised.fill", color: .blue)
                     }
 
-                    HStack {
-                        Label("App Version", systemImage: "app.badge")
-                        Spacer()
-                        Text(appVersion)
-                            .foregroundColor(.secondary)
-                    }
                 }
             }
             .navigationTitle("Settings")
@@ -248,8 +282,8 @@ struct SettingScreen: View {
                 Button("Cancel", role: .cancel) { }
             } message: {
                 Text(isSignedInToICloud
-                     ? "This will erase all your notes, todos, and settings — on this device and on your other devices that sync through iCloud. This cannot be undone."
-                     : "This will erase all your notes, todos, and settings. This cannot be undone.")
+                     ? String(localized: "This will erase all your notes, todos, and settings — on this device and on your other devices that sync through iCloud. This cannot be undone.")
+                     : String(localized: "This will erase all your notes, todos, and settings. This cannot be undone."))
             }
             .alert("App Lock Unavailable", isPresented: $showLockUnavailableAlert) {
                 Button("OK", role: .cancel) { }
@@ -281,9 +315,9 @@ struct SettingScreen: View {
                 switch result {
                 case .success:
                     Haptics.success()
-                    resultMessage = "Backup saved."
+                    resultMessage = String(localized: "Backup saved.")
                 case .failure(let error):
-                    resultMessage = "Couldn't save the backup: \(error.localizedDescription)"
+                    resultMessage = String(localized: "Couldn't save the backup: \(error.localizedDescription)")
                 }
                 exportDocument = nil
             }
@@ -300,7 +334,7 @@ struct SettingScreen: View {
             exportDocument = BackupDocument(data: try DataManager.exportBackup(context: context))
             showExporter = true
         } catch {
-            resultMessage = "Couldn't create the backup: \(error.localizedDescription)"
+            resultMessage = String(localized: "Couldn't create the backup: \(error.localizedDescription)")
         }
     }
 
@@ -313,13 +347,13 @@ struct SettingScreen: View {
             let added = try DataManager.importBackup(try Data(contentsOf: url), context: context)
             ReminderScheduler.resync(context: context)
             Haptics.success()
-            let notes = added.notes == 1 ? "1 note" : "\(added.notes) notes"
-            let todos = added.todos == 1 ? "1 todo" : "\(added.todos) todos"
-            resultMessage = "Imported \(notes) and \(todos)."
+            let notes = added.notes == 1 ? String(localized: "1 note") : String(localized: "\(added.notes) notes")
+            let todos = added.todos == 1 ? String(localized: "1 todo") : String(localized: "\(added.todos) todos")
+            resultMessage = String(localized: "Imported \(notes) and \(todos).")
         } catch is DecodingError {
-            resultMessage = "This file isn't a MemoNotes backup."
+            resultMessage = String(localized: "This file isn't a MemoNotes backup.")
         } catch {
-            resultMessage = "Couldn't import the file: \(error.localizedDescription)"
+            resultMessage = String(localized: "Couldn't import the file: \(error.localizedDescription)")
         }
     }
 
@@ -328,7 +362,7 @@ struct SettingScreen: View {
             try DataManager.deleteAllData(context: context)
             ReminderScheduler.cancelAll()
         } catch {
-            resultMessage = "Couldn't delete all data: \(error.localizedDescription)"
+            resultMessage = String(localized: "Couldn't delete all data: \(error.localizedDescription)")
             return
         }
 
@@ -342,8 +376,6 @@ struct SettingScreen: View {
         SharedStore.setAppLockEnabled(false)
         appLockTimeout = AppLockTimeout.immediately.rawValue
         appManager.theme = .system
-        appManager.appLanguage = "en"
-        appManager.languageName = "English"
         if selectedAppIcon != "AppIcon" {
             UIApplication.shared.setAlternateIconName(nil)
             selectedAppIcon = "AppIcon"
@@ -432,4 +464,34 @@ private struct AppIconPicker: View {
         .environmentObject(AppManager())
         .environmentObject(AppLockManager())
         .modelContainer(for: [NotesItem.self, TodoItem.self], inMemory: true)
+}
+
+// MARK: - Row label
+
+/// A settings row title with a small colored icon tile, like the iOS Settings app.
+struct SettingsRowLabel: View {
+    let title: LocalizedStringKey
+    let systemImage: String
+    let color: Color
+    var isDestructive = false
+
+    init(_ title: LocalizedStringKey, systemImage: String, color: Color, isDestructive: Bool = false) {
+        self.title = title
+        self.systemImage = systemImage
+        self.color = color
+        self.isDestructive = isDestructive
+    }
+
+    var body: some View {
+        Label {
+            Text(title)
+                .foregroundStyle(isDestructive ? Color.red : Color.primary)
+        } icon: {
+            Image(systemName: systemImage)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 28, height: 28)
+                .background(color.gradient, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+        }
+    }
 }

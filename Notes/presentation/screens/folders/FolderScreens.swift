@@ -108,7 +108,7 @@ struct TrashScreen: View {
                 Text(note.desc).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
             }
             let days = NoteTrash.daysLeft(for: note)
-            Text(days == 0 ? "Removed soon" : "\(days) day\(days == 1 ? "" : "s") left")
+            Text(days == 0 ? "Removed soon" : (days == 1 ? "1 day left" : "\(days) days left"))
                 .font(.caption)
                 .foregroundStyle(days <= 3 ? .red : .secondary)
         }
