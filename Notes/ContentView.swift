@@ -58,7 +58,7 @@ struct ContentView: View {
         .onOpenURL { url in
             guard let route = AppRoute(url: url) else { return }
             isSplash = false
-            isSelected = (route == .todos) ? 1 : 0
+            isSelected = route.isTodoTab ? 1 : 0
             appManager.pendingRoute = route
         }
         .onChange(of: scenePhase, initial: true) { _, phase in

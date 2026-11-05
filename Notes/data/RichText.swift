@@ -85,6 +85,22 @@ enum RichTextCoder {
         return try? JSONEncoder().encode(runs)
     }
 
+    /// Splits formatted text into lines, keeping each line's formatting.
+    static func lines(of text: AttributedString) -> [AttributedString] {
+        var result: [AttributedString] = []
+        var start = text.startIndex
+        var index = text.startIndex
+        while index < text.endIndex {
+            if text.characters[index] == "\n" {
+                result.append(AttributedString(text[start..<index]))
+                start = text.characters.index(after: index)
+            }
+            index = text.characters.index(after: index)
+        }
+        result.append(AttributedString(text[start..<text.endIndex]))
+        return result
+    }
+
     /// Trims leading/trailing whitespace while keeping formatting.
     static func trimmed(_ text: AttributedString) -> AttributedString {
         let characters = text.characters

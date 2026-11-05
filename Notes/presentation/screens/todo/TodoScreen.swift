@@ -101,6 +101,15 @@ struct TodoScreen: View {
                 }
             }
             .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic))
+            .onChange(of: appManager.pendingRoute, initial: true) { _, route in
+                // A reminder was tapped: open that task.
+                if case .todo(let id) = route {
+                    appManager.pendingRoute = nil
+                    if let item = allTodos.first(where: { $0.id == id }) {
+                        edit(item)
+                    }
+                }
+            }
             .sheet(isPresented: $isPresentingEditor, onDismiss: {
                 editingItem = nil
             }) {

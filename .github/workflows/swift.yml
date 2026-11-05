@@ -27,3 +27,26 @@ jobs:
           -scheme Notes \
           -destination 'generic/platform=iOS Simulator' \
           CODE_SIGNING_ALLOWED=NO
+
+  test:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Select Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
+    - name: Run unit tests
+      run: |
+        set -o pipefail
+        # Use the first available iPhone simulator on the runner.
+        DEVICE_ID=$(xcrun simctl list devices available -j \
+          | python3 -c "import json,sys; d=json.load(sys.stdin)['devices']; print(next(x['udid'] for r in d.values() for x in r if x['name'].startswith('iPhone')))")
+        xcodebuild test \
+          -project Notes.xcodeproj \
+          -scheme Notes \
+          -destination "id=$DEVICE_ID" \
+          CODE_SIGNING_ALLOWED=NO

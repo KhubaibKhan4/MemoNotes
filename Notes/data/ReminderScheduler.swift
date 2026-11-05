@@ -18,6 +18,8 @@ import UIKit
 enum ReminderScheduler {
 
     static let settingKey = "EnableNotifications"
+    /// Key in a reminder's userInfo holding the cloudnote:// link to its task or note.
+    static let linkKey = "link"
 
     static var isEnabled: Bool {
         UserDefaults.standard.bool(forKey: settingKey)
@@ -57,6 +59,7 @@ enum ReminderScheduler {
         content.title = todo.title
         content.body = todo.notes.isEmpty ? "Task due now" : todo.notes
         content.sound = .default
+        content.userInfo = [linkKey: AppRoute.todo(id: todo.id).url.absoluteString]
         add(id: todoIdentifier(todo.id), content: content, at: due)
     }
 
@@ -74,6 +77,7 @@ enum ReminderScheduler {
         content.title = note.title
         content.body = note.desc.isEmpty ? "Note reminder" : String(note.desc.prefix(150))
         content.sound = .default
+        content.userInfo = [linkKey: AppRoute.note(id: note.id).url.absoluteString]
         add(id: noteIdentifier(note.id), content: content, at: date)
     }
 
@@ -124,6 +128,18 @@ final class NotificationDelegate: NSObject, UIApplicationDelegate, UNUserNotific
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
         [.banner, .list, .sound]
+    }
+
+    /// Tapping a reminder opens its note or task, using the same links as the widgets.
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse
+    ) async {
+        guard let link = response.notification.request.content.userInfo[ReminderScheduler.linkKey] as? String,
+              let url = URL(string: link) else { return }
+        await MainActor.run {
+            _ = UIApplication.shared.open(url)
+        }
     }
 }
 
