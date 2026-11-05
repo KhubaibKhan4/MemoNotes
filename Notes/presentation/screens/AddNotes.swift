@@ -50,6 +50,8 @@ struct AddNotes: View {
     @State private var hasReminder: Bool = false
     @State private var reminderDate: Date = .nextHour
     @State private var showNotificationsOffAlert: Bool = false
+    /// A template waiting for "Replace" when the note already has content.
+    @State private var pendingTemplate: NoteTemplate?
     
     // Tags
     @State private var tags: [String] = []
@@ -91,6 +93,22 @@ struct AddNotes: View {
     var body: some View {
         VStack {
             Form {
+                if editingNote == nil {
+                    Section {
+                        Menu {
+                            ForEach(NoteTemplate.all) { template in
+                                Button {
+                                    chooseTemplate(template)
+                                } label: {
+                                    Label(template.name, systemImage: template.symbol)
+                                }
+                            }
+                        } label: {
+                            Label("Start from a Template", systemImage: "doc.on.doc")
+                        }
+                    }
+                }
+                
                 NoteSectionView(
                     title: $title,
                     richDesc: $richDesc,
@@ -231,6 +249,18 @@ struct AddNotes: View {
         .navigationTitle(editingNote == nil ? "Add Note" : "Edit Note")
         .navigationBarTitleDisplayMode(.inline)
         .interactiveDismissDisabled()
+        .confirmationDialog(
+            "Replace what you've written?",
+            isPresented: Binding(get: { pendingTemplate != nil }, set: { if !$0 { pendingTemplate = nil } }),
+            titleVisibility: .visible
+        ) {
+            Button("Use Template", role: .destructive) {
+                if let template = pendingTemplate { applyTemplate(template) }
+                pendingTemplate = nil
+            }
+        } message: {
+            Text("The template's title, text and checklist will replace this note's.")
+        }
         .alert("Notifications Are Off", isPresented: $showNotificationsOffAlert) {
             Button("Open Settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -282,6 +312,34 @@ struct AddNotes: View {
                 .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoadingVideo)
             }
         }
+    }
+    
+    // MARK: - Templates
+    
+    private var hasContent: Bool {
+        !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || !String(richDesc.characters).trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            || !checklistItems.isEmpty
+    }
+    
+    private func chooseTemplate(_ template: NoteTemplate) {
+        if hasContent {
+            pendingTemplate = template
+        } else {
+            applyTemplate(template)
+        }
+    }
+    
+    private func applyTemplate(_ template: NoteTemplate) {
+        title = template.title()
+        var body = AttributedString(template.body)
+        body.font = .system(size: fontSize)
+        richDesc = body
+        checklistItems = template.checklist.map { ChecklistItem(title: $0) }
+        for tag in template.tags where !tags.contains(where: { $0.caseInsensitiveCompare(tag) == .orderedSame }) {
+            tags.append(tag)
+        }
+        Haptics.tap()
     }
     
     // MARK: - Load / Save
