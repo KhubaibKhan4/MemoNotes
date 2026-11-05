@@ -17,10 +17,10 @@ enum AppLockTimeout: Double, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .immediately: "Immediately"
-        case .oneMinute: "After 1 minute"
-        case .fiveMinutes: "After 5 minutes"
-        case .fifteenMinutes: "After 15 minutes"
+        case .immediately: String(localized: "Immediately")
+        case .oneMinute: String(localized: "After 1 minute")
+        case .fiveMinutes: String(localized: "After 5 minutes")
+        case .fifteenMinutes: String(localized: "After 15 minutes")
         }
     }
 }
@@ -86,7 +86,7 @@ final class AppLockManager: ObservableObject {
         }
         isAuthenticating = true
         Task {
-            let success = await Self.authenticate(reason: "Unlock your notes")
+            let success = await Self.authenticate(reason: String(localized: "Unlock your notes"))
             isAuthenticating = false
             if success {
                 isLocked = false
@@ -109,7 +109,7 @@ final class AppLockManager: ObservableObject {
         case .faceID: return "Face ID"
         case .touchID: return "Touch ID"
         case .opticID: return "Optic ID"
-        default: return "Passcode"
+        default: return String(localized: "Passcode")
         }
     }
 

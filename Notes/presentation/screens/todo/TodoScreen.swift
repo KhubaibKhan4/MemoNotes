@@ -21,7 +21,7 @@ struct TodoScreen: View {
     // UI State
     @State private var searchText: String = ""
     @State private var filter: Filter = .all
-    @State private var sort: Sort = .titleAsc
+    @State private var sort: Sort = .dueDate
     @State private var isPresentingEditor: Bool = false
     @State private var editingItem: TodoItem?
     @State private var quickAddTitle: String = ""
@@ -32,20 +32,44 @@ struct TodoScreen: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                header
-                QuickAddBar(title: $quickAddTitle, onAdd: addQuickTask)
+            contentList
+            // Quick add sits at the bottom, within thumb reach (like Reminders).
+            .safeAreaInset(edge: .bottom) {
+                if editMode == .active {
+                    // Bulk actions get their own bar while selecting; the tab bar is hidden.
+                    BulkActionBar(
+                        selectedCount: selection.count,
+                        allSelected: !visibleIDs.isEmpty && selection == visibleIDs,
+                        onSelectAll: {
+                            selection = selection == visibleIDs ? [] : visibleIDs
+                        },
+                        onComplete: { bulkToggleComplete(true) },
+                        onUncomplete: { bulkToggleComplete(false) },
+                        onDelete: bulkDelete
+                    )
                     .padding(.horizontal)
-                    .padding(.top, 8)
-                filterControl
-                    .padding(.horizontal)
-                    .padding(.vertical, 8)
-                contentList
+                    .padding(.bottom, 8)
+                } else {
+                    QuickAddBar(title: $quickAddTitle, onAdd: addQuickTask)
+                        .padding(.horizontal)
+                        .padding(.bottom, 8)
+                }
             }
+            .toolbar(editMode == .active ? .hidden : .visible, for: .tabBar)
+            .animation(.snappy, value: editMode)
             .navigationTitle("Todo")
+            .navigationSubtitle(subtitle)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
+                        Picker(selection: $filter) {
+                            Label("All Tasks", systemImage: "tray").tag(Filter.all)
+                            Label("Active", systemImage: "circle").tag(Filter.active)
+                            Label("Completed", systemImage: "checkmark.circle").tag(Filter.completed)
+                        } label: {
+                            Text("Show")
+                        }
+                        .pickerStyle(.inline)
                         Picker("Sort", selection: $sort) {
                             Label("Title A–Z", systemImage: "textformat").tag(Sort.titleAsc)
                             Label("Title Z–A", systemImage: "textformat.size.smaller").tag(Sort.titleDesc)
@@ -53,14 +77,17 @@ struct TodoScreen: View {
                             Label("Due Date", systemImage: "calendar").tag(Sort.dueDate)
                             Label("Priority", systemImage: "flag").tag(Sort.priority)
                         }
+                        .pickerStyle(.inline)
                         Divider()
                         Button(role: .destructive, action: clearCompleted) {
                             Label("Clear Completed", systemImage: "trash")
                         }
                     } label: {
-                        Image(systemName: "ellipsis.circle")
+                        Image(systemName: filter == .all
+                              ? "line.3.horizontal.decrease.circle"
+                              : "line.3.horizontal.decrease.circle.fill")
                     }
-                    .accessibilityLabel("Options")
+                    .accessibilityLabel("View options")
                 }
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     if !filteredSortedTodos.isEmpty {
@@ -74,24 +101,6 @@ struct TodoScreen: View {
                             .imageScale(.large)
                     }
                     .accessibilityLabel("New Task")
-                }
-                ToolbarItemGroup(placement: .bottomBar) {
-                    if editMode == .active && !selection.isEmpty {
-                        Button {
-                            bulkToggleComplete(true)
-                        } label: {
-                            Label("Complete", systemImage: "checkmark.circle.fill")
-                        }
-                        Button {
-                            bulkToggleComplete(false)
-                        } label: {
-                            Label("Uncomplete", systemImage: "xmark.circle")
-                        }
-                        Spacer()
-                        Button(role: .destructive, action: bulkDelete) {
-                            Label("Delete", systemImage: "trash")
-                        }
-                    }
                 }
             }
             .environment(\.editMode, $editMode)
@@ -189,64 +198,89 @@ struct TodoScreen: View {
 
     // MARK: - Views
 
-    private var header: some View {
+    /// IDs of the tasks currently shown, for "Select All".
+    private var visibleIDs: Set<String> {
+        Set(filteredSortedTodos.map(\.id))
+    }
+    
+    private var subtitle: String {
         let todos = allTodos.filter { !$0.isDeleted }
-        let total = todos.count
-        let completed = todos.filter { $0.isCompleted }.count
-        let overdue = todos.filter { $0.isOverdue }.count
-        let progress = total == 0 ? 0 : Double(completed) / Double(total)
-
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Label("Tasks", systemImage: "checklist")
-                    .font(.headline)
-                Spacer()
-                if overdue > 0 {
-                    Text("\(overdue) overdue")
-                        .font(.subheadline)
-                        .foregroundStyle(.red)
-                }
-                Text("\(completed)/\(total) done")
-                    .foregroundStyle(.secondary)
-                    .font(.subheadline)
+        let open = todos.filter { !$0.isCompleted }.count
+        let overdue = todos.filter(\.isOverdue).count
+        var text = open == 1 ? String(localized: "1 open task") : String(localized: "\(open) open tasks")
+        if overdue > 0 { text += String(localized: " · \(overdue) overdue") }
+        return text
+    }
+    
+    private var emptyTitle: String {
+        if allTodos.isEmpty { return String(localized: "No Tasks Yet") }
+        if !searchText.isEmpty { return String(localized: "No Matching Tasks") }
+        return filter == .completed ? String(localized: "Nothing Completed Yet") : String(localized: "All Done!")
+    }
+    
+    private var emptyMessage: String {
+        if allTodos.isEmpty { return String(localized: "Type a task below and press return to add it.") }
+        if !searchText.isEmpty { return String(localized: "Try a different search.") }
+        return filter == .completed ? String(localized: "Tasks you tick off show up here.") : String(localized: "You've finished every task.")
+    }
+    
+    /// A group of tasks in the list, such as "Today" or "Overdue".
+    private struct TaskGroup: Identifiable {
+        let id: String
+        let title: String
+        var isOverdue = false
+        var items: [TodoItem]
+    }
+    
+    /// Tasks grouped by when they're due; completed ones go last.
+    private var sections: [TaskGroup] {
+        let calendar = Calendar.current
+        let now = Date()
+        var overdue: [TodoItem] = [], today: [TodoItem] = [], tomorrow: [TodoItem] = []
+        var upcoming: [TodoItem] = [], noDate: [TodoItem] = [], done: [TodoItem] = []
+        for item in filteredSortedTodos {
+            if item.isCompleted {
+                done.append(item)
+            } else if let due = item.dueDate {
+                if due < now && !calendar.isDateInToday(due) { overdue.append(item) }
+                else if calendar.isDateInToday(due) { today.append(item) }
+                else if calendar.isDateInTomorrow(due) { tomorrow.append(item) }
+                else { upcoming.append(item) }
+            } else {
+                noDate.append(item)
             }
-            ProgressView(value: progress)
-                .tint(.accentColor)
         }
-        .padding(.horizontal)
-        .padding(.top, 8)
+        return [
+            TaskGroup(id: "overdue", title: String(localized: "Overdue"), isOverdue: true, items: overdue),
+            TaskGroup(id: "today", title: String(localized: "Today"), items: today),
+            TaskGroup(id: "tomorrow", title: String(localized: "Tomorrow"), items: tomorrow),
+            TaskGroup(id: "upcoming", title: String(localized: "Upcoming"), items: upcoming),
+            TaskGroup(id: "nodate", title: String(localized: "No Due Date"), items: noDate),
+            TaskGroup(id: "done", title: String(localized: "Completed"), items: done),
+        ].filter { !$0.items.isEmpty }
     }
-
-    private var filterControl: some View {
-        Picker("Filter", selection: $filter) {
-            Text("All").tag(Filter.all)
-            Text("Active").tag(Filter.active)
-            Text("Completed").tag(Filter.completed)
-        }
-        .pickerStyle(.segmented)
-    }
-
+    
     private var contentList: some View {
         Group {
             if filteredSortedTodos.isEmpty {
                 VStack(spacing: 12) {
-                    Image(systemName: "checkmark.circle")
-                        .font(.system(size: 48))
+                    Image(systemName: allTodos.isEmpty ? "checklist" : "checkmark.circle")
+                        .font(.system(size: 52, weight: .light))
                         .foregroundStyle(.secondary)
-                    Text("No tasks to show")
-                        .font(.headline)
+                    Text(emptyTitle)
+                        .font(.title3.bold())
+                    Text(emptyMessage)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    if !searchText.isEmpty {
-                        Text("Try changing your search or filters.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
+                        .multilineTextAlignment(.center)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding()
             } else {
                 List(selection: $selection) {
-                    ForEach(filteredSortedTodos) { item in
+                    ForEach(sections) { group in
+                    Section {
+                    ForEach(group.items) { item in
                         TodoRow(
                             item: item,
                             onToggle: { toggleComplete(item) },
@@ -294,6 +328,15 @@ struct TodoScreen: View {
                                 Label("Delete", systemImage: "trash")
                             }
                         }
+                    }
+                    } header: {
+                        HStack(spacing: 6) {
+                            Text(group.title)
+                            Text("\(group.items.count)")
+                                .foregroundStyle(.tertiary)
+                        }
+                        .foregroundStyle(group.isOverdue ? Color.red : Color.secondary)
+                    }
                     }
                 }
                 .listStyle(.insetGrouped)
@@ -439,10 +482,57 @@ private struct TodoRow: View {
     private func dueText(_ date: Date) -> String {
         let calendar = Calendar.current
         let time = date.formatted(date: .omitted, time: .shortened)
-        if calendar.isDateInToday(date) { return "Today, \(time)" }
-        if calendar.isDateInTomorrow(date) { return "Tomorrow, \(time)" }
-        if calendar.isDateInYesterday(date) { return "Yesterday, \(time)" }
+        if calendar.isDateInToday(date) { return String(localized: "Today, \(time)") }
+        if calendar.isDateInTomorrow(date) { return String(localized: "Tomorrow, \(time)") }
+        if calendar.isDateInYesterday(date) { return String(localized: "Yesterday, \(time)") }
         return date.formatted(.dateTime.month(.abbreviated).day().hour().minute())
+    }
+}
+
+// MARK: - Bulk Action Bar
+
+/// Shown at the bottom while selecting tasks with Edit.
+private struct BulkActionBar: View {
+    let selectedCount: Int
+    let allSelected: Bool
+    var onSelectAll: () -> Void
+    var onComplete: () -> Void
+    var onUncomplete: () -> Void
+    var onDelete: () -> Void
+    
+    var body: some View {
+        let hasSelection = selectedCount > 0
+        HStack(spacing: 4) {
+            Button(allSelected ? "Deselect All" : "Select All", action: onSelectAll)
+                .font(.subheadline.weight(.medium))
+            Spacer()
+            Text(hasSelection ? "\(selectedCount) selected" : "Select tasks")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            Button(action: onComplete) {
+                Image(systemName: "checkmark.circle")
+            }
+            .accessibilityLabel("Mark as Completed")
+            .disabled(!hasSelection)
+            Button(action: onUncomplete) {
+                Image(systemName: "arrow.uturn.backward.circle")
+            }
+            .accessibilityLabel("Mark as Active")
+            .disabled(!hasSelection)
+            Button(role: .destructive, action: onDelete) {
+                Image(systemName: "trash")
+            }
+            .accessibilityLabel("Delete selected")
+            .tint(.red)
+            .disabled(!hasSelection)
+        }
+        .font(.title3)
+        .buttonStyle(.borderless)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 12)
+        .background(.regularMaterial, in: Capsule())
+        .overlay(Capsule().strokeBorder(Color.primary.opacity(0.08)))
     }
 }
 
@@ -453,16 +543,22 @@ private struct QuickAddBar: View {
     var onAdd: () -> Void
 
     var body: some View {
-        HStack(spacing: 8) {
-            TextField("Quick add a task…", text: $title)
-                .textFieldStyle(.roundedBorder)
+        HStack(spacing: 10) {
+            Image(systemName: "plus.circle.fill")
+                .font(.title3)
+                .foregroundStyle(Color.accentColor)
+            TextField("New task", text: $title)
+                .submitLabel(.done)
                 .onSubmit(onAdd)
-            Button(action: onAdd) {
-                Image(systemName: "plus.circle.fill")
-                    .imageScale(.large)
+            if !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Button("Add", action: onAdd)
+                    .fontWeight(.semibold)
             }
-            .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(.regularMaterial, in: Capsule())
+        .overlay(Capsule().strokeBorder(Color.primary.opacity(0.08)))
     }
 }
 
@@ -531,7 +627,7 @@ private struct TaskEditorSheet: View {
                     if draft.hasDueDate {
                         DatePicker("Due", selection: $draft.dueDate)
                         Toggle(isOn: $draft.hasReminder) {
-                            Label("Remind Me", systemImage: "bell")
+                            Label("Remind me", systemImage: "bell")
                         }
                     }
                 } footer: {

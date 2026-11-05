@@ -20,18 +20,10 @@ struct NotesApp: App {
         WindowGroup {
             ContentView()
                 .modelContainer(AppDatabase.container)
-                .environment(\.locale, Locale(identifier: appManager.appLanguage))
                 .environmentObject(appManager)
                 .environmentObject(appLock)
                 .preferredColorScheme(appManager.theme.colorScheme)
-                .environment(\.locale, .init(identifier: appManager.appLanguage))
-                .environment(\.layoutDirection, isRTL(langauge: appManager.appLanguage) ? .rightToLeft : .leftToRight)
         }
-    }
-
-    func isRTL(langauge: String) -> Bool {
-        let rtlLanguage = ["ar", "he", "fa", "ur"]
-        return rtlLanguage.contains(langauge)
     }
 }
 

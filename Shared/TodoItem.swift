@@ -59,10 +59,10 @@ enum TodoPriority: Int, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .none: "None"
-        case .low: "Low"
-        case .medium: "Medium"
-        case .high: "High"
+        case .none: String(localized: "None")
+        case .low: String(localized: "Low")
+        case .medium: String(localized: "Medium")
+        case .high: String(localized: "High")
         }
     }
 

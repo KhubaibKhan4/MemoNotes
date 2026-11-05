@@ -24,7 +24,18 @@ enum NoteColor: String, CaseIterable, Identifiable {
         }
     }
 
-    var title: String { rawValue.capitalized }
+    var title: String {
+        switch self {
+        case .red: String(localized: "Red")
+        case .orange: String(localized: "Orange")
+        case .yellow: String(localized: "Yellow")
+        case .green: String(localized: "Green")
+        case .teal: String(localized: "Teal")
+        case .blue: String(localized: "Blue")
+        case .purple: String(localized: "Purple")
+        case .pink: String(localized: "Pink")
+        }
+    }
 }
 
 extension NotesItem {

@@ -123,61 +123,26 @@ struct HomeScreen: View {
                     content
                 }
             }
-            .navigationTitle(LocalizedStringKey("Notes"))
+            // Tap the title to switch folders (like Mail and Files).
+            .navigationTitle(selectedFolder?.name ?? String(localized: "Notes"))
+            .navigationSubtitle(subtitle)
+            .toolbarTitleMenu { folderMenuItems }
             .toolbar {
+                // The title menu only opens from the small (scrolled) title,
+                // so folders also get a visible button.
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
-                        Picker("Sort by", selection: $sortMode) {
-                            Label("Recent", systemImage: "clock.arrow.circlepath").tag(SortMode.recent)
-                            Label("Title", systemImage: "textformat").tag(SortMode.title)
-                        }
+                        folderMenuItems
                     } label: {
-                        Image(systemName: "arrow.up.arrow.down.circle")
+                        Image(systemName: selectedFolder == nil ? "folder" : "folder.fill")
                     }
-                    .accessibilityLabel("Sort")
+                    .accessibilityLabel("Folders")
                 }
-                
                 ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 12) {
-                        Button {
-                            withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) {
-                                layoutMode.toggle()
-                            }
-                        } label: {
-                            Image(systemName: layoutMode == .grid ? "list.bullet" : "square.grid.2x2")
-                        }
-                        
-                        NavigationLink {
-                            AddNotes(defaultFolder: selectedFolder)
-                        } label: {
-                            Image(systemName: "plus.circle.fill")
-                                .imageScale(.large)
-                        }
-                        .accessibilityLabel("New Note")
-                    }
+                    optionsMenu
                 }
             }
-            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
-            // The header is now inset into the safe area so it pushes content down (no overlap).
-            .safeAreaInset(edge: .top, spacing: 0) {
-                header
-                    .background(
-                        LinearGradient(
-                            colors: [
-                                Color.accentColor.opacity(colorScheme == .dark ? 0.25 : 0.35),
-                                Color.accentColor.opacity(0.05)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                        .ignoresSafeArea(edges: .top)
-                    )
-                    .overlay(
-                        Divider()
-                            .offset(y: 0.5),
-                        alignment: .bottom
-                    )
-            }
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: "Search notes")
             .overlay(alignment: .bottomTrailing) {
                 FloatingAddButton {
                     pushAdd = true
@@ -222,33 +187,62 @@ struct HomeScreen: View {
         }
     }
     
-    // MARK: - Header (Safe Area Inset)
+    // MARK: - Header
     
-    private var header: some View {
-        VStack(spacing: 10) {
-            // Hero stats + quick filters
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    folderMenu
-                    Text("\(folderNotes.count) total • \(pinnedNotes.count) pinned")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                HStack(spacing: 10) {
-                    quickFilterButton("photo.on.rectangle", isOn: $filterImages)
-                    quickFilterButton("video.fill", isOn: $filterVideo)
-                    quickFilterButton("mappin.circle.fill", isOn: $filterLocation)
+    private var subtitle: String {
+        let count = folderNotes.count
+        var text = count == 1 ? String(localized: "1 note") : String(localized: "\(count) notes")
+        if activeFilterCount > 0 {
+            text += String(localized: " · \(filteredAndSortedNotes.count) shown")
+        }
+        return text
+    }
+    
+    private var activeFilterCount: Int {
+        [filterImages, filterVideo, filterLocation].filter { $0 }.count + (selectedTag == nil ? 0 : 1)
+    }
+    
+    /// Sort, layout and filters in one menu, instead of a row of buttons.
+    private var optionsMenu: some View {
+        Menu {
+            Picker(selection: $layoutMode) {
+                Label("Grid", systemImage: "square.grid.2x2").tag(LayoutMode.grid)
+                Label("List", systemImage: "list.bullet").tag(LayoutMode.list)
+            } label: {
+                Text("View")
+            }
+            .pickerStyle(.inline)
+            
+            Picker(selection: $sortMode) {
+                Label("Recently Edited", systemImage: "clock").tag(SortMode.recent)
+                Label("Title", systemImage: "textformat").tag(SortMode.title)
+            } label: {
+                Text("Sort By")
+            }
+            .pickerStyle(.inline)
+            
+            Section("Show Only Notes With") {
+                Toggle(isOn: $filterImages) { Label("Photos", systemImage: "photo") }
+                Toggle(isOn: $filterVideo) { Label("Video", systemImage: "video") }
+                Toggle(isOn: $filterLocation) { Label("Location", systemImage: "mappin") }
+            }
+            
+            if activeFilterCount > 0 {
+                Button(role: .destructive) {
+                    filterImages = false
+                    filterVideo = false
+                    filterLocation = false
+                    selectedTag = nil
+                } label: {
+                    Label("Clear Filters", systemImage: "xmark.circle")
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 8)
-            
-            // Tags chips
-            tagFilterChips
-                .padding(.horizontal, 12)
-                .padding(.bottom, 8)
+        } label: {
+            Image(systemName: activeFilterCount > 0
+                  ? "line.3.horizontal.decrease.circle.fill"
+                  : "line.3.horizontal.decrease.circle")
         }
+        .accessibilityLabel("View options")
     }
     
     /// Which screen is pushed on top of Home, built from the individual flags.
@@ -270,9 +264,9 @@ struct HomeScreen: View {
         )
     }
     
-    /// The heading doubles as a menu for choosing a folder.
-    private var folderMenu: some View {
-        Menu {
+    /// Items of the title menu: folders, folder management and Recently Deleted.
+    @ViewBuilder
+    private var folderMenuItems: some View {
             Picker("Folder", selection: $storedFolderID) {
                 Label("All Notes", systemImage: "tray.full").tag("")
                 ForEach(folders) { folder in
@@ -299,18 +293,6 @@ struct HomeScreen: View {
             } label: {
                 Label(trashCount > 0 ? "Recently Deleted (\(trashCount))" : "Recently Deleted", systemImage: "trash")
             }
-        } label: {
-            HStack(spacing: 6) {
-                Text(selectedFolder?.name ?? "Your Notes")
-                    .font(.title).bold()
-                    .lineLimit(1)
-                Image(systemName: "chevron.down")
-                    .font(.headline)
-                    .foregroundStyle(.secondary)
-            }
-            .foregroundStyle(.primary)
-        }
-        .accessibilityLabel("Folder: \(selectedFolder?.name ?? "All Notes")")
     }
     
     private func createFolder() {
@@ -328,40 +310,40 @@ struct HomeScreen: View {
         Haptics.success()
     }
     
-    private func quickFilterButton(_ systemName: String, isOn: Binding<Bool>) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.15)) {
-                isOn.wrappedValue.toggle()
-            }
-        } label: {
-            Image(systemName: systemName)
-                .imageScale(.medium)
-                .foregroundStyle(isOn.wrappedValue ? .white : .primary)
-                .padding(8)
-                .background(
-                    Circle().fill(isOn.wrappedValue ? Color.accentColor : Color.secondary.opacity(0.15))
-                )
-        }
-    }
-    
     // MARK: - Content
     
     private var content: some View {
         VStack(spacing: 0) {
             if layoutMode == .grid {
                 ScrollView {
-                    VStack(spacing: 12) {
-                        if !pinnedNotes.isEmpty {
-                            pinnedHorizontalSection
+                    VStack(alignment: .leading, spacing: 12) {
+                        if !allTags.isEmpty {
+                            tagFilterChips
                         }
-                        gridSection
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, 16)
+                        if !pinnedNotes.isEmpty {
+                            sectionHeader("Pinned", systemImage: "pin.fill")
+                            grid(pinnedNotes)
+                        }
+                        if !otherNotes.isEmpty {
+                            if !pinnedNotes.isEmpty {
+                                sectionHeader("Notes", systemImage: nil)
+                            }
+                            grid(otherNotes)
+                        }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 4)
                 }
                 .scrollIndicators(.hidden)
+                // Room for the floating + button, so it never covers the last cards.
+                .contentMargins(.bottom, 96, for: .scrollContent)
             } else {
                 List {
+                    if !allTags.isEmpty {
+                        tagFilterChips
+                            .listRowInsets(EdgeInsets())
+                            .listRowBackground(Color.clear)
+                    }
                     if !pinnedNotes.isEmpty {
                         Section(header: Text("Pinned")) {
                             ForEach(pinnedNotes) { item in
@@ -394,6 +376,7 @@ struct HomeScreen: View {
                     }
                 }
                 .listStyle(.insetGrouped)
+                .contentMargins(.bottom, 96, for: .scrollContent)
             }
         }
         .animation(.easeInOut, value: layoutMode)
@@ -404,59 +387,30 @@ struct HomeScreen: View {
         .animation(.easeInOut, value: filterLocation)
     }
     
-    private var pinnedHorizontalSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Label("Pinned", systemImage: "pin.fill")
-                    .foregroundStyle(.orange)
-                    .font(.headline)
-                Spacer()
+    private func sectionHeader(_ title: LocalizedStringKey, systemImage: String?) -> some View {
+        HStack(spacing: 6) {
+            if let systemImage {
+                Image(systemName: systemImage).foregroundStyle(.orange)
             }
-            .padding(.horizontal, 16)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(pinnedNotes) { item in
-                        NavigationLink {
-                            NotesDetail(notesItem: item)
-                        } label: {
-                            NoteCard(item: item, style: .pinned, colorScheme: colorScheme)
-                                .frame(width: 260)
-                        }
-                        .contextMenu {
-                            Button {
-                                togglePin(for: item)
-                            } label: {
-                                Label(item.isPinned ? "Unpin" : "Pin", systemImage: item.isPinned ? "pin.slash" : "pin.fill")
-                            }
-                            Button {
-                                presentEdit(for: item)
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
-                            Button(role: .destructive) {
-                                deleteItem(item)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.vertical, 4)
-            }
+            Text(title)
         }
-        .padding(.top, 8)
+        .font(.subheadline.weight(.semibold))
+        .foregroundStyle(.secondary)
+        .padding(.top, 4)
     }
     
-    private var gridSection: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12)], spacing: 12) {
-            ForEach(otherNotes) { item in
+    /// Two even columns (more on iPad); every card fills its column.
+    private func grid(_ notes: [NotesItem]) -> some View {
+        LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 12, alignment: .top)],
+                  alignment: .leading, spacing: 12) {
+            ForEach(notes) { item in
                 NavigationLink {
                     NotesDetail(notesItem: item)
                 } label: {
                     NoteCard(item: item, style: .grid, colorScheme: colorScheme)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
+                .buttonStyle(.plain)
                 .contextMenu {
                     Button {
                         togglePin(for: item)
@@ -481,11 +435,7 @@ struct HomeScreen: View {
     private var tagFilterChips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                Chip(
-                    title: "All",
-                    isSelected: selectedTag == nil,
-                    systemImage: selectedTag == nil ? "line.3.horizontal.decrease.circle.fill" : "line.3.horizontal.decrease.circle"
-                ) { selectedTag = nil }
+                Chip(title: String(localized: "All"), isSelected: selectedTag == nil) { selectedTag = nil }
                 
                 ForEach(allTags, id: \.self) { tag in
                     Chip(title: tag, isSelected: selectedTag == tag) {
@@ -497,8 +447,7 @@ struct HomeScreen: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .padding(.vertical, 4)
         }
     }
     
@@ -508,22 +457,18 @@ struct HomeScreen: View {
                 .font(.system(size: 64, weight: .light))
                 .foregroundStyle(.secondary)
             
-            Text(selectedFolder == nil ? "No notes yet" : "No notes in \(selectedFolder?.name ?? "")")
-                .font(.title3).bold()
-            Text(selectedFolder == nil
-                 ? "Tap the + button to create your first note. Add images, tags, a checklist, a location and more."
-                 : "Tap the + button to add a note to this folder.")
-                .multilineTextAlignment(.center)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 24)
-            
-            Button {
-                pushAdd = true
-            } label: {
-                Label("New Note", systemImage: "plus")
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
-                    .background(Capsule().fill(Color.accentColor.opacity(0.15)))
+            if !searchText.isEmpty || activeFilterCount > 0, !folderNotes.isEmpty {
+                Text("No matching notes")
+                    .font(.title3).bold()
+                Text("Try a different search or clear the filters.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Text(selectedFolder == nil ? "No notes yet" : "No notes in \(selectedFolder?.name ?? "")")
+                    .font(.title3).bold()
+                Text("Tap + to write your first note.")
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 24)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -691,19 +636,22 @@ private struct NoteCard: View {
     }
     
     private var cardContent: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             mediaHeader
             
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 Text(item.title)
                     .font(.headline)
-                    .lineLimit(1)
+                    .foregroundStyle(.primary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
                 
                 if item.isPinned {
+                    Spacer(minLength: 0)
                     Image(systemName: "pin.fill")
                         .foregroundColor(.orange)
                         .imageScale(.small)
-                        .padding(.leading, 2)
+                        .accessibilityLabel("Pinned")
                 }
             }
             
@@ -715,7 +663,8 @@ private struct NoteCard: View {
                 Text(item.desc)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                    .lineLimit(2)
+                    .lineLimit(item.images?.isEmpty == false ? 2 : 4)
+                    .multilineTextAlignment(.leading)
             }
             
             if !item.checklist.isEmpty {
@@ -743,7 +692,7 @@ private struct NoteCard: View {
                         .imageScale(.small)
                 }
                 Spacer()
-                Text(item.updatedAt, style: .relative)
+                Text(Self.shortDate(item.updatedAt))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -751,7 +700,28 @@ private struct NoteCard: View {
         .padding(12)
         .background(cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .shadow(color: .black.opacity(colorScheme == .dark ? 0.4 : 0.08), radius: 8, x: 0, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .strokeBorder(Color.primary.opacity(colorScheme == .dark ? 0.10 : 0.06))
+        )
+    }
+    
+    /// "9:41 AM" today, "Yesterday", a weekday this week, otherwise "Nov 3".
+    static func shortDate(_ date: Date, now: Date = Date()) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return date.formatted(date: .omitted, time: .shortened)
+        }
+        if calendar.isDateInYesterday(date) {
+            return String(localized: "Yesterday")
+        }
+        if let days = calendar.dateComponents([.day], from: date, to: now).day, days < 7 {
+            return date.formatted(.dateTime.weekday(.wide))
+        }
+        if calendar.isDate(date, equalTo: now, toGranularity: .year) {
+            return date.formatted(.dateTime.month(.abbreviated).day())
+        }
+        return date.formatted(date: .abbreviated, time: .omitted)
     }
     
     private var cardBackground: some ShapeStyle {
@@ -766,7 +736,7 @@ private struct NoteCard: View {
                 Color.orange.opacity(0.08)
             ], startPoint: .topLeading, endPoint: .bottomTrailing))
         } else {
-            return AnyShapeStyle(.regularMaterial)
+            return AnyShapeStyle(Color(.secondarySystemGroupedBackground))
         }
     }
     
@@ -777,7 +747,8 @@ private struct NoteCard: View {
                 Image(uiImage: ui)
                     .resizable()
                     .scaledToFill()
-                    .frame(height: style == .list ? 120 : 100)
+                    .frame(height: style == .list ? 120 : 110)
+                    .frame(maxWidth: .infinity)
                     .clipped()
                     .overlay(alignment: .bottomLeading) {
                         LinearGradient(colors: [.black.opacity(0.0), .black.opacity(0.35)], startPoint: .center, endPoint: .bottom)
@@ -794,14 +765,6 @@ private struct NoteCard: View {
                         .padding(6)
                 }
             }
-        } else {
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                .fill(Color.secondary.opacity(0.12))
-                .frame(height: style == .list ? 80 : 80)
-                .overlay(
-                    Image(systemName: "note.text")
-                        .foregroundStyle(.secondary)
-                )
         }
     }
     
@@ -811,18 +774,19 @@ private struct NoteCard: View {
         let done = item.checklist.filter { $0.isDone }.count
         let progress = total == 0 ? 0 : Double(done) / Double(total)
         
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 8) {
-                Image(systemName: done == total ? "checkmark.circle.fill" : "checkmark.circle")
-                    .foregroundColor(done == total ? .green : .gray)
-                    .imageScale(.small)
-                Text("\(done)/\(total) completed")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+        HStack(spacing: 6) {
+            Image(systemName: done == total ? "checkmark.circle.fill" : "checklist")
+                .foregroundColor(done == total ? .green : .secondary)
+                .imageScale(.small)
             ProgressView(value: progress)
                 .progressViewStyle(.linear)
+                .tint(done == total ? .green : .accentColor)
+            Text("\(done)/\(total)")
+                .font(.caption.monospacedDigit())
+                .foregroundColor(.secondary)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(done) of \(total) checklist items done")
     }
 }
 

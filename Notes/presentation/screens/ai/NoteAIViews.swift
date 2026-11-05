@@ -232,7 +232,7 @@ struct NoteActionItemsSheet: View {
 
     private func addAsTasks() {
         for item in chosen {
-            context.insert(TodoItem(title: item, isCompleted: false, notes: "From note: \(note.title)"))
+            context.insert(TodoItem(title: item, isCompleted: false, notes: String(localized: "From note: \(note.title)")))
         }
         try? context.save()
         SharedStore.reloadWidgets()

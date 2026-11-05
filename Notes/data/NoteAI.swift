@@ -117,15 +117,15 @@ enum NoteAI {
         if let error = error as? LanguageModelSession.GenerationError {
             switch error {
             case .exceededContextWindowSize:
-                return "This note is too long for the on-device model. Try a shorter note."
+                return String(localized: "This note is too long for the on-device model. Try a shorter note.")
             case .guardrailViolation, .refusal:
-                return "Apple Intelligence couldn't work with this note's content."
+                return String(localized: "Apple Intelligence couldn't work with this note's content.")
             case .unsupportedLanguageOrLocale:
-                return "This note's language isn't supported by Apple Intelligence yet."
+                return String(localized: "This note's language isn't supported by Apple Intelligence yet.")
             case .assetsUnavailable:
-                return "Apple Intelligence is still getting ready on this iPhone. Try again in a little while."
+                return String(localized: "Apple Intelligence is still getting ready on this iPhone. Try again in a little while.")
             case .rateLimited:
-                return "Too many requests at once. Try again in a moment."
+                return String(localized: "Too many requests at once. Try again in a moment.")
             default:
                 break
             }
@@ -133,6 +133,6 @@ enum NoteAI {
         // Other failures (including the newer error types on iOS 27) get a plain message;
         // the details go to the console for debugging.
         print("Apple Intelligence request failed: \(error)")
-        return "Apple Intelligence couldn't finish this right now. Please try again in a moment."
+        return String(localized: "Apple Intelligence couldn't finish this right now. Please try again in a moment.")
     }
 }
