@@ -48,6 +48,10 @@ class NotesItem: Identifiable {
     var videoURL: URL?
     /// Encoded PKDrawing for a hand-drawn sketch inside this note. `nil` when empty.
     @Attribute(.externalStorage) var sketchData: Data? = nil
+    /// Local audio recording. Stays on the device that added it; not synced.
+    var audioURL: URL? = nil
+    /// On-device transcript of `audioURL`, if the user asked for one. Synced.
+    var audioTranscript: String? = nil
 
     var tags: [String] = []
 

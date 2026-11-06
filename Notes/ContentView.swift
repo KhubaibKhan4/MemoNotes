@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import CoreSpotlight
 
 
 struct ContentView: View {
@@ -15,30 +16,20 @@ struct ContentView: View {
     @EnvironmentObject private var appLock: AppLockManager
     @EnvironmentObject private var appManager: AppManager
     @AppStorage(AppLockManager.enabledKey) private var isAppLockEnabled = false
-    @State private var isSelected : Int = 0
-    @AppStorage("isPermissionGranted") var isPermissionGranted = false
-    
-    @State private var isSplash: Bool = true
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
+    @State private var isSelected: Int = 0
+
+
     var body: some View {
-        VStack {
-            if isSplash {
-                SplashScreen()
-            } else {
-                TabView(selection:$isSelected) {
-                    Tab("Home", systemImage: "house",value: 0) {
-                        HomeScreen()
-                    }
-                    
-                    Tab("Todo", systemImage: "checklist",value: 1) {
-                        TodoScreen()
-                        
-                    }
-                    
-                    Tab("Settings", systemImage: "gear", value: 2) {
-                        SettingScreen()
-                    }
-                    
-                }
+        TabView(selection: $isSelected) {
+            Tab("Home", systemImage: "house", value: 0) {
+                HomeScreen()
+            }
+            Tab("Todo", systemImage: "checklist", value: 1) {
+                TodoScreen()
+            }
+            Tab("Settings", systemImage: "gear", value: 2) {
+                SettingScreen()
             }
         }
         .accessibilityHidden(appLock.isLocked)
@@ -50,22 +41,32 @@ struct ContentView: View {
                 LockScreenView(showsUnlockButton: false)
             }
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                isSplash = false
-            }
+        .sheet(isPresented: Binding(
+            get: { !hasSeenWelcome },
+            set: { if !$0 { hasSeenWelcome = true } }
+        )) {
+            WelcomeScreen { hasSeenWelcome = true }
+                .interactiveDismissDisabled()
         }
         .onOpenURL { url in
             guard let route = AppRoute(url: url) else { return }
-            isSplash = false
+            isSelected = route.isTodoTab ? 1 : 0
+            appManager.pendingRoute = route
+        }
+        // Spotlight: tapping a note in iPhone search opens it here.
+        .onContinueUserActivity(CSSearchableItemActionType) { activity in
+            guard let identifier = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+                  let route = SpotlightIndex.route(for: identifier) else { return }
             isSelected = route.isTodoTab ? 1 : 0
             appManager.pendingRoute = route
         }
         .onChange(of: scenePhase, initial: true) { _, phase in
             appLock.sceneChanged(to: phase)
             if phase == .background {
-                // Show the latest notes and todos in the widgets.
+                // Show the latest notes and todos in the widgets, and refresh Spotlight
+                // with everything the user saved during this session.
                 SharedStore.reloadWidgets()
+                SpotlightIndex.reindexEverything(from: context)
             }
             // Rebuild pending reminders whenever the app comes to the front. This picks up
             // reminders added or changed on other devices through iCloud, and ones lost
@@ -73,6 +74,9 @@ struct ContentView: View {
             if phase == .active {
                 NoteTrash.purgeExpired(context: context)
                 ReminderScheduler.resync(context: context)
+                // Also rebuild the Spotlight index so changes made on other devices and
+                // through iCloud sync are searchable.
+                SpotlightIndex.reindexEverything(from: context)
             }
         }
     }

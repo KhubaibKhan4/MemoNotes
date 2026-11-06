@@ -35,6 +35,11 @@ struct AddNotes: View {
     @State private var originalVideoURL: URL?
     /// Encoded PKDrawing for this note's sketch. `nil` when empty.
     @State private var sketchData: Data?
+    /// Voice recording for this note, and its on-device transcript.
+    @State private var audioURL: URL?
+    @State private var audioTranscript: String?
+    /// The recording the note had before editing; dropped from disk once saved.
+    @State private var originalAudioURL: URL?
     @State private var didLoadNote = false
     
     // Inputs
@@ -111,130 +116,149 @@ struct AddNotes: View {
                 addToNoteSection
                 
                 if isShown(.reminder) {
-                ReminderSectionView(
-                    hasReminder: $hasReminder,
-                    reminderDate: $reminderDate
-                )
-                .onChange(of: hasReminder) { _, isOn in
-                    guard isOn else { return }
-                    Task {
-                        if !(await ReminderScheduler.ensurePermission()) {
-                            hasReminder = false
-                            showNotificationsOffAlert = true
+                    ReminderSectionView(
+                        hasReminder: $hasReminder,
+                        reminderDate: $reminderDate
+                    )
+                    .onChange(of: hasReminder) { _, isOn in
+                        guard isOn else { return }
+                        Task {
+                            if !(await ReminderScheduler.ensurePermission()) {
+                                hasReminder = false
+                                showNotificationsOffAlert = true
+                            }
                         }
                     }
                 }
-                }
                 
                 if isShown(.tags) {
-                TagsSectionView(
-                    tags: $tags,
-                    newTag: $newTag,
-                    suggestedTags: suggestedTags,
-                    isSuggesting: isSuggestingTags,
-                    suggestionMessage: tagSuggestionMessage,
-                    canSuggest: NoteAI.isSupported,
-                    onAdd: addTag,
-                    onDelete: deleteTag,
-                    onSuggest: suggestTags,
-                    onAcceptSuggestion: acceptSuggestedTag
-                )
+                    TagsSectionView(
+                        tags: $tags,
+                        newTag: $newTag,
+                        suggestedTags: suggestedTags,
+                        isSuggesting: isSuggestingTags,
+                        suggestionMessage: tagSuggestionMessage,
+                        canSuggest: NoteAI.isSupported,
+                        onAdd: addTag,
+                        onDelete: deleteTag,
+                        onSuggest: suggestTags,
+                        onAcceptSuggestion: acceptSuggestedTag
+                    )
                 }
                 
                 if isShown(.checklist) {
-                ChecklistSectionView(
-                    checklistItems: $checklistItems,
-                    newChecklistTitle: $newChecklistTitle,
-                    isReorderingChecklist: $isReorderingChecklist,
-                    onAdd: addChecklistItem,
-                    onToggle: toggleChecklist,
-                    onDelete: deleteChecklistItem,
-                    onMove: moveChecklistItem
-                )
+                    ChecklistSectionView(
+                        checklistItems: $checklistItems,
+                        newChecklistTitle: $newChecklistTitle,
+                        isReorderingChecklist: $isReorderingChecklist,
+                        onAdd: addChecklistItem,
+                        onToggle: toggleChecklist,
+                        onDelete: deleteChecklistItem,
+                        onMove: moveChecklistItem
+                    )
                 }
                 
                 // MARK: - Location Section
                 if isShown(.location) {
-                Section("Location") {
-                    HStack(spacing: 10) {
-                        Button {
-                            openMapPicker()
-                        } label: {
-                            Label("Add Location", systemImage: "mappin.and.ellipse")
-                                .frame(maxWidth: .infinity)
+                    Section("Location") {
+                        HStack(spacing: 10) {
+                            Button {
+                                openMapPicker()
+                            } label: {
+                                Label("Add Location", systemImage: "mappin.and.ellipse")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            
+                            Button {
+                                useCurrentLocation()
+                            } label: {
+                                Label("Current", systemImage: "location.fill")
+                                    .frame(maxWidth: .infinity)
+                            }
+                            .buttonStyle(.bordered)
                         }
-                        .buttonStyle(.borderedProminent)
                         
-                        Button {
-                            useCurrentLocation()
-                        } label: {
-                            Label("Current", systemImage: "location.fill")
-                                .frame(maxWidth: .infinity)
+                        if let location = selectedLocation {
+                            Map(position: $position) {
+                                Marker(selectedLocationName, coordinate: location)
+                            }
+                            .frame(height: 220)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            
+                            Button(role: .destructive) {
+                                withAnimation {
+                                    selectedLocation = nil
+                                    selectedLocationName = String(localized: "No Location Selected")
+                                }
+                            } label: {
+                                Label("Clear Location", systemImage: "trash")
+                            }
+                            .buttonStyle(.bordered)
+                        } else {
+                            Text("No Location Selected")
+                                .foregroundColor(.secondary)
                         }
-                        .buttonStyle(.bordered)
                     }
                     
-                    if let location = selectedLocation {
-                        Map(position: $position) {
-                            Marker(selectedLocationName, coordinate: location)
-                        }
-                        .frame(height: 220)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        
-                        Button(role: .destructive) {
-                            withAnimation {
-                                selectedLocation = nil
-                                selectedLocationName = String(localized: "No Location Selected")
-                            }
-                        } label: {
-                            Label("Clear Location", systemImage: "trash")
-                        }
-                        .buttonStyle(.bordered)
-                    } else {
-                        Text("No Location Selected")
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
                 }
                 
                 if isShown(.photos) {
-                PhotosSectionView(
-                    selectedItems: $selectedItems,
-                    selectedImagesData: $selectedImagesData,
-                    onMoveImage: moveImage
-                )
+                    PhotosSectionView(
+                        selectedItems: $selectedItems,
+                        selectedImagesData: $selectedImagesData,
+                        onMoveImage: moveImage
+                    )
                 }
                 
                 if isShown(.video) {
-                VideosSectionView(
-                    selectedVideoItem: $selectedVideoItem,
-                    selectedVideo: $selectedVideo,
-                    isLoading: isLoadingVideo
-                )
+                    VideosSectionView(
+                        selectedVideoItem: $selectedVideoItem,
+                        selectedVideo: $selectedVideo,
+                        isLoading: isLoadingVideo
+                    )
                 }
-
+                
                 if isShown(.sketch) {
-                SketchSectionView(sketchData: $sketchData)
+                    SketchSectionView(sketchData: $sketchData)
                 }
+                
+                if isShown(.audio) {
+                    AudioSectionView(
+                        audioURL: $audioURL,
+                        transcript: $audioTranscript
+                    )
+                }
+                
+        
             }
             .onChange(of: selectedItems) { _, newItems in
                 guard !newItems.isEmpty else { return }
-                Task { await loadSelectedImages(newItems) }
+
+                Task {
+                    await loadSelectedImages(newItems)
+                }
             }
             .onChange(of: selectedVideoItem) { _, newItem in
                 guard let newItem else { return }
+
                 isLoadingVideo = true
+
                 Task {
                     let picked = try? await newItem.loadTransferable(type: PickedVideo.self)
-                    if let picked { selectedVideo = picked.url }
+
+                    if let picked {
+                        selectedVideo = picked.url
+                    }
+
                     isLoadingVideo = false
                     selectedVideoItem = nil
                 }
             }
             .onChange(of: selectedVideo) { oldValue, newValue in
-                // A video picked during this session that gets replaced or removed is no longer needed.
-                if let oldValue, oldValue != newValue, oldValue != originalVideoURL {
+                if let oldValue,
+                   oldValue != newValue,
+                   oldValue != originalVideoURL {
                     MediaStore.deleteVideo(oldValue)
                 }
             }
@@ -251,91 +275,98 @@ struct AddNotes: View {
             .onChange(of: locationManager.permissionDenied) { _, denied in
                 permissionDenied = denied
             }
-        }
-        .navigationTitle(editingNote == nil ? "Add Note" : "Edit Note")
-        .navigationBarTitleDisplayMode(.inline)
-        .interactiveDismissDisabled()
-        // More room to write: hide the tab bar while a note is open for editing.
-        .toolbar(.hidden, for: .tabBar)
-        .confirmationDialog(
-            "Replace what you've written?",
-            isPresented: Binding(get: { pendingTemplate != nil }, set: { if !$0 { pendingTemplate = nil } }),
-            titleVisibility: .visible
-        ) {
-            Button("Use Template", role: .destructive) {
-                if let template = pendingTemplate { applyTemplate(template) }
-                pendingTemplate = nil
-            }
-        } message: {
-            Text("The template's title, text and checklist will replace this note's.")
-        }
-        .alert("Notifications Are Off", isPresented: $showNotificationsOffAlert) {
-            Button("Open Settings") {
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
+            .navigationTitle(editingNote == nil ? "Add Note" : "Edit Note")
+            .navigationBarTitleDisplayMode(.inline)
+            .interactiveDismissDisabled()
+            // More room to write: hide the tab bar while a note is open for editing.
+            .toolbar(.hidden, for: .tabBar)
+            .confirmationDialog(
+                "Replace what you've written?",
+                isPresented: Binding(get: { pendingTemplate != nil }, set: { if !$0 { pendingTemplate = nil } }),
+                titleVisibility: .visible
+            ) {
+                Button("Use Template", role: .destructive) {
+                    if let template = pendingTemplate { applyTemplate(template) }
+                    pendingTemplate = nil
                 }
+            } message: {
+                Text("The template's title, text and checklist will replace this note's.")
             }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("Allow notifications for this app in the Settings app to get reminders.")
-        }
-        .navigationBarBackButtonHidden(true)
-        .sheet(isPresented: $isMapSheet, content: {
-            MapSheetView(
-                isMapSheet: $isMapSheet,
-                position: $position,
-                selectedLocation: $selectedLocation,
-                selectedLocationName: $selectedLocationName,
-                locationList: $locationList,
-                mapCenter: $mapCenter,
-                searchQuery: $searchQuery,
-                searchResults: $searchResults,
-                searchCompleter: searchCompleter,
-                onFetchLocationName: fetchLocationName,
-                onSelectSearchCompletion: selectSearchCompletion,
-                onDropPinAtCenter: dropPinAtCenter
-            )
-        })
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    cancel()
-                } label: {
-                    HStack {
-                        Image(systemName: "chevron.backward")
-                        Text("Cancel")
+            .alert("Notifications Are Off", isPresented: $showNotificationsOffAlert) {
+                Button("Open Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
                     }
                 }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("Allow notifications for this app in the Settings app to get reminders.")
             }
-            if editingNote == nil {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Section("Start from a Template") {
-                            ForEach(NoteTemplate.all) { template in
-                                Button {
-                                    chooseTemplate(template)
-                                } label: {
-                                    Label(template.name, systemImage: template.symbol)
+            .navigationBarBackButtonHidden(true)
+            .sheet(isPresented: $isMapSheet, content: {
+                MapSheetView(
+                    isMapSheet: $isMapSheet,
+                    position: $position,
+                    selectedLocation: $selectedLocation,
+                    selectedLocationName: $selectedLocationName,
+                    locationList: $locationList,
+                    mapCenter: $mapCenter,
+                    searchQuery: $searchQuery,
+                    searchResults: $searchResults,
+                    searchCompleter: searchCompleter,
+                    onFetchLocationName: fetchLocationName,
+                    onSelectSearchCompletion: selectSearchCompletion,
+                    onDropPinAtCenter: dropPinAtCenter
+                )
+            })
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        cancel()
+                    } label: {
+                        HStack {
+                            Image(systemName: "chevron.backward")
+                            Text("Cancel")
+                        }
+                    }
+                }
+                if editingNote == nil {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Section("Start from a Template") {
+                                ForEach(NoteTemplate.all) { template in
+                                    Button {
+                                        chooseTemplate(template)
+                                    } label: {
+                                        Label(template.name, systemImage: template.symbol)
+                                    }
                                 }
                             }
+                        } label: {
+                            Image(systemName: "doc.on.doc")
+                        }
+                        .accessibilityLabel("Templates")
+                    }
+                } else if let note = editingNote {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        ShareLink(item: NoteShare.plainText(for: note)) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                        .accessibilityLabel("Share Note")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        if validate() {
+                            save()
+                        } else {
+                            showValidation = true
                         }
                     } label: {
-                        Image(systemName: "doc.on.doc")
+                        Text("Save")
                     }
-                    .accessibilityLabel("Templates")
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoadingVideo)
                 }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    if validate() {
-                        save()
-                    } else {
-                        showValidation = true
-                    }
-                } label: {
-                    Text("Save")
-                }
-                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || isLoadingVideo)
             }
         }
     }
@@ -345,7 +376,7 @@ struct AddNotes: View {
     /// Extras a note can have. Each one's section appears only once it's used,
     /// so a new note starts as just a title and text.
     enum Extra: CaseIterable, Hashable {
-        case checklist, reminder, tags, photos, location, video, sketch
+        case checklist, reminder, tags, photos, location, video, sketch, audio
 
         var title: String {
             switch self {
@@ -356,6 +387,8 @@ struct AddNotes: View {
             case .location: String(localized: "Location")
             case .video: String(localized: "Video")
             case .sketch: String(localized: "Sketch")
+            case .audio: String(localized: "Audio")
+
             }
         }
 
@@ -368,6 +401,7 @@ struct AddNotes: View {
             case .location: "mappin.and.ellipse"
             case .video: "video"
             case .sketch: "pencil.and.scribble"
+            case .audio: "mic"
             }
         }
     }
@@ -381,6 +415,7 @@ struct AddNotes: View {
         case .location: selectedLocation != nil
         case .video: selectedVideo != nil || isLoadingVideo
         case .sketch: sketchData != nil
+        case .audio: audioURL != nil
         }
     }
     
@@ -471,6 +506,9 @@ struct AddNotes: View {
         selectedVideo = note.playableVideoURL
         originalVideoURL = selectedVideo
         sketchData = note.sketchData
+        audioURL = note.audioURL
+        originalAudioURL = audioURL
+        audioTranscript = note.audioTranscript
         if let date = note.reminderDate, date > Date() {
             hasReminder = true
             reminderDate = date
@@ -508,12 +546,17 @@ struct AddNotes: View {
             note.images = images
             note.videoURL = selectedVideo
             note.sketchData = sketchData
+            note.audioURL = audioURL
+            note.audioTranscript = audioTranscript
             let oldChecklist = note.checklist
             note.checklist = checklistItems
             oldChecklist.forEach { context.delete($0) }
             note.updatedAt = Date()
             if originalVideoURL != selectedVideo {
                 MediaStore.deleteVideo(originalVideoURL)
+            }
+            if originalAudioURL != audioURL {
+                MediaStore.deleteAudio(originalAudioURL)
             }
         } else {
             let noteItem = NotesItem(
@@ -533,6 +576,8 @@ struct AddNotes: View {
             noteItem.folder = folder
             noteItem.noteColor = noteColor
             noteItem.sketchData = sketchData
+            noteItem.audioURL = audioURL
+            noteItem.audioTranscript = audioTranscript
             context.insert(noteItem)
             savedNote = noteItem
         }
@@ -544,9 +589,12 @@ struct AddNotes: View {
     }
     
     private func cancel() {
-        // Don't leave a video on disk that was picked but never saved.
+        // Don't leave a video or audio file on disk that was picked but never saved.
         if selectedVideo != originalVideoURL {
             MediaStore.deleteVideo(selectedVideo)
+        }
+        if audioURL != originalAudioURL {
+            MediaStore.deleteAudio(audioURL)
         }
         dismiss()
     }

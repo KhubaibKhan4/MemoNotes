@@ -44,6 +44,33 @@ enum MediaStore {
             try? FileManager.default.removeItem(at: file)
         }
     }
+
+    // MARK: - Audio
+
+    private static let audioPrefix = "audio-"
+    /// m4a: AAC in an MP4 container. Small files, universally playable.
+    static let audioExtension = "m4a"
+
+    /// A fresh URL inside Documents for a new recording. Caller writes to it.
+    static func newAudioURL() -> URL {
+        documentsDirectory.appendingPathComponent("\(audioPrefix)\(UUID().uuidString).\(audioExtension)")
+    }
+
+    static func resolveAudio(_ stored: URL?) -> URL? {
+        resolve(stored)
+    }
+
+    static func deleteAudio(_ stored: URL?) {
+        guard let url = resolve(stored) else { return }
+        try? FileManager.default.removeItem(at: url)
+    }
+
+    static func deleteAllAudio() {
+        let files = (try? FileManager.default.contentsOfDirectory(at: documentsDirectory, includingPropertiesForKeys: nil)) ?? []
+        for file in files where file.lastPathComponent.hasPrefix(audioPrefix) {
+            try? FileManager.default.removeItem(at: file)
+        }
+    }
 }
 
 /// A video chosen in `PhotosPicker`, already copied into Documents.
