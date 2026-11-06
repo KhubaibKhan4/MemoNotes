@@ -200,3 +200,23 @@ private func makeContext() throws -> ModelContext {
         }
     }
 }
+
+// MARK: - Spotlight
+
+@Suite struct SpotlightTests {
+    @MainActor @Test func noteIdentifierRoutesToNoteOpen() {
+        let route = SpotlightIndex.route(for: "note:abc-123")
+        #expect(route == .note(id: "abc-123"))
+    }
+
+    @MainActor @Test func todoIdentifierRoutesToTodoOpen() {
+        let route = SpotlightIndex.route(for: "todo:42")
+        #expect(route == .todo(id: "42"))
+    }
+
+    @MainActor @Test func unknownOrEmptyIdentifierReturnsNil() {
+        #expect(SpotlightIndex.route(for: "other:1") == nil)
+        #expect(SpotlightIndex.route(for: "note:") == nil)
+        #expect(SpotlightIndex.route(for: "todo:") == nil)
+    }
+}

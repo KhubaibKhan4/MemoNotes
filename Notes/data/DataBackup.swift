@@ -202,6 +202,7 @@ enum DataManager {
         try context.fetch(FetchDescriptor<NoteFolder>()).forEach { context.delete($0) }
         try context.save()
         MediaStore.deleteAllVideos()
+        SpotlightIndex.deleteEverything()
     }
 
     static func backupFileName() -> String {
