@@ -55,6 +55,7 @@ struct NotesDetail: View {
                     if notesItem.isPinned {
                         Image(systemName: "pin.fill")
                             .foregroundColor(.orange)
+                            .accessibilityLabel("Pinned")
                     }
                 }
                 if !notesItem.tags.isEmpty {
@@ -223,6 +224,7 @@ struct NotesDetail: View {
                             .background(Circle().fill(Color.black.opacity(0.5)))
                     }
                     .padding()
+                    .accessibilityLabel("Close")
                 }
                 .background(.black)
                 .toolbar(content: {
@@ -232,6 +234,7 @@ struct NotesDetail: View {
                         } label: {
                             Image(systemName: "xmark")
                         }
+                        .accessibilityLabel("Close")
                     }
                 })
                 .frame(width: .infinity, height: .infinity)
@@ -374,6 +377,7 @@ struct FullScreenMapView: View {
                         .background(Circle().fill(Color.black.opacity(0.5)))
                 }
                 .padding()
+                .accessibilityLabel("Close")
                 
                 Spacer()
                 
@@ -389,6 +393,7 @@ struct FullScreenMapView: View {
                             .background(Circle().fill(Color.blue.opacity(0.8)))
                     }
                     .padding()
+                    .accessibilityLabel("Open in Maps")
                 }
             }
         }
