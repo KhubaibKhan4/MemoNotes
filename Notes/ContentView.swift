@@ -15,7 +15,9 @@ struct ContentView: View {
     @EnvironmentObject private var appLock: AppLockManager
     @EnvironmentObject private var appManager: AppManager
     @AppStorage(AppLockManager.enabledKey) private var isAppLockEnabled = false
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @State private var isSelected: Int = 0
+
 
     var body: some View {
         TabView(selection: $isSelected) {
@@ -37,6 +39,13 @@ struct ContentView: View {
                 // Hide notes in the app switcher snapshot.
                 LockScreenView(showsUnlockButton: false)
             }
+        }
+        .sheet(isPresented: Binding(
+            get: { !hasSeenWelcome },
+            set: { if !$0 { hasSeenWelcome = true } }
+        )) {
+            WelcomeScreen { hasSeenWelcome = true }
+                .interactiveDismissDisabled()
         }
         .onOpenURL { url in
             guard let route = AppRoute(url: url) else { return }
