@@ -23,7 +23,8 @@ struct AddNotes: View {
     var editingNote: NotesItem? = nil
     /// Folder for a new note (the folder being viewed on Home).
     var defaultFolder: NoteFolder? = nil
-    var onSave: () -> Void = {}
+    /// Called after saving, with the saved note's id.
+    var onSave: (_ noteID: String) -> Void = { _ in }
     
     // Media selection
     @State private var selectedItems = [PhotosPickerItem]()
@@ -584,7 +585,7 @@ struct AddNotes: View {
         try? context.save()
         ReminderScheduler.schedule(savedNote)
         Haptics.success()
-        onSave()
+        onSave(savedNote.id)
         dismiss()
     }
     

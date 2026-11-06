@@ -36,6 +36,8 @@ struct SplitRootView: View {
     @State private var selectedNoteID: String?
     @State private var columnVisibility: NavigationSplitViewVisibility = .all
     @State private var showNewNote = false
+    /// A just-saved note to select once it shows up in the note list.
+    @State private var pendingNoteID: String?
 
     // Folder editing from the sidebar.
     @State private var showNewFolder = false
@@ -69,6 +71,7 @@ struct SplitRootView: View {
                     NotesListColumn(
                         folder: currentFolder,
                         selectedNoteID: $selectedNoteID,
+                        pendingNoteID: $pendingNoteID,
                         onNewNote: { showNewNote = true }
                     )
                 } detail: {
@@ -84,7 +87,11 @@ struct SplitRootView: View {
         }
         .sheet(isPresented: $showNewNote) {
             NavigationStack {
-                AddNotes(defaultFolder: currentFolder, onSave: selectNewestNote)
+                AddNotes(defaultFolder: currentFolder) { noteID in
+                    // Select it in the list once the list has it, so the
+                    // highlighted row and the open note always match.
+                    pendingNoteID = noteID
+                }
             }
             .presentationSizing(.page)
         }
@@ -250,12 +257,6 @@ struct SplitRootView: View {
         }
     }
 
-    /// After saving a new note, open it.
-    private func selectNewestNote() {
-        let newest = liveNotes.filter { !$0.isInTrash }.max { $0.createdAt < $1.createdAt }
-        selectedNoteID = newest?.id
-    }
-
     private func createFolder() {
         let name = newFolderName.trimmingCharacters(in: .whitespacesAndNewlines)
         newFolderName = ""
@@ -298,6 +299,8 @@ private struct NotesListColumn: View {
     /// The folder being shown, or `nil` for All Notes.
     let folder: NoteFolder?
     @Binding var selectedNoteID: String?
+    /// A just-saved note waiting to be selected once it's in this list.
+    @Binding var pendingNoteID: String?
     var onNewNote: () -> Void
 
     @State private var searchText = ""
@@ -382,9 +385,26 @@ private struct NotesListColumn: View {
             }
         }
         .onChange(of: notes.map(\.id)) { _, ids in
+            if selectPendingNote(in: ids) { return }
             // The open note was deleted or moved out of this folder.
             if let id = selectedNoteID, !ids.contains(id) { selectedNoteID = nil }
         }
+        .onChange(of: pendingNoteID) { _, newValue in
+            guard newValue != nil else { return }
+            // A search could hide the new note; show the whole list again.
+            searchText = ""
+            selectPendingNote(in: notes.map(\.id))
+        }
+    }
+
+    /// Selects the just-saved note once the list contains it.
+    /// Returns `true` when it did.
+    @discardableResult
+    private func selectPendingNote(in ids: [String]) -> Bool {
+        guard let pending = pendingNoteID, ids.contains(pending) else { return false }
+        pendingNoteID = nil
+        selectedNoteID = pending
+        return true
     }
 
     private func rows(_ notes: [NotesItem]) -> some View {
