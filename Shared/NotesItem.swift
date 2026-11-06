@@ -46,6 +46,8 @@ class NotesItem: Identifiable {
     @Attribute(.externalStorage) var images: [Data]?
     /// Local video file. Videos stay on the device that added them; they are not synced.
     var videoURL: URL?
+    /// Encoded PKDrawing for a hand-drawn sketch inside this note. `nil` when empty.
+    @Attribute(.externalStorage) var sketchData: Data? = nil
 
     var tags: [String] = []
 

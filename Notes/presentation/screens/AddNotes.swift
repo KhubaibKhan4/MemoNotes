@@ -33,6 +33,8 @@ struct AddNotes: View {
     @State private var isLoadingVideo = false
     /// The video the note had before editing; only deleted from disk once the edit is saved.
     @State private var originalVideoURL: URL?
+    /// Encoded PKDrawing for this note's sketch. `nil` when empty.
+    @State private var sketchData: Data?
     @State private var didLoadNote = false
     
     // Inputs
@@ -211,6 +213,10 @@ struct AddNotes: View {
                     isLoading: isLoadingVideo
                 )
                 }
+
+                if isShown(.sketch) {
+                SketchSectionView(sketchData: $sketchData)
+                }
             }
             .onChange(of: selectedItems) { _, newItems in
                 guard !newItems.isEmpty else { return }
@@ -339,8 +345,8 @@ struct AddNotes: View {
     /// Extras a note can have. Each one's section appears only once it's used,
     /// so a new note starts as just a title and text.
     enum Extra: CaseIterable, Hashable {
-        case checklist, reminder, tags, photos, location, video
-        
+        case checklist, reminder, tags, photos, location, video, sketch
+
         var title: String {
             switch self {
             case .checklist: String(localized: "Checklist")
@@ -349,9 +355,10 @@ struct AddNotes: View {
             case .photos: String(localized: "Photos")
             case .location: String(localized: "Location")
             case .video: String(localized: "Video")
+            case .sketch: String(localized: "Sketch")
             }
         }
-        
+
         var symbol: String {
             switch self {
             case .checklist: "checklist"
@@ -360,10 +367,11 @@ struct AddNotes: View {
             case .photos: "photo"
             case .location: "mappin.and.ellipse"
             case .video: "video"
+            case .sketch: "pencil.and.scribble"
             }
         }
     }
-    
+
     private func hasContent(_ extra: Extra) -> Bool {
         switch extra {
         case .checklist: !checklistItems.isEmpty
@@ -372,6 +380,7 @@ struct AddNotes: View {
         case .photos: !selectedImagesData.isEmpty
         case .location: selectedLocation != nil
         case .video: selectedVideo != nil || isLoadingVideo
+        case .sketch: sketchData != nil
         }
     }
     
@@ -461,6 +470,7 @@ struct AddNotes: View {
         selectedImagesData = note.images ?? []
         selectedVideo = note.playableVideoURL
         originalVideoURL = selectedVideo
+        sketchData = note.sketchData
         if let date = note.reminderDate, date > Date() {
             hasReminder = true
             reminderDate = date
@@ -497,6 +507,7 @@ struct AddNotes: View {
             note.location = selectedLocation
             note.images = images
             note.videoURL = selectedVideo
+            note.sketchData = sketchData
             let oldChecklist = note.checklist
             note.checklist = checklistItems
             oldChecklist.forEach { context.delete($0) }
@@ -521,6 +532,7 @@ struct AddNotes: View {
             noteItem.richText = richData
             noteItem.folder = folder
             noteItem.noteColor = noteColor
+            noteItem.sketchData = sketchData
             context.insert(noteItem)
             savedNote = noteItem
         }
