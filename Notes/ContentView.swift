@@ -15,30 +15,18 @@ struct ContentView: View {
     @EnvironmentObject private var appLock: AppLockManager
     @EnvironmentObject private var appManager: AppManager
     @AppStorage(AppLockManager.enabledKey) private var isAppLockEnabled = false
-    @State private var isSelected : Int = 0
-    @AppStorage("isPermissionGranted") var isPermissionGranted = false
-    
-    @State private var isSplash: Bool = true
+    @State private var isSelected: Int = 0
+
     var body: some View {
-        VStack {
-            if isSplash {
-                SplashScreen()
-            } else {
-                TabView(selection:$isSelected) {
-                    Tab("Home", systemImage: "house",value: 0) {
-                        HomeScreen()
-                    }
-                    
-                    Tab("Todo", systemImage: "checklist",value: 1) {
-                        TodoScreen()
-                        
-                    }
-                    
-                    Tab("Settings", systemImage: "gear", value: 2) {
-                        SettingScreen()
-                    }
-                    
-                }
+        TabView(selection: $isSelected) {
+            Tab("Home", systemImage: "house", value: 0) {
+                HomeScreen()
+            }
+            Tab("Todo", systemImage: "checklist", value: 1) {
+                TodoScreen()
+            }
+            Tab("Settings", systemImage: "gear", value: 2) {
+                SettingScreen()
             }
         }
         .accessibilityHidden(appLock.isLocked)
@@ -50,14 +38,8 @@ struct ContentView: View {
                 LockScreenView(showsUnlockButton: false)
             }
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                isSplash = false
-            }
-        }
         .onOpenURL { url in
             guard let route = AppRoute(url: url) else { return }
-            isSplash = false
             isSelected = route.isTodoTab ? 1 : 0
             appManager.pendingRoute = route
         }
