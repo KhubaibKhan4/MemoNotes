@@ -1,866 +1,890 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "NSFaceIDUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "af": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID word gebruik om jou notas te ontsluit wanneer die app-slot aan is."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يُستخدم Face ID لفتح قفل ملاحظاتك عند تشغيل قفل التطبيق."
-          }
-        },
-        "bn-BD": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "অ্যাপ লক চালু থাকলে আপনার নোট আনলক করতে Face ID ব্যবহার করা হয়।"
-          }
-        },
-        "ckb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID بەکاردێت بۆ کردنەوەی قفڵی تێبینییەکانت کاتێک قفڵی بەرنامە هەڵکراوە."
-          }
-        },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID slouží k odemknutí poznámek, když je zapnutý zámek aplikace."
-          }
-        },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID bruges til at låse dine noter op, når applåsen er slået til."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID wird verwendet, um deine Notizen zu entsperren, wenn die App-Sperre aktiv ist."
-          }
-        },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Το Face ID χρησιμοποιείται για το ξεκλείδωμα των σημειώσεών σας όταν είναι ενεργό το κλείδωμα εφαρμογής."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID is used to unlock your notes when App Lock is on."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID se usa para desbloquear tus notas cuando el bloqueo de la app está activado."
-          }
-        },
-        "et": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID-d kasutatakse märkmete avamiseks, kui rakenduse lukk on sees."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID برای باز کردن قفل یادداشت‌ها هنگام روشن بودن قفل برنامه استفاده می‌شود."
-          }
-        },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID:tä käytetään muistiinpanojen avaamiseen, kun apin lukitus on päällä."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID sert à déverrouiller vos notes lorsque le verrouillage de l’app est activé."
-          }
-        },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "‏Face ID משמש לביטול נעילת הפתקים כשנעילת היישום פועלת."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ऐप लॉक चालू होने पर आपके नोट्स अनलॉक करने के लिए Face ID का उपयोग होता है।"
-          }
-        },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A Face ID-t a jegyzetek feloldására használjuk, ha az appzár be van kapcsolva."
-          }
-        },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID digunakan untuk membuka kunci catatan Anda saat Kunci App aktif."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID viene usato per sbloccare le note quando il blocco dell’app è attivo."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Appロックがオンのとき、メモのロックを解除するためにFace IDを使用します。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "앱 잠금이 켜져 있을 때 메모 잠금을 해제하기 위해 Face ID가 사용됩니다."
-          }
-        },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID digunakan untuk membuka kunci nota anda apabila Kunci App dihidupkan."
-          }
-        },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID brukes til å låse opp notatene dine når applåsen er på."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID wordt gebruikt om je notities te ontgrendelen als de appvergrendeling aan staat."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID służy do odblokowywania notatek, gdy blokada aplikacji jest włączona."
-          }
-        },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "O Face ID é usado para desbloquear as suas notas quando o bloqueio da app está ativo."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID este folosit pentru a-ți debloca notițele când blocarea aplicației este activată."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID используется для разблокировки заметок, когда включена блокировка приложения."
-          }
-        },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID се користи за откључавање белешки када је укључено закључавање апликације."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID används för att låsa upp dina anteckningar när applåset är på."
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID ใช้เพื่อปลดล็อกโน้ตของคุณเมื่อเปิดล็อกแอปอยู่"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID, uygulama kilidi açıkken notlarınızın kilidini açmak için kullanılır."
-          }
-        },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID використовується для розблокування нотаток, коли ввімкнено блокування програми."
-          }
-        },
-        "ur-PK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ایپ لاک آن ہونے پر آپ کے نوٹس انلاک کرنے کے لیے Face ID استعمال ہوتا ہے۔"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Face ID được dùng để mở khóa ghi chú khi khóa ứng dụng đang bật."
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "Bundle display name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CloudNote AI"
           }
         }
       }
     },
-    "NSLocationWhenInUseUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "af": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Jou ligging word gebruik om ’n plek by ’n nota te voeg."
-          }
-        },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يُستخدم موقعك لإضافة مكان إلى ملاحظة."
-          }
-        },
-        "bn-BD": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "নোটে জায়গা যোগ করতে আপনার অবস্থান ব্যবহার করা হয়।"
-          }
-        },
-        "ckb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "شوێنەکەت بەکاردێت بۆ زیادکردنی شوێنێک بۆ تێبینی."
-          }
-        },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vaše poloha slouží k přidání místa do poznámky."
-          }
-        },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Din lokalitet bruges til at føje et sted til en note."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dein Standort wird verwendet, um einer Notiz einen Ort hinzuzufügen."
-          }
-        },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Η τοποθεσία σας χρησιμοποιείται για την προσθήκη μέρους σε μια σημείωση."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your location is used to add a place to a note."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu ubicación se usa para añadir un lugar a una nota."
-          }
-        },
-        "et": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sinu asukohta kasutatakse märkmele koha lisamiseks."
-          }
-        },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "موقعیت شما برای افزودن مکان به یادداشت استفاده می‌شود."
-          }
-        },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sijaintiasi käytetään paikan lisäämiseen muistiinpanoon."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Votre position sert à ajouter un lieu à une note."
-          }
-        },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "המיקום שלך משמש להוספת מקום לפתק."
-          }
-        },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "आपके स्थान का उपयोग नोट में जगह जोड़ने के लिए होता है।"
-          }
-        },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A helyzetedet arra használjuk, hogy helyet adj egy jegyzethez."
-          }
-        },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lokasi Anda digunakan untuk menambahkan tempat ke catatan."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La tua posizione viene usata per aggiungere un luogo a una nota."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "位置情報はメモに場所を追加するために使用されます。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "메모에 장소를 추가하기 위해 사용자의 위치가 사용됩니다."
-          }
-        },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lokasi anda digunakan untuk menambah tempat pada nota."
-          }
-        },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Posisjonen din brukes til å legge til et sted i et notat."
-          }
-        },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Je locatie wordt gebruikt om een plaats aan een notitie toe te voegen."
-          }
-        },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Twoje położenie jest używane do dodawania miejsca do notatki."
-          }
-        },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A sua localização é usada para adicionar um local a uma nota."
-          }
-        },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Locația ta este folosită pentru a adăuga un loc la o notiță."
-          }
-        },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ваша геопозиция используется, чтобы добавить место к заметке."
-          }
-        },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ваша локација се користи за додавање места у белешку."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Din plats används för att lägga till en plats i en anteckning."
-          }
-        },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ตำแหน่งของคุณใช้เพื่อเพิ่มสถานที่ลงในโน้ต"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Konumunuz bir nota yer eklemek için kullanılır."
-          }
-        },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ваше розташування використовується, щоб додати місце до нотатки."
-          }
-        },
-        "ur-PK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "آپ کا مقام نوٹ میں جگہ شامل کرنے کے لیے استعمال ہوتا ہے۔"
-          }
-        },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vị trí của bạn được dùng để thêm địa điểm vào ghi chú."
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CloudNote AI"
           }
         }
       }
     },
-    "NSMicrophoneUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "af": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofoontoegang word gebruik om stemnotas op te neem."
+    "NSFaceIDUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID word gebruik om jou notas te ontsluit wanneer die app-slot aan is."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يُستخدم الوصول إلى الميكروفون لتسجيل الملاحظات الصوتية."
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُستخدم Face ID لفتح قفل ملاحظاتك عند تشغيل قفل التطبيق."
           }
         },
-        "bn-BD": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ভয়েস নোট রেকর্ড করতে মাইক্রোফোন অ্যাকসেস ব্যবহার করা হয়।"
+        "bn-BD" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "অ্যাপ লক চালু থাকলে আপনার নোট আনলক করতে Face ID ব্যবহার করা হয়।"
           }
         },
-        "ckb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دەستڕاگەیشتن بە مایکرۆفۆن بۆ تۆمارکردنی تێبینی دەنگی بەکار دێت."
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID بەکاردێت بۆ کردنەوەی قفڵی تێبینییەکانت کاتێک قفڵی بەرنامە هەڵکراوە."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Přístup k mikrofonu slouží k nahrávání hlasových poznámek."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID slouží k odemknutí poznámek, když je zapnutý zámek aplikace."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofonadgang bruges til at optage talenoter."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID bruges til at låse dine noter op, når applåsen er slået til."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Der Mikrofonzugriff wird zum Aufzeichnen von Sprachnotizen verwendet."
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID wird verwendet, um deine Notizen zu entsperren, wenn die App-Sperre aktiv ist."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Η πρόσβαση στο μικρόφωνο χρησιμοποιείται για την εγγραφή φωνητικών σημειώσεων."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Το Face ID χρησιμοποιείται για το ξεκλείδωμα των σημειώσεών σας όταν είναι ενεργό το κλείδωμα εφαρμογής."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Microphone access is used to record voice notes."
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID is used to unlock your notes when App Lock is on."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El acceso al micrófono se usa para grabar notas de voz."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID se usa para desbloquear tus notas cuando el bloqueo de la app está activado."
           }
         },
-        "et": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofoni kasutatakse häälmärkmete salvestamiseks."
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID-d kasutatakse märkmete avamiseks, kui rakenduse lukk on sees."
           }
         },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "دسترسی به میکروفون برای ضبط یادداشت‌های صوتی استفاده می‌شود."
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID برای باز کردن قفل یادداشت‌ها هنگام روشن بودن قفل برنامه استفاده می‌شود."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofonia käytetään äänimuistiinpanojen tallentamiseen."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID:tä käytetään muistiinpanojen avaamiseen, kun apin lukitus on päällä."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L’accès au microphone sert à enregistrer des notes vocales."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID sert à déverrouiller vos notes lorsque le verrouillage de l’app est activé."
           }
         },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "הגישה למיקרופון משמשת להקלטת פתקים קוליים."
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "‏Face ID משמש לביטול נעילת הפתקים כשנעילת היישום פועלת."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "माइक्रोफ़ोन तक पहुँच वॉइस नोट्स रिकॉर्ड करने के लिए उपयोग होती है।"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ऐप लॉक चालू होने पर आपके नोट्स अनलॉक करने के लिए Face ID का उपयोग होता है।"
           }
         },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A mikrofon használata hangjegyzetek rögzítésére szolgál."
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Face ID-t a jegyzetek feloldására használjuk, ha az appzár be van kapcsolva."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akses mikrofon digunakan untuk merekam catatan suara."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID digunakan untuk membuka kunci catatan Anda saat Kunci App aktif."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L’accesso al microfono viene usato per registrare note vocali."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID viene usato per sbloccare le note quando il blocco dell’app è attivo."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "マイクへのアクセスは音声メモの録音に使用されます。"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appロックがオンのとき、メモのロックを解除するためにFace IDを使用します。"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "마이크 접근은 음성 메모를 녹음하는 데 사용됩니다."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱 잠금이 켜져 있을 때 메모 잠금을 해제하기 위해 Face ID가 사용됩니다."
           }
         },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akses mikrofon digunakan untuk merakam nota suara."
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID digunakan untuk membuka kunci nota anda apabila Kunci App dihidupkan."
           }
         },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofontilgang brukes til å ta opp talenotater."
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID brukes til å låse opp notatene dine når applåsen er på."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Toegang tot de microfoon wordt gebruikt om spraaknotities op te nemen."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID wordt gebruikt om je notities te ontgrendelen als de appvergrendeling aan staat."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dostęp do mikrofonu służy do nagrywania notatek głosowych."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID służy do odblokowywania notatek, gdy blokada aplikacji jest włączona."
           }
         },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "O acesso ao microfone é usado para gravar notas de voz."
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Face ID é usado para desbloquear as suas notas quando o bloqueio da app está ativo."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesul la microfon este folosit pentru a înregistra notițe vocale."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID este folosit pentru a-ți debloca notițele când blocarea aplicației este activată."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Доступ к микрофону используется для записи голосовых заметок."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID используется для разблокировки заметок, когда включена блокировка приложения."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Приступ микрофону се користи за снимање гласовних белешки."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID се користи за откључавање белешки када је укључено закључавање апликације."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofonåtkomst används för att spela in röstanteckningar."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID används för att låsa upp dina anteckningar när applåset är på."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "สิทธิ์เข้าใช้ไมโครโฟนใช้สำหรับบันทึกโน้ตเสียง"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID ใช้เพื่อปลดล็อกโน้ตของคุณเมื่อเปิดล็อกแอปอยู่"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mikrofon erişimi sesli not kaydetmek için kullanılır."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID, uygulama kilidi açıkken notlarınızın kilidini açmak için kullanılır."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Доступ до мікрофона використовується для запису голосових нотаток."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID використовується для розблокування нотаток, коли ввімкнено блокування програми."
           }
         },
-        "ur-PK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "مائیکروفون تک رسائی صوتی نوٹس ریکارڈ کرنے کے لیے استعمال ہوتی ہے۔"
+        "ur-PK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ایپ لاک آن ہونے پر آپ کے نوٹس انلاک کرنے کے لیے Face ID استعمال ہوتا ہے۔"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quyền truy cập micro được dùng để ghi ghi chú thoại."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Face ID được dùng để mở khóa ghi chú khi khóa ứng dụng đang bật."
           }
         }
       }
     },
-    "NSSpeechRecognitionUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "af": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stemnotas kan op hierdie toestel na teks getranskribeer word."
+    "NSLocationWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jou ligging word gebruik om ’n plek by ’n nota te voeg."
           }
         },
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يمكن تحويل الملاحظات الصوتية إلى نص على هذا الجهاز."
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُستخدم موقعك لإضافة مكان إلى ملاحظة."
           }
         },
-        "bn-BD": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ভয়েস নোটগুলো এই ডিভাইসে টেক্সটে রূপান্তর করা যায়।"
+        "bn-BD" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "নোটে জায়গা যোগ করতে আপনার অবস্থান ব্যবহার করা হয়।"
           }
         },
-        "ckb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "تێبینییە دەنگییەکان دەتوانرێن لەسەر ئەم ئامێرە ببنە دەق."
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شوێنەکەت بەکاردێت بۆ زیادکردنی شوێنێک بۆ تێبینی."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hlasové poznámky lze na tomto zařízení převést na text."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vaše poloha slouží k přidání místa do poznámky."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Talenoter kan omdannes til tekst på denne enhed."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din lokalitet bruges til at føje et sted til en note."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sprachnotizen können auf diesem Gerät in Text umgewandelt werden."
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Standort wird verwendet, um einer Notiz einen Ort hinzuzufügen."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Οι φωνητικές σημειώσεις μπορούν να μεταγραφούν σε κείμενο σε αυτή τη συσκευή."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η τοποθεσία σας χρησιμοποιείται για την προσθήκη μέρους σε μια σημείωση."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voice notes can be transcribed into text on this device."
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your location is used to add a place to a note."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las notas de voz pueden transcribirse a texto en este dispositivo."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu ubicación se usa para añadir un lugar a una nota."
           }
         },
-        "et": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Häälmärkmeid saab selles seadmes tekstiks teisendada."
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sinu asukohta kasutatakse märkmele koha lisamiseks."
           }
         },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یادداشت‌های صوتی روی این دستگاه به متن تبدیل می‌شوند."
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "موقعیت شما برای افزودن مکان به یادداشت استفاده می‌شود."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Äänimuistiinpanot voidaan muuntaa tekstiksi tällä laitteella."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sijaintiasi käytetään paikan lisäämiseen muistiinpanoon."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Les notes vocales peuvent être transcrites en texte sur cet appareil."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre position sert à ajouter un lieu à une note."
           }
         },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "פתקים קוליים יכולים להיות מתועתקים לטקסט במכשיר הזה."
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "המיקום שלך משמש להוספת מקום לפתק."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "वॉइस नोट्स इस डिवाइस पर टेक्स्ट में बदले जा सकते हैं।"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके स्थान का उपयोग नोट में जगह जोड़ने के लिए होता है।"
           }
         },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A hangjegyzetek szöveggé alakíthatók ezen a készüléken."
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A helyzetedet arra használjuk, hogy helyet adj egy jegyzethez."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Catatan suara dapat diubah menjadi teks di perangkat ini."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokasi Anda digunakan untuk menambahkan tempat ke catatan."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Le note vocali possono essere trascritte in testo su questo dispositivo."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua posizione viene usata per aggiungere un luogo a una nota."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "このデバイスで音声メモをテキストに変換できます。"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "位置情報はメモに場所を追加するために使用されます。"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "이 기기에서 음성 메모를 텍스트로 변환할 수 있습니다."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모에 장소를 추가하기 위해 사용자의 위치가 사용됩니다."
           }
         },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nota suara boleh ditukar kepada teks pada peranti ini."
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lokasi anda digunakan untuk menambah tempat pada nota."
           }
         },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Talenotater kan transkriberes til tekst på denne enheten."
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posisjonen din brukes til å legge til et sted i et notat."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Spraaknotities kunnen op dit toestel worden omgezet in tekst."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je locatie wordt gebruikt om een plaats aan een notitie toe te voegen."
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notatki głosowe mogą być przepisywane na tekst na tym urządzeniu."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Twoje położenie jest używane do dodawania miejsca do notatki."
           }
         },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "As notas de voz podem ser transcritas em texto neste dispositivo."
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A sua localização é usada para adicionar um local a uma nota."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Notițele vocale pot fi transcrise în text pe acest dispozitiv."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locația ta este folosită pentru a adăuga un loc la o notiță."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Голосовые заметки могут быть преобразованы в текст на этом устройстве."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваша геопозиция используется, чтобы добавить место к заметке."
           }
         },
-        "sr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Гласовне белешке се могу превести у текст на овом уређају."
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваша локација се користи за додавање места у белешку."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Röstanteckningar kan skrivas av till text på den här enheten."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din plats används för att lägga till en plats i en anteckning."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "สามารถถอดเสียงโน้ตเสียงเป็นข้อความบนอุปกรณ์นี้ได้"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตำแหน่งของคุณใช้เพื่อเพิ่มสถานที่ลงในโน้ต"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sesli notlar bu cihazda metne dönüştürülebilir."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konumunuz bir nota yer eklemek için kullanılır."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Голосові нотатки можна перетворювати на текст на цьому пристрої."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ваше розташування використовується, щоб додати місце до нотатки."
           }
         },
-        "ur-PK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "صوتی نوٹس اس ڈیوائس پر متن میں تبدیل کیے جا سکتے ہیں۔"
+        "ur-PK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "آپ کا مقام نوٹ میں جگہ شامل کرنے کے لیے استعمال ہوتا ہے۔"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ghi chú thoại có thể được chuyển thành văn bản trên thiết bị này."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vị trí của bạn được dùng để thêm địa điểm vào ghi chú."
+          }
+        }
+      }
+    },
+    "NSMicrophoneUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofoontoegang word gebruik om stemnotas op te neem."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُستخدم الوصول إلى الميكروفون لتسجيل الملاحظات الصوتية."
+          }
+        },
+        "bn-BD" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ভয়েস নোট রেকর্ড করতে মাইক্রোফোন অ্যাকসেস ব্যবহার করা হয়।"
+          }
+        },
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دەستڕاگەیشتن بە مایکرۆفۆن بۆ تۆمارکردنی تێبینی دەنگی بەکار دێت."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Přístup k mikrofonu slouží k nahrávání hlasových poznámek."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofonadgang bruges til at optage talenoter."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Mikrofonzugriff wird zum Aufzeichnen von Sprachnotizen verwendet."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Η πρόσβαση στο μικρόφωνο χρησιμοποιείται για την εγγραφή φωνητικών σημειώσεων."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Microphone access is used to record voice notes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El acceso al micrófono se usa para grabar notas de voz."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofoni kasutatakse häälmärkmete salvestamiseks."
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دسترسی به میکروفون برای ضبط یادداشت‌های صوتی استفاده می‌شود."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofonia käytetään äänimuistiinpanojen tallentamiseen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’accès au microphone sert à enregistrer des notes vocales."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "הגישה למיקרופון משמשת להקלטת פתקים קוליים."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "माइक्रोफ़ोन तक पहुँच वॉइस नोट्स रिकॉर्ड करने के लिए उपयोग होती है।"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A mikrofon használata hangjegyzetek rögzítésére szolgál."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akses mikrofon digunakan untuk merekam catatan suara."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’accesso al microfono viene usato per registrare note vocali."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マイクへのアクセスは音声メモの録音に使用されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "마이크 접근은 음성 메모를 녹음하는 데 사용됩니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akses mikrofon digunakan untuk merakam nota suara."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofontilgang brukes til å ta opp talenotater."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toegang tot de microfoon wordt gebruikt om spraaknotities op te nemen."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostęp do mikrofonu służy do nagrywania notatek głosowych."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O acesso ao microfone é usado para gravar notas de voz."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesul la microfon este folosit pentru a înregistra notițe vocale."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к микрофону используется для записи голосовых заметок."
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Приступ микрофону се користи за снимање гласовних белешки."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofonåtkomst används för att spela in röstanteckningar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สิทธิ์เข้าใช้ไมโครโฟนใช้สำหรับบันทึกโน้ตเสียง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofon erişimi sesli not kaydetmek için kullanılır."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ до мікрофона використовується для запису голосових нотаток."
+          }
+        },
+        "ur-PK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مائیکروفون تک رسائی صوتی نوٹس ریکارڈ کرنے کے لیے استعمال ہوتی ہے۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quyền truy cập micro được dùng để ghi ghi chú thoại."
+          }
+        }
+      }
+    },
+    "NSSpeechRecognitionUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "af" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stemnotas kan op hierdie toestel na teks getranskribeer word."
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكن تحويل الملاحظات الصوتية إلى نص على هذا الجهاز."
+          }
+        },
+        "bn-BD" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ভয়েস নোটগুলো এই ডিভাইসে টেক্সটে রূপান্তর করা যায়।"
+          }
+        },
+        "ckb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تێبینییە دەنگییەکان دەتوانرێن لەسەر ئەم ئامێرە ببنە دەق."
+          }
+        },
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hlasové poznámky lze na tomto zařízení převést na text."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talenoter kan omdannes til tekst på denne enhed."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprachnotizen können auf diesem Gerät in Text umgewandelt werden."
+          }
+        },
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Οι φωνητικές σημειώσεις μπορούν να μεταγραφούν σε κείμενο σε αυτή τη συσκευή."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice notes can be transcribed into text on this device."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notas de voz pueden transcribirse a texto en este dispositivo."
+          }
+        },
+        "et" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Häälmärkmeid saab selles seadmes tekstiks teisendada."
+          }
+        },
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "یادداشت‌های صوتی روی این دستگاه به متن تبدیل می‌شوند."
+          }
+        },
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Äänimuistiinpanot voidaan muuntaa tekstiksi tällä laitteella."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notes vocales peuvent être transcrites en texte sur cet appareil."
+          }
+        },
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "פתקים קוליים יכולים להיות מתועתקים לטקסט במכשיר הזה."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वॉइस नोट्स इस डिवाइस पर टेक्स्ट में बदले जा सकते हैं।"
+          }
+        },
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A hangjegyzetek szöveggé alakíthatók ezen a készüléken."
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Catatan suara dapat diubah menjadi teks di perangkat ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le note vocali possono essere trascritte in testo su questo dispositivo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このデバイスで音声メモをテキストに変換できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 기기에서 음성 메모를 텍스트로 변환할 수 있습니다."
+          }
+        },
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nota suara boleh ditukar kepada teks pada peranti ini."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Talenotater kan transkriberes til tekst på denne enheten."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spraaknotities kunnen op dit toestel worden omgezet in tekst."
+          }
+        },
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notatki głosowe mogą być przepisywane na tekst na tym urządzeniu."
+          }
+        },
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notas de voz podem ser transcritas em texto neste dispositivo."
+          }
+        },
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notițele vocale pot fi transcrise în text pe acest dispozitiv."
+          }
+        },
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голосовые заметки могут быть преобразованы в текст на этом устройстве."
+          }
+        },
+        "sr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Гласовне белешке се могу превести у текст на овом уређају."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Röstanteckningar kan skrivas av till text på den här enheten."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สามารถถอดเสียงโน้ตเสียงเป็นข้อความบนอุปกรณ์นี้ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesli notlar bu cihazda metne dönüştürülebilir."
+          }
+        },
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Голосові нотатки можна перетворювати на текст на цьому пристрої."
+          }
+        },
+        "ur-PK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صوتی نوٹس اس ڈیوائس پر متن میں تبدیل کیے جا سکتے ہیں۔"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ghi chú thoại có thể được chuyển thành văn bản trên thiết bị này."
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
