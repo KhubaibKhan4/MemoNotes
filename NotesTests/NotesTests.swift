@@ -220,3 +220,29 @@ private func makeContext() throws -> ModelContext {
         #expect(SpotlightIndex.route(for: "todo:") == nil)
     }
 }
+
+// MARK: - Note sharing
+
+@Suite struct NoteShareTests {
+    @MainActor @Test func formattedShareIncludesTitleBodyAndChecklist() throws {
+        let note = NotesItem(title: "Groceries", desc: "Pick up milk and bread", isPinned: false)
+        note.checklist = [
+            ChecklistItem(title: "Milk", isDone: true),
+            ChecklistItem(title: "Bread", isDone: false),
+        ]
+        note.tags = ["shopping"]
+        let text = NoteShare.plainText(for: note)
+        #expect(text.contains("Groceries"))
+        #expect(text.contains("Pick up milk and bread"))
+        #expect(text.contains("[x] Milk"))
+        #expect(text.contains("[ ] Bread"))
+        #expect(text.contains("#shopping"))
+        #expect(text.contains("CloudNote AI"))
+    }
+
+    @MainActor @Test func emptyNoteStillShares() {
+        let note = NotesItem(title: "", desc: "", isPinned: false)
+        let text = NoteShare.plainText(for: note)
+        #expect(text.contains("CloudNote AI"))
+    }
+}
