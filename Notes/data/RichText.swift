@@ -116,7 +116,7 @@ enum RichTextCoder {
 struct RichTextEditor: View {
     @Binding var text: AttributedString
     var baseSize: CGFloat
-    var placeholder: String = "Description"
+    var placeholder: LocalizedStringKey = "Description"
 
     @State private var selection = AttributedTextSelection()
     @FocusState private var isFocused: Bool

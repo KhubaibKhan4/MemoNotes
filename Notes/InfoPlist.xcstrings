@@ -1,0 +1,436 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSFaceIDUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "af": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID word gebruik om jou notas te ontsluit wanneer die app-slot aan is."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يُستخدم Face ID لفتح قفل ملاحظاتك عند تشغيل قفل التطبيق."
+          }
+        },
+        "bn-BD": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "অ্যাপ লক চালু থাকলে আপনার নোট আনলক করতে Face ID ব্যবহার করা হয়।"
+          }
+        },
+        "ckb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID بەکاردێت بۆ کردنەوەی قفڵی تێبینییەکانت کاتێک قفڵی بەرنامە هەڵکراوە."
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID slouží k odemknutí poznámek, když je zapnutý zámek aplikace."
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID bruges til at låse dine noter op, når applåsen er slået til."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID wird verwendet, um deine Notizen zu entsperren, wenn die App-Sperre aktiv ist."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Το Face ID χρησιμοποιείται για το ξεκλείδωμα των σημειώσεών σας όταν είναι ενεργό το κλείδωμα εφαρμογής."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID is used to unlock your notes when App Lock is on."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID se usa para desbloquear tus notas cuando el bloqueo de la app está activado."
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID-d kasutatakse märkmete avamiseks, kui rakenduse lukk on sees."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID برای باز کردن قفل یادداشت‌ها هنگام روشن بودن قفل برنامه استفاده می‌شود."
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID:tä käytetään muistiinpanojen avaamiseen, kun apin lukitus on päällä."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID sert à déverrouiller vos notes lorsque le verrouillage de l’app est activé."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "‏Face ID משמש לביטול נעילת הפתקים כשנעילת היישום פועלת."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ऐप लॉक चालू होने पर आपके नोट्स अनलॉक करने के लिए Face ID का उपयोग होता है।"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A Face ID-t a jegyzetek feloldására használjuk, ha az appzár be van kapcsolva."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID digunakan untuk membuka kunci catatan Anda saat Kunci App aktif."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID viene usato per sbloccare le note quando il blocco dell’app è attivo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appロックがオンのとき、メモのロックを解除するためにFace IDを使用します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앱 잠금이 켜져 있을 때 메모 잠금을 해제하기 위해 Face ID가 사용됩니다."
+          }
+        },
+        "ms": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID digunakan untuk membuka kunci nota anda apabila Kunci App dihidupkan."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID brukes til å låse opp notatene dine når applåsen er på."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID wordt gebruikt om je notities te ontgrendelen als de appvergrendeling aan staat."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID służy do odblokowywania notatek, gdy blokada aplikacji jest włączona."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Face ID é usado para desbloquear as suas notas quando o bloqueio da app está ativo."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID este folosit pentru a-ți debloca notițele când blocarea aplicației este activată."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID используется для разблокировки заметок, когда включена блокировка приложения."
+          }
+        },
+        "sr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID се користи за откључавање белешки када је укључено закључавање апликације."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID används för att låsa upp dina anteckningar när applåset är på."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID ใช้เพื่อปลดล็อกโน้ตของคุณเมื่อเปิดล็อกแอปอยู่"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID, uygulama kilidi açıkken notlarınızın kilidini açmak için kullanılır."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID використовується для розблокування нотаток, коли ввімкнено блокування програми."
+          }
+        },
+        "ur-PK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ایپ لاک آن ہونے پر آپ کے نوٹس انلاک کرنے کے لیے Face ID استعمال ہوتا ہے۔"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Face ID được dùng để mở khóa ghi chú khi khóa ứng dụng đang bật."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "af": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jou ligging word gebruik om ’n plek by ’n nota te voeg."
+          }
+        },
+        "ar": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "يُستخدم موقعك لإضافة مكان إلى ملاحظة."
+          }
+        },
+        "bn-BD": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "নোটে জায়গা যোগ করতে আপনার অবস্থান ব্যবহার করা হয়।"
+          }
+        },
+        "ckb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "شوێنەکەت بەکاردێت بۆ زیادکردنی شوێنێک بۆ تێبینی."
+          }
+        },
+        "cs": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vaše poloha slouží k přidání místa do poznámky."
+          }
+        },
+        "da": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din lokalitet bruges til at føje et sted til en note."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Standort wird verwendet, um einer Notiz einen Ort hinzuzufügen."
+          }
+        },
+        "el": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Η τοποθεσία σας χρησιμοποιείται για την προσθήκη μέρους σε μια σημείωση."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your location is used to add a place to a note."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu ubicación se usa para añadir un lugar a una nota."
+          }
+        },
+        "et": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinu asukohta kasutatakse märkmele koha lisamiseks."
+          }
+        },
+        "fa": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "موقعیت شما برای افزودن مکان به یادداشت استفاده می‌شود."
+          }
+        },
+        "fi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sijaintiasi käytetään paikan lisäämiseen muistiinpanoon."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Votre position sert à ajouter un lieu à une note."
+          }
+        },
+        "he": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "המיקום שלך משמש להוספת מקום לפתק."
+          }
+        },
+        "hi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "आपके स्थान का उपयोग नोट में जगह जोड़ने के लिए होता है।"
+          }
+        },
+        "hu": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A helyzetedet arra használjuk, hogy helyet adj egy jegyzethez."
+          }
+        },
+        "id": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lokasi Anda digunakan untuk menambahkan tempat ke catatan."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua posizione viene usata per aggiungere un luogo a una nota."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "位置情報はメモに場所を追加するために使用されます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메모에 장소를 추가하기 위해 사용자의 위치가 사용됩니다."
+          }
+        },
+        "ms": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lokasi anda digunakan untuk menambah tempat pada nota."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posisjonen din brukes til å legge til et sted i et notat."
+          }
+        },
+        "nl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Je locatie wordt gebruikt om een plaats aan een notitie toe te voegen."
+          }
+        },
+        "pl": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Twoje położenie jest używane do dodawania miejsca do notatki."
+          }
+        },
+        "pt-PT": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A sua localização é usada para adicionar um local a uma nota."
+          }
+        },
+        "ro": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locația ta este folosită pentru a adăuga un loc la o notiță."
+          }
+        },
+        "ru": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваша геопозиция используется, чтобы добавить место к заметке."
+          }
+        },
+        "sr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваша локација се користи за додавање места у белешку."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Din plats används för att lägga till en plats i en anteckning."
+          }
+        },
+        "th": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ตำแหน่งของคุณใช้เพื่อเพิ่มสถานที่ลงในโน้ต"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konumunuz bir nota yer eklemek için kullanılır."
+          }
+        },
+        "uk": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ваше розташування використовується, щоб додати місце до нотатки."
+          }
+        },
+        "ur-PK": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "آپ کا مقام نوٹ میں جگہ شامل کرنے کے لیے استعمال ہوتا ہے۔"
+          }
+        },
+        "vi": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vị trí của bạn được dùng để thêm địa điểm vào ghi chú."
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
