@@ -18,20 +18,10 @@ struct ContentView: View {
     @AppStorage(AppLockManager.enabledKey) private var isAppLockEnabled = false
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @State private var isSelected: Int = 0
-
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
-        TabView(selection: $isSelected) {
-            Tab("Home", systemImage: "house", value: 0) {
-                HomeScreen()
-            }
-            Tab("Todo", systemImage: "checklist", value: 1) {
-                TodoScreen()
-            }
-            Tab("Settings", systemImage: "gear", value: 2) {
-                SettingScreen()
-            }
-        }
+        root
         .accessibilityHidden(appLock.isLocked)
         .overlay {
             if appLock.isLocked {
@@ -77,6 +67,27 @@ struct ContentView: View {
                 // Also rebuild the Spotlight index so changes made on other devices and
                 // through iCloud sync are searchable.
                 SpotlightIndex.reindexEverything(from: context)
+            }
+        }
+    }
+
+    /// iPad and Mac (wide windows) get the sidebar layout; iPhone and narrow
+    /// iPad windows (Slide Over, small Split View) keep the tab bar.
+    @ViewBuilder
+    private var root: some View {
+        if horizontalSizeClass == .regular {
+            SplitRootView()
+        } else {
+            TabView(selection: $isSelected) {
+                Tab("Home", systemImage: "house", value: 0) {
+                    HomeScreen()
+                }
+                Tab("Todo", systemImage: "checklist", value: 1) {
+                    TodoScreen()
+                }
+                Tab("Settings", systemImage: "gear", value: 2) {
+                    SettingScreen()
+                }
             }
         }
     }

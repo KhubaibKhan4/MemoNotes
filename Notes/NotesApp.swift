@@ -23,9 +23,34 @@ struct NotesApp: App {
                 .environmentObject(appManager)
                 .environmentObject(appLock)
                 .preferredColorScheme(appManager.theme.colorScheme)
+                #if targetEnvironment(macCatalyst)
+                .onAppear(perform: MacWindow.setMinimumSize)
+                #endif
+        }
+        .commands {
+            // File ▸ New Note (⌘N) on Mac and with an iPad keyboard.
+            CommandGroup(replacing: .newItem) {
+                Button("New Note") {
+                    appManager.pendingRoute = .newNote
+                }
+                .keyboardShortcut("n", modifiers: .command)
+            }
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+/// Keeps Mac windows wide enough for the sidebar layout, so the window never
+/// shrinks into the iPhone tab-bar layout.
+enum MacWindow {
+    @MainActor
+    static func setMinimumSize() {
+        for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+            scene.sizeRestrictions?.minimumSize = CGSize(width: 900, height: 600)
+        }
+    }
+}
+#endif
 
 /// The app's single connection to the notes database, also used by Siri / Shortcuts actions.
 @MainActor
