@@ -422,6 +422,9 @@ struct HomeScreen: View {
                     } label: {
                         Label("Edit", systemImage: "pencil")
                     }
+                    ShareLink(item: NoteShare.plainText(for: item)) {
+                        Label("Share Note", systemImage: "square.and.arrow.up")
+                    }
                     Button(role: .destructive) {
                         deleteItem(item)
                     } label: {

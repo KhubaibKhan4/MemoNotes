@@ -318,6 +318,13 @@ struct AddNotes: View {
                     }
                     .accessibilityLabel("Templates")
                 }
+            } else if let note = editingNote {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: NoteShare.plainText(for: note)) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    .accessibilityLabel("Share Note")
+                }
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
