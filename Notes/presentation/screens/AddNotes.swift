@@ -33,6 +33,11 @@ struct AddNotes: View {
     @State private var isLoadingVideo = false
     /// The video the note had before editing; only deleted from disk once the edit is saved.
     @State private var originalVideoURL: URL?
+    /// Voice recording for this note, and its on-device transcript.
+    @State private var audioURL: URL?
+    @State private var audioTranscript: String?
+    /// The recording the note had before editing; dropped from disk once saved.
+    @State private var originalAudioURL: URL?
     @State private var didLoadNote = false
     
     // Inputs
@@ -211,6 +216,13 @@ struct AddNotes: View {
                     isLoading: isLoadingVideo
                 )
                 }
+
+                if isShown(.audio) {
+                AudioSectionView(
+                    audioURL: $audioURL,
+                    transcript: $audioTranscript
+                )
+                }
             }
             .onChange(of: selectedItems) { _, newItems in
                 guard !newItems.isEmpty else { return }
@@ -346,8 +358,8 @@ struct AddNotes: View {
     /// Extras a note can have. Each one's section appears only once it's used,
     /// so a new note starts as just a title and text.
     enum Extra: CaseIterable, Hashable {
-        case checklist, reminder, tags, photos, location, video
-        
+        case checklist, reminder, tags, photos, location, video, audio
+
         var title: String {
             switch self {
             case .checklist: String(localized: "Checklist")
@@ -356,9 +368,10 @@ struct AddNotes: View {
             case .photos: String(localized: "Photos")
             case .location: String(localized: "Location")
             case .video: String(localized: "Video")
+            case .audio: String(localized: "Audio")
             }
         }
-        
+
         var symbol: String {
             switch self {
             case .checklist: "checklist"
@@ -367,10 +380,11 @@ struct AddNotes: View {
             case .photos: "photo"
             case .location: "mappin.and.ellipse"
             case .video: "video"
+            case .audio: "mic"
             }
         }
     }
-    
+
     private func hasContent(_ extra: Extra) -> Bool {
         switch extra {
         case .checklist: !checklistItems.isEmpty
@@ -379,6 +393,7 @@ struct AddNotes: View {
         case .photos: !selectedImagesData.isEmpty
         case .location: selectedLocation != nil
         case .video: selectedVideo != nil || isLoadingVideo
+        case .audio: audioURL != nil
         }
     }
     
@@ -468,6 +483,9 @@ struct AddNotes: View {
         selectedImagesData = note.images ?? []
         selectedVideo = note.playableVideoURL
         originalVideoURL = selectedVideo
+        audioURL = note.audioURL
+        originalAudioURL = audioURL
+        audioTranscript = note.audioTranscript
         if let date = note.reminderDate, date > Date() {
             hasReminder = true
             reminderDate = date
@@ -504,12 +522,17 @@ struct AddNotes: View {
             note.location = selectedLocation
             note.images = images
             note.videoURL = selectedVideo
+            note.audioURL = audioURL
+            note.audioTranscript = audioTranscript
             let oldChecklist = note.checklist
             note.checklist = checklistItems
             oldChecklist.forEach { context.delete($0) }
             note.updatedAt = Date()
             if originalVideoURL != selectedVideo {
                 MediaStore.deleteVideo(originalVideoURL)
+            }
+            if originalAudioURL != audioURL {
+                MediaStore.deleteAudio(originalAudioURL)
             }
         } else {
             let noteItem = NotesItem(
@@ -528,6 +551,8 @@ struct AddNotes: View {
             noteItem.richText = richData
             noteItem.folder = folder
             noteItem.noteColor = noteColor
+            noteItem.audioURL = audioURL
+            noteItem.audioTranscript = audioTranscript
             context.insert(noteItem)
             savedNote = noteItem
         }
@@ -539,9 +564,12 @@ struct AddNotes: View {
     }
     
     private func cancel() {
-        // Don't leave a video on disk that was picked but never saved.
+        // Don't leave a video or audio file on disk that was picked but never saved.
         if selectedVideo != originalVideoURL {
             MediaStore.deleteVideo(selectedVideo)
+        }
+        if audioURL != originalAudioURL {
+            MediaStore.deleteAudio(audioURL)
         }
         dismiss()
     }

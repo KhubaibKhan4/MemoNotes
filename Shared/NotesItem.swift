@@ -46,6 +46,10 @@ class NotesItem: Identifiable {
     @Attribute(.externalStorage) var images: [Data]?
     /// Local video file. Videos stay on the device that added them; they are not synced.
     var videoURL: URL?
+    /// Local audio recording. Stays on the device that added it; not synced.
+    var audioURL: URL? = nil
+    /// On-device transcript of `audioURL`, if the user asked for one. Synced.
+    var audioTranscript: String? = nil
 
     var tags: [String] = []
 

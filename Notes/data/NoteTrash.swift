@@ -32,10 +32,11 @@ enum NoteTrash {
         SharedStore.reloadWidgets()
     }
 
-    /// Removes a note for good, including its video file.
+    /// Removes a note for good, including its audio and video files.
     static func deletePermanently(_ note: NotesItem, context: ModelContext) {
         ReminderScheduler.cancel(noteID: note.id)
         MediaStore.deleteVideo(note.videoURL)
+        MediaStore.deleteAudio(note.audioURL)
         SpotlightIndex.removeNote(id: note.id)
         context.delete(note)
         try? context.save()
@@ -56,6 +57,7 @@ enum NoteTrash {
         guard !expired.isEmpty else { return }
         for note in expired {
             MediaStore.deleteVideo(note.videoURL)
+            MediaStore.deleteAudio(note.audioURL)
             SpotlightIndex.removeNote(id: note.id)
             context.delete(note)
         }
