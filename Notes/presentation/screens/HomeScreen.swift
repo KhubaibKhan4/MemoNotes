@@ -616,7 +616,7 @@ private struct Chip: View {
     }
 }
 
-private struct NoteCard: View {
+struct NoteCard: View {
     let item: NotesItem
     let style: Style
     let colorScheme: ColorScheme
