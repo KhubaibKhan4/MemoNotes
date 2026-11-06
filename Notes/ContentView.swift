@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import CoreSpotlight
 
 
 struct ContentView: View {
@@ -52,11 +53,20 @@ struct ContentView: View {
             isSelected = route.isTodoTab ? 1 : 0
             appManager.pendingRoute = route
         }
+        // Spotlight: tapping a note in iPhone search opens it here.
+        .onContinueUserActivity(CSSearchableItemActionType) { activity in
+            guard let identifier = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+                  let route = SpotlightIndex.route(for: identifier) else { return }
+            isSelected = route.isTodoTab ? 1 : 0
+            appManager.pendingRoute = route
+        }
         .onChange(of: scenePhase, initial: true) { _, phase in
             appLock.sceneChanged(to: phase)
             if phase == .background {
-                // Show the latest notes and todos in the widgets.
+                // Show the latest notes and todos in the widgets, and refresh Spotlight
+                // with everything the user saved during this session.
                 SharedStore.reloadWidgets()
+                SpotlightIndex.reindexEverything(from: context)
             }
             // Rebuild pending reminders whenever the app comes to the front. This picks up
             // reminders added or changed on other devices through iCloud, and ones lost
@@ -64,6 +74,9 @@ struct ContentView: View {
             if phase == .active {
                 NoteTrash.purgeExpired(context: context)
                 ReminderScheduler.resync(context: context)
+                // Also rebuild the Spotlight index so changes made on other devices and
+                // through iCloud sync are searchable.
+                SpotlightIndex.reindexEverything(from: context)
             }
         }
     }

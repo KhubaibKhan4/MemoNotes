@@ -55,6 +55,12 @@ struct SettingScreen: View {
                     if await AppLockManager.authenticate(reason: reason) {
                         appLockEnabled = newValue
                         SharedStore.setAppLockEnabled(newValue)
+                        if newValue {
+                            // Hide notes from iPhone search while locked.
+                            SpotlightIndex.deleteEverything()
+                        } else {
+                            SpotlightIndex.reindexEverything(from: context)
+                        }
                         Haptics.success()
                     }
                 }
