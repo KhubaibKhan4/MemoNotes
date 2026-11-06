@@ -40,7 +40,8 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         case .denied, .restricted:
             permissionDenied = true
         case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
+            // Ask only when the user picks a location, not as soon as the editor opens.
+            break
         @unknown default:
             break
         }

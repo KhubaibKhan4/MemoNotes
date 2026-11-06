@@ -152,7 +152,7 @@ struct NotesDetail: View {
                         )
                     )
                     fetchLocationName(for: location) { name in
-                        selectedLocationName = name ?? "Unknown"
+                        selectedLocationName = name ?? String(localized: "Unknown")
                     }
                 }
             }

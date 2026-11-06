@@ -470,7 +470,7 @@ struct AddNotes: View {
             position = .region(MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)))
             mapCenter = location
             fetchLocationName(for: location) { name in
-                selectedLocationName = name ?? "Unknown"
+                selectedLocationName = name ?? String(localized: "Unknown")
             }
         }
     }
@@ -566,7 +566,7 @@ struct AddNotes: View {
         if let loc = locationManager.userLocation?.coordinate {
             selectedLocation = loc
             fetchLocationName(for: loc) { name in
-                self.selectedLocationName = name ?? "Unknown"
+                self.selectedLocationName = name ?? String(localized: "Unknown")
             }
             if let userLoc = locationManager.userLocation {
                 zoomToUserLocation(userLoc)
@@ -580,7 +580,7 @@ struct AddNotes: View {
         let coord = mapCenter
         selectedLocation = coord
         fetchLocationName(for: coord) { name in
-            self.selectedLocationName = name ?? "Unknown"
+            self.selectedLocationName = name ?? String(localized: "Unknown")
         }
     }
     
@@ -1039,7 +1039,7 @@ private struct MapSheetView: View {
                                 locationList.append(coord)
                                 position = .region(MKCoordinateRegion(center: coord, span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)))
                                 onFetchLocationName(coord) { name in
-                                    selectedLocationName = name ?? "Unknown"
+                                    selectedLocationName = name ?? String(localized: "Unknown")
                                 }
                             }
                         }
